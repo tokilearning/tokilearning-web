@@ -2,7 +2,7 @@
 
 class CTextHelper {
 
-    public static function random($type = 'alnum', $length = 8) {
+    public static function random($type = 'alnum', $length = 6) {
 
         switch ($type) {
             case 'alnum':

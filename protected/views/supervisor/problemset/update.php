@@ -25,7 +25,8 @@ $this->widget('CTabView',
             'viewData' => $viewData,
             'id' => 'problem-set-tab',
             'htmlOptions' => array('class' => 'tab'),
-            'cssFile' => Yii::app()->request->baseUrl . "/css/arrastheme/tabs.css"
+            'cssFile' => Yii::app()->request->baseUrl . "/css/arrastheme/tabs.css",
+            'activeTab' => (!isset($currtab) ? 'information': $currtab),
         )
 );
 ?>

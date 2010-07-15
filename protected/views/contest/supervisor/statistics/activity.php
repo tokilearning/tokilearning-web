@@ -1,11 +1,12 @@
-<?php $this->setPageTitle("Aktivitas");?>
-<?php $this->renderPartial('_menu');?>
+<?php $this->setPageTitle("Aktivitas"); ?>
+<?php $this->renderPartial('_menu'); ?>
 
-<?php echo CHtml::link('Download CSV', $this->createUrl('downloadActivity'), array('class' => 'linkbutton'));?>
+<?php echo CHtml::link('Download CSV', $this->createUrl('downloadActivity'), array('class' => 'linkbutton')); ?>
 <?php
+
 $this->widget('zii.widgets.grid.CGridView',
         array(
-            'dataProvider'=>$dataProvider,
+            'dataProvider' => $dataProvider,
             'columns' => array(
                 array(
                     'name' => 'username',
@@ -19,11 +20,15 @@ $this->widget('zii.widgets.grid.CGridView',
                     'type' => 'raw'
                 ),
                 array(
-                    'name'=> 'last_activity',
+                    'name' => 'last_activity',
+                    'header' => 'Aktivitas',
                     'value' => 'CDateHelper::timespanAbbr($data[\'last_activity\'])',
                     'type' => 'raw'
-                 ),
-                'last_page'
+                ),
+                array(
+                    'name' => 'last_page',
+                    'header' => 'Halaman Terakhir'
+                )
             ),
             'summaryText' => 'Menampilkan {start}-{end} dari {count}.',
             'template' => '{summary} {pager} <br/> {items} {pager}',
@@ -31,5 +36,5 @@ $this->widget('zii.widgets.grid.CGridView',
             'id' => 'evaluatorgridview',
             'cssFile' => Yii::app()->request->baseUrl . '/css/yii/gridview/style.css',
         )
-    );
+);
 ?>

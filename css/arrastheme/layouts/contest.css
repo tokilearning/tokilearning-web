@@ -2,7 +2,8 @@
 #contest-nav-wrapper .spacer {clear:both;}
 #contest-nav-wrapper ul {clear:both;list-style-type:none;margin:0px;padding:0px;}
 #contest-nav-wrapper ul li {float: left;border-right: 1px solid #bbb;border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;margin-bottom: 10px;list-style-type:none;}
-#contest-nav-wrapper ul li a, #contest-nav-wrapper ul li a:visited {color: #444;display: block;font-size: 1.0em;font-weight: bold;line-height: 30px;padding: 0 15px;text-decoration:none;}
+#contest-nav-wrapper ul li a, #contest-nav-wrapper ul li a:visited {color: #444;display: block;font-size: 1.0em;font-weight: normal;line-height: 30px;padding: 0 15px;text-decoration:none;}
+#contest-nav-wrapper ul li.active a {font-weight: bold; background: #F2F2F2; font-size: 11pt;}
 #contest-nav-wrapper ul li a:hover {background: #f2f2f2; text-decoration: none;}
 #contest-nav-wrapper ul li ul {display: none;}
 #contest-nav-wrapper ul li:hover ul {background: #f8f8f8;border: 1px solid #aaa;display: block;position: absolute;}

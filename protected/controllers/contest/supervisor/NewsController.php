@@ -61,6 +61,14 @@ class NewsController extends CContestController {
         $model = $this->loadModel();
         $this->render('view', array('model' => $model));
     }
+    
+    public function actionDelete() {
+        // we only allow deletion via POST request
+        $this->loadModel()->delete();
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if (!isset($_GET['ajax']))
+            $this->redirect(array('index'));
+    }
 
     public function actionUpdate() {
         $model = $this->loadModel();

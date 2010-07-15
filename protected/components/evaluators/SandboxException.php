@@ -9,7 +9,7 @@ class SandboxException extends Exception {
 
     public $status;
 
-    public function  __construct($status) {
+    public function  __construct($status , $pMessage = "") {
         $this->status = $status;
         $message = "";
         switch ($status)
@@ -29,7 +29,13 @@ class SandboxException extends Exception {
             case self::ERR_FORBIDDEN_ACCESS :
                 $message = "Access forbidden";
                 break;
+			default:
+				$message = $pMessage;
+				break;
         }
+        
+        if ($pMessage != "")
+            $message = $pMessage;
         parent::__construct($message, $status);
     }
 }

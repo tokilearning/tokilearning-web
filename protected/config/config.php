@@ -3,8 +3,8 @@
 return array(
     'evaluator' => array(
         'problem' => array(
-            'problem_repository_path' => 'C:\\\\TOKILC\\problems',
-            'problem_type_repository_path' => 'C:\\\\TOKILC\\problem_types'
+            'problem_repository_path' => '',
+            'problem_type_repository_path' => ''
         ),
         'compiler' => array(
             'compiler_gcc_path' => '/usr/bin/gcc',
@@ -12,8 +12,16 @@ return array(
             'compiler_fpc_path' => '/usr/bin/fpc',
         ),
         'sandbox' => array(
-            'moevalbox_path' => '/bin/mo-evalbox',
-            'sandbox_temp_dir' => 'C:\\\\TOKILC\\tmp\\'
+            'moevalbox_path' => '',
+            'moeval_iwrapper_path' => '',
+            'sandbox_temp_dir' => ''
+        ),
+        'balancer' => array(
+            'message-key' => '',
+            'message-type' => '',
+            'config-file' => '',
+            'pid-file' => '',
+            'app-id' => ''
         )
     )
 );

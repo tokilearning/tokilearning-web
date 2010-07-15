@@ -17,8 +17,10 @@
  *
  * Compared with {@link CController controller}, a widget has neither actions nor filters.
  *
+ * Usage is described at {@link CBaseController} and {@link CBaseController::widget}.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CWidget.php 1983 2010-03-31 19:46:37Z qiang.xue $
+ * @version $Id: CWidget.php 2145 2010-05-19 21:28:55Z alexander.makarow $
  * @package system.web.widgets
  * @since 1.0
  */

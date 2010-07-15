@@ -1,0 +1,13 @@
+assets/*
+!assets/.gitignore
+protected/runtime/*
+!protected/runtime/.gitignore
+protected/data/*.db
+.DS_STORE
+.DS_Store
+.buildpath
+.project
+.settings
+*.scss
+*.*~
+nbproject

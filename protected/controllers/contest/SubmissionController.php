@@ -21,7 +21,7 @@ class SubmissionController extends CContestController {
     public function actionView() {
         if (isset($_GET['id']))
             $model = Submission::model()->with(array(
-                    'problem' => array('select' => array('id', 'title')),
+                    'problem' => array('select' => array('id', 'title', 'token')),
                     'problem.problemtype' => array('select' => array('name'))
                 ))->findbyPk($_GET['id']);
         if ($model !== null){

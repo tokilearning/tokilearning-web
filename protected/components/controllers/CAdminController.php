@@ -1,6 +1,6 @@
 <?php
 
-class CAdminController extends CController {
+class CAdminController extends CCommonController {
 
     public $layout = 'application.views.layouts.column2';
 

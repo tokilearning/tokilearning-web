@@ -41,7 +41,7 @@
         <span class="shead">Sifat</span>
         <span>
             <?php echo CHtml::activeRadioButtonList($model, 'status', array(
-                Contest::CONTEST_VISIBILITY_HIDDEN => 'Tertutup',
+                Contest::CONTEST_VISIBILITY_PRIVATE => 'Tertutup',
                 Contest::CONTEST_VISIBILITY_PUBLIC => 'Terbuka'
             ));?>
         </span>

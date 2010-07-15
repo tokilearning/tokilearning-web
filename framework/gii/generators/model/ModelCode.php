@@ -8,6 +8,12 @@ class ModelCode extends CCodeModel
 	public $modelPath='application.models';
 	public $baseClass='CActiveRecord';
 
+	/**
+	 * @var array list of candidate relation code. The array are indexed by AR class names and relation names.
+	 * Each element represents the code of the one relation in one AR class.
+	 */
+	protected $relations;
+
 	public function rules()
 	{
 		return array_merge(parent::rules(), array(
@@ -64,11 +70,21 @@ class ModelCode extends CCodeModel
 			$tableName=$this->tableName;
 		}
 		if($tableName[strlen($tableName)-1]==='*')
+		{
 			$tables=Yii::app()->db->schema->getTables($schema);
+			if($this->tablePrefix!='')
+			{
+				foreach($tables as $i=>$table)
+				{
+					if(strpos($table->name,$this->tablePrefix)!==0)
+						unset($tables[$i]);
+				}
+			}
+		}
 		else
 			$tables=array($this->getTableSchema($this->tableName));
 
-		$relations=$this->generateRelations();
+		$this->relations=$this->generateRelations();
 
 		foreach($tables as $table)
 		{
@@ -80,7 +96,7 @@ class ModelCode extends CCodeModel
 				'columns'=>$table->columns,
 				'labels'=>$this->generateLabels($table),
 				'rules'=>$this->generateRules($table),
-				'relations'=>isset($relations[$className]) ? $relations[$className] : array(),
+				'relations'=>isset($this->relations[$className]) ? $this->relations[$className] : array(),
 			);
 			$this->files[]=new CCodeFile(
 				Yii::getPathOfAlias($this->modelPath).'/'.$className.'.php',
@@ -111,7 +127,7 @@ class ModelCode extends CCodeModel
 	public function validateBaseClass($attribute,$params)
 	{
 		$class=@Yii::import($this->baseClass,true);
-		if(!is_string($class) || !class_exists($class,false))
+		if(!is_string($class) || !$this->classExists($class))
 			$this->addError('baseClass', "Class '{$this->baseClass}' does not exist or has syntax error.");
 		else if($class!=='CActiveRecord' && !is_subclass_of($class,'CActiveRecord'))
 			$this->addError('baseClass', "'{$this->model}' must extend from CActiveRecord.");
@@ -181,8 +197,7 @@ class ModelCode extends CCodeModel
 
 	public function getRelations($className)
 	{
-		$relations=$this->generateRelations();
-		return isset($relations[$className]) ? $relations[$className] : array();
+		return isset($this->relations[$className]) ? $this->relations[$className] : array();
 	}
 
 	protected function removePrefix($tableName,$addBrackets=true)
@@ -213,16 +228,13 @@ class ModelCode extends CCodeModel
 		return $tableName;
 	}
 
-	/**
-	 * Generate code to put in ActiveRecord class's relations() function.
-	 * @return array indexed by table names, each entry contains array of php code to go in appropriate ActiveRecord class.
-	 *		Empty array is returned if database couldn't be connected.
-	 */
 	protected function generateRelations()
 	{
 		$relations=array();
 		foreach(Yii::app()->db->schema->getTables() as $table)
 		{
+			if($this->tablePrefix!='' && strpos($table->name,$this->tablePrefix)!==0)
+				continue;
 			$tableName=$table->name;
 
 			if ($this->isRelationTable($table))
@@ -230,8 +242,8 @@ class ModelCode extends CCodeModel
 				$pks=$table->primaryKey;
 				$fks=$table->foreignKeys;
 
-				$table0=$fks[$pks[1]][0];
-				$table1=$fks[$pks[0]][0];
+				$table0=$fks[$pks[0]][0];
+				$table1=$fks[$pks[1]][0];
 				$className0=$this->generateClassName($table0);
 				$className1=$this->generateClassName($table1);
 
@@ -241,7 +253,7 @@ class ModelCode extends CCodeModel
 				$relations[$className0][$relationName]="array(self::MANY_MANY, '$className1', '$unprefixedTableName($pks[0], $pks[1])')";
 
 				$relationName=$this->generateRelationName($table1, $table0, true);
-				$relations[$className1][$relationName]="array(self::MANY_MANY, '$className0', '$unprefixedTableName($pks[0], $pks[1])')";
+				$relations[$className1][$relationName]="array(self::MANY_MANY, '$className0', '$unprefixedTableName($pks[1], $pks[0])')";
 			}
 			else
 			{

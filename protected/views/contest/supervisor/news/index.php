@@ -2,8 +2,8 @@
 <?php $this->renderPartial('_menu');?>
 <?php $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider' => $dataProvider,
-    'emptyText' => 'Belum ada pengumuman',
-    'summaryText' => 'Menampilkan {end} pengumuman dari {count}. ',
+    'emptyText' => Yii::t('contest', 'Belum ada pengumuman'),
+    'summaryText' => Yii::t('contest', 'Menampilkan {end} pengumuman dari {count}.'),
     'columns' => array(
         'id',
         array(

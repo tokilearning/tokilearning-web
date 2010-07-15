@@ -55,7 +55,7 @@
  * @author	 Michal Migurski <mike-json@teczno.com>
  * @author	 Matt Knapp <mdknapp[at]gmail[dot]com>
  * @author	 Brett Stimmerman <brettstimmerman[at]gmail[dot]com>
- * @version $Id: CJSON.php 2054 2010-04-17 07:30:20Z alexander.makarow $
+ * @version $Id: CJSON.php 2163 2010-06-04 14:49:37Z alexander.makarow $
  * @package	system.web.helpers
  * @since 1.0
  */
@@ -87,7 +87,7 @@ class CJSON
 	const JSON_IN_CMT = 16;
 
    /**
-	* encodes an arbitrary variable into JSON format
+	* Encodes an arbitrary variable into JSON format
 	*
 	* @param	mixed   $var	any number, boolean, string, array, or object to be encoded.
 	*						   see argument 1 to JSON() above for array-parsing behavior.
@@ -98,9 +98,6 @@ class CJSON
 	*/
 	public static function encode($var)
 	{
-		if(function_exists('json_encode'))
-			return json_encode($var);
-
 		switch (gettype($var)) {
 			case 'boolean':
 				return $var ? 'true' : 'false';
@@ -116,6 +113,10 @@ class CJSON
 				return (float) $var;
 
 			case 'string':
+				if(function_exists('json_encode')){
+					return json_encode(utf8_encode($var));
+                                }
+
 				if (($enc=strtoupper(Yii::app()->charset))!=='UTF-8')
 					$var=iconv($enc, 'UTF-8', $var);
 

@@ -33,7 +33,7 @@
  *
  * @author Jonah Turnquist <poppitypop@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMenu.php 140 2010-03-10 20:03:07Z qiang.xue $
+ * @version $Id: CMenu.php 2326 2010-08-20 17:02:07Z qiang.xue $
  * @package zii.widgets
  * @since 1.1
  */
@@ -53,7 +53,7 @@ class CMenu extends CWidget
 	 * <li>active: boolean, optional, whether this menu item is in active state (currently selected).
 	 * If a menu item is active and {@link activeClass} is not empty, its CSS class will be appended with {@link activeClass}.
 	 * If this option is not set, the menu item will be set active automatically when the current request
-	 * is triggered by {@link url}.</li>
+	 * is triggered by {@link url}. Note that the GET parameters not specified in the 'url' option will be ignored.</li>
 	 * <li>template: string, optional, the template used to render this menu item.
 	 * In this template, the token "{menu}" will be replaced with the corresponding menu link or text.
 	 * Please see {@link itemTemplate} for more details. This option has been available since version 1.1.1.</li>
@@ -80,6 +80,12 @@ class CMenu extends CWidget
 	 */
 	public $activeCssClass='active';
 	/**
+	 * @var boolean whether to automatically activate items according to whether their route setting
+	 * matches the currently requested route. Defaults to true.
+	 * @since 1.1.3
+	 */
+	public $activateItems=true;
+	/**
 	 * @var boolean whether to activate parent menu items when one of the corresponding child menu items is active.
 	 * The activated parent menu items will also have its CSS classes appended with {@link activeCssClass}.
 	 * Defaults to false.
@@ -98,6 +104,27 @@ class CMenu extends CWidget
 	 * @var array HTML attributes for the submenu's container tag.
 	 */
 	public $submenuHtmlOptions=array();
+	/**
+	 * @var string the HTML element name that will be used to wrap the label of all menu links.
+	 * For example, if this property is set as 'span', a menu item may be rendered as
+	 * &lt;li&gt;&lt;a href="url"&gt;&lt;span&gt;label&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+	 * This is useful when implementing menu items using the sliding window technique.
+	 * Defaults to null, meaning no wrapper tag will be generated.
+	 * @since 1.1.4
+	 */
+	public $linkLabelWrapper;
+	/**
+	 * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
+	 * Defaults to null, meaning no such CSS class will be assigned.
+	 * @since 1.1.4
+	 */
+	public $firstItemCssClass;
+	/**
+	 * @var string the CSS class that will be assigned to the last item in the main menu or each submenu.
+	 * Defaults to null, meaning no such CSS class will be assigned.
+	 * @since 1.1.4
+	 */
+	public $lastItemCssClass;
 
 	/**
 	 * Initializes the menu widget.
@@ -140,11 +167,33 @@ class CMenu extends CWidget
 	 */
 	protected function renderMenuRecursive($items)
 	{
+		$count=0;
+		$n=count($items);
 		foreach($items as $item)
 		{
-			echo CHtml::openTag('li', isset($item['itemOptions']) ? $item['itemOptions'] : array());
+			$count++;
+			$options=isset($item['itemOptions']) ? $item['itemOptions'] : array();
+			$class=array();
+			if($item['active'] && $this->activeCssClass!='')
+				$class[]=$this->activeCssClass;
+			if($count===1 && $this->firstItemCssClass!='')
+				$class[]=$this->firstItemCssClass;
+			if($count===$n && $this->lastItemCssClass!='')
+				$class[]=$this->lastItemCssClass;
+			if($class!==array())
+			{
+				if(empty($options['class']))
+					$options['class']=implode(' ',$class);
+				else
+					$options['class'].=' '.implode(' ',$class);
+			}
+			echo CHtml::openTag('li', $options);
+
 			if(isset($item['url']))
-				$menu=CHtml::link($item['label'],$item['url'],isset($item['linkOptions']) ? $item['linkOptions'] : array());
+			{
+				$label=$this->linkLabelWrapper===null ? $item['label'] : '<'.$this->linkLabelWrapper.'>'.$item['label'].'</'.$this->linkLabelWrapper.'>';
+				$menu=CHtml::link($label,$item['url'],isset($item['linkOptions']) ? $item['linkOptions'] : array());
+			}
 			else
 				$menu=CHtml::tag('span',isset($item['linkOptions']) ? $item['linkOptions'] : array(), $item['label']);
 			if(isset($this->itemTemplate) || isset($item['template']))
@@ -191,20 +240,13 @@ class CMenu extends CWidget
 			}
 			if(!isset($item['active']))
 			{
-				if($this->activateParents && $hasActiveChild || $this->isItemActive($item,$route))
+				if($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item,$route))
 					$active=$items[$i]['active']=true;
 				else
 					$items[$i]['active']=false;
 			}
 			else if($item['active'])
 				$active=true;
-			if($items[$i]['active'] && $this->activeCssClass!='')
-			{
-				if(isset($item['itemOptions']['class']))
-					$items[$i]['itemOptions']['class'].=' '.$this->activeCssClass;
-				else
-					$items[$i]['itemOptions']['class']=$this->activeCssClass;
-			}
 		}
 		return array_values($items);
 	}
@@ -212,7 +254,7 @@ class CMenu extends CWidget
 	/**
 	 * Checks whether a menu item is active.
 	 * This is done by checking if the currently requested URL is generated by the 'url' option
-	 * of the menu item.
+	 * of the menu item. Note that the GET parameters not specified in the 'url' option will be ignored.
 	 * @param array the menu item to be checked
 	 * @param string the route of the current request
 	 * @return boolean whether the menu item is active

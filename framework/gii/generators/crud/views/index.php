@@ -1,10 +1,11 @@
 <?php
+$class=get_class($model);
 Yii::app()->clientScript->registerScript('gii.crud',"
-$('#CrudCode_controller').change(function(){
+$('#{$class}_controller').change(function(){
 	$(this).data('changed',$(this).val()!='');
 });
-$('#CrudCode_model').bind('keyup change', function(){
-	var controller=$('#CrudCode_controller');
+$('#{$class}_model').bind('keyup change', function(){
+	var controller=$('#{$class}_controller');
 	if(!controller.data('changed')) {
 		var id=new String($(this).val().match(/\\w*$/));
 		if(id.length>0)
@@ -40,7 +41,11 @@ $('#CrudCode_model').bind('keyup change', function(){
 			<ul>
 				<li><code>post</code> generates <code>PostController.php</code></li>
 				<li><code>postTag</code> generates <code>PostTagController.php</code></li>
-				<li><code>admin/user</code> generates <code>admin/UserController.php</code></li>
+				<li><code>admin/user</code> generates <code>admin/UserController.php</code>.
+					If the application has an <code>admin</code> module enabled,
+					it will generate <code>UserController</code> (and other CRUD code)
+					within the module instead.
+				</li>
 			</ul>
 		</div>
 		<?php echo $form->error($model,'controller'); ?>

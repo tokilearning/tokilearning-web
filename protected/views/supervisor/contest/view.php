@@ -9,10 +9,9 @@ Yii::app()->clientScript->registerCss('contest-view-css', '
     #information-table div.row span.name{font-weight:bold;}
 ');
 $owner = $contest->owner;
-$supervisors = $contes->supervisors;
+$supervisors = $contest->supervisors;
 $contestants = $contest->contestants;
 ?>
-<h2 class="title">Kontes</h2>
 <div id="contest-view-wrapper">
     <div class="button" style="float:right">
         <?php echo CHtml::link('Masuk', $this->createUrl('contest/contest/signin', array('contestid' => $contest->id))); ?>

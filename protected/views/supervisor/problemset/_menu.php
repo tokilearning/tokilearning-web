@@ -2,8 +2,8 @@
 <?php
 $this->widget('zii.widgets.CMenu', array(
     'items' => array(
-        array('label' => 'Daftar', 'url' => array('index')),
-        array('label' => 'Baru', 'url' => array('create'))),
+        array('label' => 'Daftar', 'url' => array('supervisor/problemset/index')),
+        array('label' => 'Baru', 'url' => array('supervisor/problemset/create'))),
     'htmlOptions' => array('class'=>'content-nav')
 ));
 ?>

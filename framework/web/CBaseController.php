@@ -53,7 +53,7 @@
  * </pre>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CBaseController.php 1983 2010-03-31 19:46:37Z qiang.xue $
+ * @version $Id: CBaseController.php 2172 2010-06-07 19:56:01Z qiang.xue $
  * @package system.web
  * @since 1.0
  */
@@ -136,15 +136,7 @@ abstract class CBaseController extends CComponent
 	 */
 	public function createWidget($className,$properties=array())
 	{
-		if(($factory=Yii::app()->getWidgetFactory())!==null)
-			$widget=$factory->createWidget($this,$className,$properties);
-		else
-		{
-			$className=Yii::import($className,true);
-			$widget=new $className($this);
-			foreach($properties as $name=>$value)
-				$widget->$name=$value;
-		}
+		$widget=Yii::app()->getWidgetFactory()->createWidget($this,$className,$properties);
 		$widget->init();
 		return $widget;
 	}

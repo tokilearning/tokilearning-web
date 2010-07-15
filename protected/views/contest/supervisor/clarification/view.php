@@ -13,12 +13,18 @@ Yii::app()->clientScript->registerScript('clarification-js', '
         //alert($(\'#answer\').val());
         switch($(this).val()){
             case \'1\':
-                $(\'#answer\').val(\'Tidak ada jawaban\');
+				$(\'#answer\').val(\'Ya\');
+				break;
+			case \'2\':
+				$(\'#answer\').val(\'Tidak\');
+				break;
+			case \'3\':
+               	$(\'#answer\').val(\'Tidak ada jawaban\');
                 break;
-            case \'2\':
+            case \'4\':
                 $(\'#answer\').val(\'Sudah pernah dijawab\');
                 break;
-            case \'3\':
+            case \'5\':
                 $(\'#answer\').val(\'Baca soal lebih teliti\');
                 break;
         }
@@ -56,9 +62,11 @@ Yii::app()->clientScript->registerScript('clarification-js', '
                 <?php echo CHtml::dropDownList('answer_template', 0,
                         array(
                             0 => '',
-                            1 => 'No Answer',
-                            2 => 'Already Answered',
-                            3 => 'Read carefully',
+							1 => 'Yes', 
+							2 => 'No',
+                            3 => 'No Answer',
+                            4 => 'Already Answered',
+                            5 => 'Read carefully',
                         ), array('id' => 'answer_template'));
                 ?>
             </span>

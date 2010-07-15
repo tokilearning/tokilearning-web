@@ -17,7 +17,7 @@
  * {@link itemChildTable} and {@link assignmentTable}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbAuthManager.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CDbAuthManager.php 2283 2010-07-22 16:58:59Z qiang.xue $
  * @package system.web.auth
  * @since 1.0
  */
@@ -81,80 +81,43 @@ class CDbAuthManager extends CAuthManager
 	 */
 	public function checkAccess($itemName,$userId,$params=array())
 	{
-		if(!empty($this->defaultRoles) && $this->checkDefaultRoles($itemName,$params))
-			return true;
-
-		$sql="SELECT name, type, description, t1.bizrule, t1.data, t2.bizrule AS bizrule2, t2.data AS data2 FROM {$this->itemTable} t1, {$this->assignmentTable} t2 WHERE name=itemname AND userid=:userid";
-		$command=$this->db->createCommand($sql);
-		$command->bindValue(':userid',$userId);
-
-		// check directly assigned items
-		$names=array();
-		foreach($command->queryAll() as $row)
-		{
-			Yii::trace('Checking permission "'.$row['name'].'"','system.web.auth.CDbAuthManager');			
-			if($this->executeBizRule($row['bizrule2'],$params,unserialize($row['data2']))
-				&& $this->executeBizRule($row['bizrule'],$params,unserialize($row['data'])))
-			{
-				if($row['name']===$itemName)
-					return true;
-				$names[]=$row['name'];
-			}
-		}
-
-		// check all descendant items
-		while($names!==array())
-		{
-			$items=$this->getItemChildren($names);
-			$names=array();
-			foreach($items as $item)
-			{
-				Yii::trace('Checking permission "'.$item->getName().'"','system.web.auth.CDbAuthManager');			
-				if($this->executeBizRule($item->getBizRule(),$params,$item->getData()))
-				{
-					if($item->getName()===$itemName)
-						return true;
-					$names[]=$item->getName();
-				}
-			}
-		}
-
-		return false;
+		$assignments=$this->getAuthAssignments($userId);
+		return $this->checkAccessRecursive($itemName,$userId,$params,$assignments);
 	}
 
-
 	/**
-	 * Checks the access based on the default roles as declared in {@link defaultRoles}.
+	 * Performs access check for the specified user.
+	 * This method is internally called by {@link checkAccess}.
 	 * @param string the name of the operation that need access check
+	 * @param mixed the user ID. This should can be either an integer and a string representing
+	 * the unique identifier of a user. See {@link IWebUser::getId}.
 	 * @param array name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user.
-	 * @return boolean whether the operations can be performed by the user according to the default roles.
-	 * @since 1.0.3
+	 * @param array the assignments to the specified user
+	 * @return boolean whether the operations can be performed by the user.
+	 * @since 1.1.3
 	 */
-	protected function checkDefaultRoles($itemName,$params)
+	protected function checkAccessRecursive($itemName,$userId,$params,$assignments)
 	{
-		$names=array();
-		foreach($this->defaultRoles as $role)
+		if(($item=$this->getAuthItem($itemName))===null)
+			return false;
+		Yii::trace('Checking permission "'.$item->getName().'"','system.web.auth.CDbAuthManager');
+		if($this->executeBizRule($item->getBizRule(),$params,$item->getData()))
 		{
-			if(is_string($role))
-				$names[]=$this->db->quoteValue($role);
-			else
-				$names[]=$role;
-		}
-		if(count($names)<4)
-			$condition='name='.implode(' OR name=',$names);
-		else
-			$condition='name IN ('.implode(', ',$names).')';
-		$sql="SELECT name, type, description, bizrule, data FROM {$this->itemTable} WHERE $condition";
-		$command=$this->db->createCommand($sql);
-		$rows=$command->queryAll();
-
-		foreach($rows as $row)
-		{
-			Yii::trace('Checking default role "'.$row['name'].'"','system.web.auth.CDbAuthManager');			
-			$item=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
-			if($item->checkAccess($itemName,$params))
+			if(in_array($itemName,$this->defaultRoles))
 				return true;
+			if(isset($assignments[$itemName]))
+			{
+				$assignment=$assignments[$itemName];
+				if($this->executeBizRule($assignment->getBizRule(),$params,$assignment->getData()))
+					return true;
+			}
+			$sql="SELECT parent FROM {$this->itemChildTable} WHERE child=:name";
+			foreach($this->db->createCommand($sql)->bindValue(':name',$itemName)->queryColumn() as $parent)
+			{
+				if($this->checkAccessRecursive($parent,$userId,$params,$assignments))
+					return true;
+			}
 		}
 		return false;
 	}
@@ -177,7 +140,6 @@ class CDbAuthManager extends CAuthManager
 		$rows=$command->queryAll();
 		if(count($rows)==2)
 		{
-			static $types=array('operation','task','role');
 			if($rows[0]['name']===$itemName)
 			{
 				$parentType=$rows[0]['type'];
@@ -253,7 +215,11 @@ class CDbAuthManager extends CAuthManager
 		$sql="SELECT name, type, description, bizrule, data FROM {$this->itemTable}, {$this->itemChildTable} WHERE $condition AND name=child";
 		$children=array();
 		foreach($this->db->createCommand($sql)->queryAll() as $row)
-			$children[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			$children[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],$data);
+		}
 		return $children;
 	}
 
@@ -326,7 +292,11 @@ class CDbAuthManager extends CAuthManager
 		$command->bindValue(':itemname',$itemName);
 		$command->bindValue(':userid',$userId);
 		if(($row=$command->queryRow($sql))!==false)
-			return new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			return new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],$data);
+		}
 		else
 			return null;
 	}
@@ -344,7 +314,11 @@ class CDbAuthManager extends CAuthManager
 		$command->bindValue(':userid',$userId);
 		$assignments=array();
 		foreach($command->queryAll($sql) as $row)
-			$assignments[$row['itemname']]=new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			$assignments[$row['itemname']]=new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],$data);
+		}
 		return $assignments;
 	}
 
@@ -403,7 +377,11 @@ class CDbAuthManager extends CAuthManager
 		}
 		$items=array();
 		foreach($command->queryAll() as $row)
-			$items[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			$items[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule']);
+		}
 		return $items;
 	}
 
@@ -474,7 +452,11 @@ class CDbAuthManager extends CAuthManager
 		$command=$this->db->createCommand($sql);
 		$command->bindValue(':name',$name);
 		if(($row=$command->queryRow())!==false)
-			return new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			return new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],$data);
+		}
 		else
 			return null;
 	}

@@ -16,5 +16,9 @@
     <?php echo CHtml::activeTextArea($model, 'description', array('style' => 'width:95%;height:150px;')); ?>
     <?php echo CHtml::error($model, 'description'); ?>
 </div>
+<div>
+    <strong>Bahasa yang Diperbolehkan</strong><br />
+    <?php echo CHtml::activeCheckBoxList($model, 'availableLanguages', $availableLanguages, array('separator' => '&nbsp;'));?>
+</div>
 <?php echo CHtml::submitButton('Simpan'); ?>
 <?php echo CHtml::endForm(); ?>

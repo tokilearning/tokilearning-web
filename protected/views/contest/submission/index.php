@@ -1,5 +1,5 @@
 <?php $this->setPageTitle("Jawaban");?>
-<?php $this->renderPartial('_menu');?>
+<?php //$this->renderPartial('_menu');?>
 <?php
     $this->widget('zii.widgets.grid.CGridView', array(
         'dataProvider' => $dataProvider,
@@ -19,13 +19,19 @@
                 'value' => '$data->getGradeStatus()'
             ),
             array(
+                'name' => 'verdict',
+                'value' => '$data->verdict'
+            ),
+            array(
                 'class' => 'CButtonColumn',
                 'template' => '{view}',
-                'viewButtonUrl' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\' => $data->id))',
+                'viewButtonUrl' => 'Yii::app()->controller->createUrl(\'contest/submission/view\', array(\'id\' => $data->id))',
+                //'viewButtonOptions' => array('target' => '_blank'),
+                'updateButtonOptions' => array('target' => '_blank'),
             )
         ),
-        'summaryText' => 'Menampilkan {start}-{end} dari {count}.',
-        'emptyText' => 'Belum ada jawaban yang sudah dikumpulkan',
+        'summaryText' => Yii::t('contest', 'Menampilkan {start}-{end} dari {count}.'),
+        'emptyText' => Yii::t('contest', 'Belum ada jawaban yang sudah dikumpulkan'),
         'enablePagination' => true,
         'cssFile' => Yii::app()->request->baseUrl.'/css/yii/gridview/style.css',
     ));

@@ -6,11 +6,18 @@
     <?php echo $this->renderPartial('application.views.layouts.sidebars.main'); ?>
     <?php echo $this->renderPartial('application.views.layouts.sidebars.supervisor'); ?>
     <?php echo $this->renderPartial('application.views.layouts.sidebars.administrator'); ?>
+    <?php echo $this->renderPartial('application.views.layouts.sidebars.facebook'); ?>
+    <?php //echo $this->renderPartial('application.views.layouts.sidebars.twitter'); ?>
 </div><!-- end div#left -->
 
 <div id="main-right">
     <div class="section">
-        <?php echo $content; ?>
-    </div>
-</div><!-- end div#center -->
+        <div>
+            <?php if (!isset($this->needTitle) || $this->needTitle): ?>
+                <h2 class="title"><?php echo $this->pageTitle; ?></h2>
+            <?php endif; ?>
+            <?php echo $content; ?>
+            </div>
+        </div>
+    </div><!-- end div#center -->
 <?php $this->endContent(); ?>

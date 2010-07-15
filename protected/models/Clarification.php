@@ -46,8 +46,10 @@ class Clarification extends CActiveRecord {
             $this->questioned_time = new CDbExpression('NOW()');
             $this->status = self::STATUS_UNANSWERED;
         }
-        $this->question = strip_tags($this->question, '<b><i><u><a>');
-        $this->answer = strip_tags($this->answer, '<b><i><u><a>');
+		$this->question = htmlspecialchars($this->question, ENT_COMPAT, "UTF-8", false);
+		$this->answer = htmlspecialchars($this->answer,  ENT_COMPAT, "UTF-8", false);
+        //$this->question = strip_tags($this->question, '<b><i><u><a>');
+        //$this->answer = strip_tags($this->answer, '<b><i><u><a>');
         return parent::beforeSave();
     }
 

@@ -4,18 +4,18 @@
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . "/scripts/jquery.timers.js"); ?>
 <?php Yii::app()->clientScript->registerScript('timer-js', '
     $(document).everyTime(\'10s\',function(i) {
-        $(\'#submissionsgridview\').yiiGridView.update(\'submissionsgridview\');
+        $(\'#submissiongridview\').yiiGridView.update(\'submissiongridview\');
     });
     $(\'#filterbutton\').click(function(){
         var filterproblem = \'all\';
         if ($(\'#checkfilterproblem\').attr(\'checked\')){
-            filterproblem = $(\'#filterproblem_id\').val();
+            filterproblem = $(\'#problem_lookup\').val();
         }
         var filtermember = \'all\';
         if ($(\'#checkfiltermember\').attr(\'checked\')){
-            filtermember = $(\'#filtermember_id\').val();
+            filtermember = $(\'#member_lookup\').val();
         }
-        $(\'#submissionsgridview\').yiiGridView.update(\'submissionsgridview\', {
+        $(\'#submissiongridview\').yiiGridView.update(\'submissiongridview\', {
             url:\'?filterproblem=\'+filterproblem+\'&filtermember=\'+filtermember
         });
     });
@@ -25,47 +25,34 @@
     .graded {color:#0000ff;font-weight:bold;}
     .pending {color:#00ff00;font-weight:bold;}
     .error {color:#ff0000;font-weight:bold;}
+    .no-grade {color:#000000;font-weight:bold;}
 ');
 ?>
 <div class="dtable" id="filter">
     <div class="drow">
         <span class="shead">
             <?php echo CHtml::checkBox('checkfilterproblem');?>
-            Saring per Soal
+            <?php echo Yii::t('contest', 'Saring Per Soal');?>
         </span>
         <span>
-        <?php $this->widget('CAutoComplete',
+        <?php $this->widget('zii.widgets.jui.CJuiAutoComplete',
           array(
-             'name' => 'problem_lookup',
-             'url' => array('problemlookup'),
-             'max' => 10,
-             'minChars' => 1,
-             'delay' => 500,
-             'matchCase' => false,
-             'htmlOptions' => array('size'=>'20'),
-             'methodChain' => ".result(function(event,item){\$(\"#filterproblem_id\").val(item[1]);})",
+                'name' => 'problem_lookup',
+                'sourceUrl' => array('problemlookup')
              ));
         ?>
-        <?php echo CHtml::hiddenField('filterproblem_id'); ?>
         </span>
         <span class="shead">
             <?php echo CHtml::checkBox('checkfiltermember');?>
             Saring per Anggota
         </span>
         <span>
-        <?php $this->widget('CAutoComplete',
+        <?php $this->widget('zii.widgets.jui.CJuiAutoComplete',
           array(
-             'name' => 'contestant_lookup',
-             'url' => array('memberlookup'),
-             'max' => 10,
-             'minChars' => 1,
-             'delay' => 500,
-             'matchCase' => false,
-             'htmlOptions' => array('size'=>'20'),
-             'methodChain' => ".result(function(event,item){\$(\"#filtermember_id\").val(item[1]);})",
+                'name' => 'member_lookup',
+                'sourceUrl' => array('memberlookup'),
              ));
         ?>
-        <?php echo CHtml::hiddenField('filtermember_id'); ?>
         </span>
         <span
         <?php echo CHtml::button('Saring', array('id' => 'filterbutton')); ?>
@@ -75,8 +62,11 @@
     <br/>
 <?php echo CHtml::beginForm();?>
 <div>
-    <?php echo CHtml::ajaxSubmitButton('Nilai Ulang', $this->createUrl('AJAXRegrade'), array(
-        'success' => "function(data, textStatus, XMLHttpRequest) { $('#submissionsgridview').yiiGridView.update('submissionsgridview');}"
+    <?php echo CHtml::ajaxSubmitButton('Nilai Ulang', $this->createUrl('BatchRegrade'), array(
+        'success' => "function(data, textStatus, XMLHttpRequest) { $('#submissiongridview').yiiGridView.update('submissiongridview');}"
+    )); ?>
+    <?php echo CHtml::ajaxSubmitButton('Lewatkan', $this->createUrl('BatchSkip'), array(
+        'success' => "function(data, textStatus, XMLHttpRequest) { $('#submissiongridview').yiiGridView.update('submissiongridview');}"
     )); ?>
 </div>
 <?php
@@ -100,7 +90,7 @@
             ),
             array(
                 'name' => 'problem_id',
-                'value' => 'CHtml::link($data->problem->title, Yii::app()->controller->createUrl(\'/problem/view\', array(\'id\' => $data->problem_id)))',
+                'value' => 'CHtml::link($data->problem->title, Yii::app()->controller->createUrl(\'/supervisor/problem/view\', array(\'id\' => $data->problem_id)))',
                 'type' => 'raw'
             ),
             array(
@@ -115,13 +105,20 @@
             ),
             array(
                 'name' => 'grade_status',
-                'value' => '\'<span class=\\\'\'.strtolower($data->getGradeStatus()).\'\\\'>\'.$data->getGradeStatus().\'</span>\'',
+                'value' => '\'<span class=\\\'\'.str_replace(\' \', \'-\', strtolower($data->getGradeStatus())).\'\\\'>\'.$data->getGradeStatus().\'</span>\'',
                 'type' => 'raw',
             ),
+	    array(
+		'header'=> 'Verdict',
+		//'value' => '$data->getGradeContent(\'verdict\')',
+                'value' => '$data->verdict',
+	    ),
             array(
                 'class' => 'CButtonColumn',
-                'template' => '{view}{regrade}',
+                'template' => '{view}{update}{regrade}',
                 'viewButtonUrl' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\' => $data->id))',
+                'viewButtonOptions' => array('target' => '_blank'),
+                'updateButtonOptions' => array('target' => '_blank'),
                 'buttons' => array(
                     'regrade' => array(
                         'label' => 'Regrade',
@@ -131,18 +128,21 @@
                 )
             )
         ),
-        'summaryText' => 'Menampilkan {start}-{end} dari {count}.',
-        'emptyText' => 'Belum ada jawaban yang sudah dikumpulkan',
+        'summaryText' => Yii::t('contest', 'Menampilkan {start}-{end} dari {count}.'),
+        'emptyText' => Yii::t('contest', 'Belum ada jawaban yang sudah dikumpulkan'),
         'enablePagination' => true,
         
         'selectableRows' => 30,
         'cssFile' => Yii::app()->request->baseUrl.'/css/yii/gridview/style.css',
-        'id' => 'submissionsgridview',
+        'id' => 'submissiongridview',
     ));
 ?>
 <div>
-    <?php echo CHtml::ajaxSubmitButton('Nilai Ulang', $this->createUrl('AJAXRegrade'), array(
-        'success' => "function(data, textStatus, XMLHttpRequest) { $('#submissionsgridview').yiiGridView.update('submissionsgridview');}"
+    <?php echo CHtml::ajaxSubmitButton('Nilai Ulang', $this->createUrl('BatchRegrade'), array(
+        'success' => "function(data, textStatus, XMLHttpRequest) { $('#submissiongridview').yiiGridView.update('submissiongridview');}"
+    )); ?>
+    <?php echo CHtml::ajaxSubmitButton('Lewatkan', $this->createUrl('BatchSkip'), array(
+        'success' => "function(data, textStatus, XMLHttpRequest) { $('#submissiongridview').yiiGridView.update('submissiongridview');}"
     )); ?>
 </div>
 <?php echo CHtml::endForm();?>

@@ -12,7 +12,7 @@
  * CFileHelper provides a set of helper methods for common file system operations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CFileHelper.php 1982 2010-03-31 19:35:21Z qiang.xue $
+ * @version $Id: CFileHelper.php 2410 2010-09-01 19:04:35Z qiang.xue $
  * @package system.utils
  * @since 1.0
  */
@@ -44,7 +44,8 @@ class CFileHelper
 	 * <li>exclude: array, list of directory and file exclusions. Each exclusion can be either a name or a path.
 	 * If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
 	 * '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 * file or directory '$src/a/b'.</li>
+	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 * </li>
 	 * <li>level: integer, recursion depth, default=-1.
 	 * Level -1 means copying all directories and files under the directory;
 	 * Level 0 means copying only the files DIRECTLY under the directory;
@@ -70,7 +71,8 @@ class CFileHelper
 	 * <li>exclude: array, list of directory and file exclusions. Each exclusion can be either a name or a path.
 	 * If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
 	 * '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 * file or directory '$src/a/b'.</li>
+	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
+	 * </li>
 	 * <li>level: integer, recursion depth, default=-1.
 	 * Level -1 means searching for all directories and files under the directory;
 	 * Level 0 means searching for only the files DIRECTLY under the directory;
@@ -100,7 +102,7 @@ class CFileHelper
 	 * @param array list of directory and file exclusions. Each exclusion can be either a name or a path.
 	 * If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
 	 * '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 * file or directory '$src/a/b'.
+	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
 	 * @param integer recursion depth. It defaults to -1.
 	 * Level -1 means copying all directories and files under the directory;
 	 * Level 0 means copying only the files DIRECTLY under the directory;
@@ -137,7 +139,7 @@ class CFileHelper
 	 * @param array list of directory and file exclusions. Each exclusion can be either a name or a path.
 	 * If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
 	 * '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 * file or directory '$src/a/b'.
+	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
 	 * @param integer recursion depth. It defaults to -1.
 	 * Level -1 means searching for all directories and files under the directory;
 	 * Level 0 means searching for only the files DIRECTLY under the directory;
@@ -175,7 +177,7 @@ class CFileHelper
 	 * @param array list of directory and file exclusions. Each exclusion can be either a name or a path.
 	 * If a file or directory name or path matches the exclusion, it will not be copied. For example, an exclusion of
 	 * '.svn' will exclude all files and directories whose name is '.svn'. And an exclusion of '/a/b' will exclude
-	 * file or directory '$src/a/b'.
+	 * file or directory '$src/a/b'. Note, that '/' should be used as separator regardless of the value of the DIRECTORY_SEPARATOR constant.
 	 * @return boolean whether the file or directory is valid
 	 */
 	protected static function validatePath($base,$file,$isFile,$fileTypes,$exclude)
@@ -202,36 +204,45 @@ class CFileHelper
 	 * <ol>
 	 * <li>finfo</li>
 	 * <li>mime_content_type</li>
-	 * <li>{@link getMimeTypeByExtension}</li>
+	 * <li>{@link getMimeTypeByExtension}, when $checkExtension is set true.</li>
 	 * </ol>
 	 * @param string the file name.
+	 * @param string name of a magic database file, usually something like /path/to/magic.mime.
+	 * This will be passed as the second parameter to {@link http://php.net/manual/en/function.finfo-open.php finfo_open}.
+	 * This parameter has been available since version 1.1.3.
+	 * @param boolean whether to check the file extension in case the MIME type cannot be determined
+	 * based on finfo and mim_content_type. Defaults to true. This parameter has been available since version 1.1.4.
 	 * @return string the MIME type. Null is returned if the MIME type cannot be determined.
 	 */
-	public static function getMimeType($file)
+	public static function getMimeType($file,$magicFile=null,$checkExtension=true)
 	{
 		if(function_exists('finfo_open'))
 		{
-			if(($info=finfo_open(FILEINFO_MIME)) && ($result=finfo_file($info,$file))!==false)
+			$info=$magicFile===null ? finfo_open(FILEINFO_MIME_TYPE) : finfo_open(FILEINFO_MIME_TYPE,$magicFile);
+			if($info && ($result=finfo_file($info,$file))!==false)
 				return $result;
 		}
 
 		if(function_exists('mime_content_type') && ($result=mime_content_type($file))!==false)
 			return $result;
 
-		return self::getMimeTypeByExtension($file);
+		return $checkExtension ? self::getMimeTypeByExtension($file) : null;
 	}
 
 	/**
 	 * Determines the MIME type based on the extension name of the specified file.
 	 * This method will use a local map between extension name and MIME type.
 	 * @param string the file name.
+	 * @param string the path of the file that contains all available MIME type information.
+	 * If this is not set, the default 'system.utils.mimeTypes' file will be used.
+	 * This parameter has been available since version 1.1.3.
 	 * @return string the MIME type. Null is returned if the MIME type cannot be determined.
 	 */
-	public static function getMimeTypeByExtension($file)
+	public static function getMimeTypeByExtension($file,$magicFile=null)
 	{
 		static $extensions;
 		if($extensions===null)
-			$extensions=require(Yii::getPathOfAlias('system.utils.mimeTypes').'.php');
+			$extensions=$magicFile===null ? require(Yii::getPathOfAlias('system.utils.mimeTypes').'.php') : $magicFile;
 		if(($pos=strrpos($file,'.'))!==false)
 		{
 			$ext=strtolower(substr($file,$pos+1));

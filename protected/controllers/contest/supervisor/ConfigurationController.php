@@ -21,6 +21,7 @@ class ConfigurationController extends CContestController {
             ),
         );
     }
+
     public function actionContest() {
         $model = $this->getContest();
         if (isset($_POST['Contest'])){
@@ -29,11 +30,22 @@ class ConfigurationController extends CContestController {
             $model->attributes = $_POST['Contest'];
             $model->start_time = date('Y-m-d H:i:s', strtotime($model->startDate." ".$model->startTime.":00"));
             $model->end_time = date('Y-m-d H:i:s', strtotime($model->endDate." ".$model->endTime).":00");
+
+			if ($model->span_type == Contest::CONTEST_SPAN_TYPE_VIRTUAL) {
+				$model->setConfig('timespan' , $_POST['timespan']);
+			}
+
             if ($model->validate()){
                 $model->save(false);
                 $this->redirect(array('contest'));
             }
         }
         $this->render('contest', array('model' => $model));
+    }
+
+    public function actionSpecific() {
+        $model = $this->getContest();
+
+        $this->render('specific', array('model' => $model));
     }
 }

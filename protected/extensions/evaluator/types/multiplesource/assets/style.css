@@ -1,0 +1,10 @@
+#configform {}
+
+div.dtable {display:table;}
+div.dtable div.drow {display:table-row;}
+div.dtable div.drow span {display:table-cell;padding:5px 5px 5px 5px;}
+div.dtable div.drow span.shead {font-weight:bold;text-align:right;vertical-align:top;padding-top:8px;}
+div.dtable div.drow span.shead2,div.dtable div.drow span.name {font-weight:bold;text-align:right;vertical-align:top;}
+div.dtable div.drow span input {margin:0px;}
+div.dtable div.drow span textarea {margin:0px;}
+div.dtable div.drow span select {margin:0px;}

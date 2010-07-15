@@ -18,7 +18,7 @@
  * The 'beginWidget' and 'endWidget' call of CActiveForm widget will render
  * the open and close form tags. Anything in between are rendered as form content
  * (such as input fields, labels). We can call the wrapper methods of CActiveForm
- * to generate these form contents. For example, calling {@link CActiveFinder::textField},
+ * to generate these form contents. For example, calling {@link CActiveForm::textField},
  * which is a wrapper of {@link CHtml::activeTextField}, would generate an input field
  * for a specified model attribute.
  *
@@ -44,6 +44,7 @@
  * &lt;?php $form = $this->beginWidget('CActiveForm', array(
  *     'id'=>'user-form',
  *     'enableAjaxValidation'=>true,
+ *     'focus'=>array($model,firstName),
  * )); ?&gt;
  *
  * &lt;?php echo $form-&gt;errorSummary($model); ?&gt;
@@ -113,14 +114,14 @@
  * you should design your own lightweight AJAX validation.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveForm.php 2072 2010-04-28 00:54:35Z qiang.xue $
+ * @version $Id: CActiveForm.php 2394 2010-08-31 11:41:23Z qiang.xue $
  * @package system.web.widgets
  * @since 1.1.1
  */
 class CActiveForm extends CWidget
 {
 	/**
-	 * @var mixed the form action URL (see {@link normalizeUrl} for details about this parameter.)
+	 * @var mixed the form action URL (see {@link CHtml::normalizeUrl} for details about this parameter).
 	 * If not set, the current page URL is used.
 	 */
 	public $action='';
@@ -157,7 +158,7 @@ class CActiveForm extends CWidget
 	 * delayed after an input is changed. A value 0 means the validation will be triggered immediately
 	 * when an input is changed. A value greater than 0 means changing several inputs may only
 	 * trigger a single validation if they happen fast enough, which may help reduce the server load.
-	 * Defaults to 100 (0.1 second).</li>
+	 * Defaults to 200 (0.2 second).</li>
 	 * <li>validateOnSubmit: boolean, whether to perform AJAX validation when the form is being submitted.
 	 * If there are any validation errors, the form submission will be stopped.
 	 * Defaults to false.</li>
@@ -181,18 +182,85 @@ class CActiveForm extends CWidget
 	 * is currently being validated via AJAX. Defaults to 'validating'.</li>
 	 * <li>errorMessageCssClass: string, the CSS class assigned to the error messages returned
 	 * by AJAX validations. Defaults to 'errorMessage'.</li>
+	 * <li>beforeValidate: function, the function that will be invoked before performing ajax-based validation
+	 * triggered by form submission action (available only when validateOnSubmit is set true).
+	 * The expected function signature should be <code>beforeValidate(form) {...}</code>, where 'form' is
+	 * the jquery representation of the form object. If the return value of this function is NOT true, the validation
+	 * will be cancelled.
+	 *
+	 * Note that because this option refers to a js function, you should prefix the value with 'js:' to prevent it
+	 * from being encoded as a string. This option has been available since version 1.1.3.</li>
+	 * <li>afterValidate: function, the function that will be invoked after performing ajax-based validation
+	 * triggered by form submission action (available only when validateOnSubmit is set true).
+	 * The expected function signature should be <code>afterValidate(form, data, hasError) {...}</code>, where 'form' is
+	 * the jquery representation of the form object; 'data' is the JSON response from the server-side validation; 'hasError'
+	 * is a boolean value indicating whether there is any validation error. If the return value of this function is NOT true,
+	 * the normal form submission will be cancelled.
+	 *
+	 * Note that because this option refers to a js function, you should prefix the value with 'js:' to prevent it
+	 * from being encoded as a string. This option has been available since version 1.1.3.</li>
+	 * <li>beforeValidateAttribute: function, the function that will be invoked before performing ajax-based validation
+	 * triggered by a single attribute input change. The expected function signature should be
+	 * <code>beforeValidateAttribute(form, attribute) {...}</code>, where 'form' is the jquery representation of the form object
+	 * and 'attribute' refers to the js options for the triggering attribute (see {@link error}).
+	 * If the return value of this function is NOT true, the validation will be cancelled.
+	 *
+	 * Note that because this option refers to a js function, you should prefix the value with 'js:' to prevent it
+	 * from being encoded as a string. This option has been available since version 1.1.3.</li>
+	 * <li>afterValidateAttribute: function, the function that will be invoked after performing ajax-based validation
+	 * triggered by a single attribute input change. The expected function signature should be
+	 * <code>beforeValidateAttribute(form, attribute, data, hasError) {...}</code>, where 'form' is the jquery
+	 * representation of the form object; 'attribute' refers to the js options for the triggering attribute (see {@link error});
+	 * 'data' is the JSON response from the server-side validation; 'hasError' is a boolean value indicating whether
+	 * there is any validation error.
+	 *
+	 * Note that because this option refers to a js function, you should prefix the value with 'js:' to prevent it
+	 * from being encoded as a string. This option has been available since version 1.1.3.</li>
 	 * </ul>
 	 *
 	 * Some of the above options may be overridden in individual calls of {@link error()}.
 	 * They include: validationDelay, validateOnChange, validateOnType, hideErrorMessage,
-	 * inputContainer, errorCssClass, successCssClass, and validatingCssClass.
+	 * inputContainer, errorCssClass, successCssClass, validatingCssClass, beforeValidateAttribute, afterValidateAttribute.
 	 */
 	public $clientOptions=array();
 	/**
 	 * @var boolean whether to enable data validation via AJAX. Defaults to false.
-	 * When this property is set true, you should
-	 */
+	 * When this property is set true, you should respond to the AJAX validation request on the server side as shown below:
+	 * <pre>
+	 * public function actionCreate()
+	 * {
+	 *     $model=new User;
+	 *     if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
+	 *     {
+	 *         echo CActiveForm::validate($model);
+	 *         Yii::app()->end();
+	 *     }
+	 *     ......
+	 * }
+	 * </pre>
+ 	 */
 	public $enableAjaxValidation=false;
+
+	/**
+	 * @var mixed form element to get initial input focus on page load
+	 *
+	 * Defaults to null meaning no input field has a focus.
+	 * If set as array, first element should be model and second element should be the attribute.
+	 * If set as string any jQuery selector can be used
+	 *
+	 * Example - set input focus on page load to:
+	 * <ul>
+	 * <li>'focus'=>array($model,'username') - $model->username input filed</li>
+	 * <li>'focus'=>'#'.CHtml::activeId($model,'username') - $model->username input field</li>
+	 * <li>'focus'=>'#LoginForm_username' - input field with ID LoginForm_username</li>
+	 * <li>'focus'=>'input[type="text"]:first' - first input element of type text</li>
+	 * <li>'focus'=>'input:visible:enabled:first' - first visible and enabled input element</li>
+	 * <li>'focus'=>'input:text[value=""]:first' - first empty input</li>
+	 * </ul>
+	 *
+	 * @since 1.1.4
+	 */
+	public $focus;
 
 	private $_attributes=array();
 	private $_summary;
@@ -219,12 +287,23 @@ class CActiveForm extends CWidget
 		echo CHtml::endForm();
 		if(!$this->enableAjaxValidation || empty($this->_attributes))
 			return;
+
 		$options=$this->clientOptions;
 		if(isset($this->clientOptions['validationUrl']) && is_array($this->clientOptions['validationUrl']))
 			$options['validationUrl']=CHtml::normalizeUrl($this->clientOptions['validationUrl']);
+
 		$options['attributes']=array_values($this->_attributes);
+
 		if($this->_summary!==null)
 			$options['summaryID']=$this->_summary;
+
+		if($this->focus!==null) {
+			if(is_array($this->focus))
+				$options['focus']="#".CHtml::activeId($this->focus[0],$this->focus[1]);
+			else
+				$options['focus']=$this->focus;
+		}
+
 		$options=CJavaScript::encode($options);
 		Yii::app()->clientScript->registerCoreScript('yiiactiveform');
 		$id=$this->id;
@@ -248,12 +327,14 @@ class CActiveForm extends CWidget
 	 * <li>errorCssClass</li>
 	 * <li>successCssClass</li>
 	 * <li>validatingCssClass</li>
+	 * <li>beforeValidateAttribute</li>
+	 * <li>afterValidateAttribute</li>
 	 * </ul>
 	 * These options override the corresponding options as declared in {@link options} for this
 	 * particular model attribute. For more details about these options, please refer to {@link clientOptions}.
 	 * Note that these options are only used when {@link enableAjaxValidation} is set true.
 	 * @param boolean whether to enable AJAX validation for the specified attribute.
-	 * Note that in order toe enable AJAX validation, both {@link enableAjaxValidation} and this parameter
+	 * Note that in order to enable AJAX validation, both {@link enableAjaxValidation} and this parameter
 	 * must be true.
 	 * @return string the validation result (error display or success message).
 	 * @see CHtml::error
@@ -279,6 +360,8 @@ class CActiveForm extends CWidget
 			'errorCssClass',
 			'successCssClass',
 			'validatingCssClass',
+			'beforeValidateAttribute',
+			'afterValidateAttribute',
 		);
 		foreach($optionNames as $name)
 		{

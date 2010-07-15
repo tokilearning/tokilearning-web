@@ -8,14 +8,15 @@ return array(
         'preload' => array('log'),
         'import' => array(
             'application.models.*',
-            'application.components.evaluators.*'
+            'application.components.evaluators.*',
+            'application.components.*',
         ),
         'components' => array(
             'db' => array(
-                'connectionString' => 'mysql:host=localhost;dbname=lc3',
+                'connectionString' => 'mysql:host=localhost;dbname=lc3_db',
                 'emulatePrepare' => true,
-                'username' => 'lc3',
-                'password' => 'lc3',
+                'username' => '',
+                'password' => '',
                 'charset' => 'utf8',
                 'tablePrefix' => '',
             ),
@@ -23,8 +24,8 @@ return array(
                 'class' => 'CDbConnection',
                 'connectionString' => 'mysql:host=localhost;dbname=lc3log',
                 'emulatePrepare' => true,
-                'username' => 'lc3log',
-                'password' => 'lc3log',
+                'username' => '',
+                'password' => '',
                 'charset' => 'utf8',
                 'tablePrefix' => '',
             ),
@@ -38,14 +39,14 @@ return array(
                         'categories' => 'application',
                     ),
                     //Evaluator
-                    array(
-                        'class' => 'CDbLogRoute',
-                        'levels' => 'info, trace, error, warning',
-                        'connectionID' => 'dblog',
-                        'logTableName' => 'logs',
-                        'categories' => 'application',
-                        'autoCreateLogTable' => true
-                    )
+//                    array(
+//                        'class' => 'CDbLogRoute',
+//                        'levels' => 'info, trace, error, warning',
+//                        'connectionID' => 'dblog',
+//                        'logTableName' => 'logs',
+//                        'categories' => 'application',
+//                        'autoCreateLogTable' => true
+//                    )
                 ),
             ),
         ),

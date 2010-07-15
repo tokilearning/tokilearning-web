@@ -324,7 +324,7 @@ div.errorMessage ul {margin:0px;padding:0px;padding-left:15px;}
 div.errorMessage ul li{font-size:0.8em;line-height:15px;}
 input.error {border:1px solid red;}
 
-#user-widget {border:1px solid #bbb;margin-bottom:15px;padding:10px;background:#f9f9f9;}
+#user-widget {border:1px solid #bbb;margin-bottom:5px;padding:10px;background:#f9f9f9;}
 #user-widget a {text-decoration:none;}
 #user-widget a:hover {text-decoration:underline;}
 #user-widget #name {}
@@ -339,6 +339,9 @@ div.section {border:1px solid #bbb;padding:20px;background:#f9f9f9;}
 div.section h2.title {border-bottom:1px solid #bbb;margin:0px 0px 15px 0px;}
 div.section h2.title a {text-decoration:none;}
 
+div.section2 {border:1px solid #bbb;padding:10px;background:#f9f9f9;margin:0px 0px 10px 0px;}
+div.section2 h3.title {border-bottom:1px solid #bbb;margin:0px 0px 15px 0px;}
+div.section2 h3.title a {text-decoration:none;}
 
 div.button {border: 1px solid #bbb}
 div.button:hover {}
@@ -357,11 +360,190 @@ div.article a.readmore {display:block;margin:5px 0px 0px 0px;font-weight:bold;}
 #content-nav-wrapper ul.content-nav li {float: left;border-right: 1px solid #bbb;border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;margin-bottom: 10px;list-style-type:none;}
 #content-nav-wrapper ul.content-nav li a, #content-nav-wrapper ul.content-nav li a:visited {color: #444;display: block;font-size: 1.0em;font-weight: normal;line-height: 30px;padding: 0 15px;text-decoration:none;}
 #content-nav-wrapper ul.content-nav li a:hover {background: #f2f2f2; text-decoration: none;}
+#content-nav-wrapper ul.content-nav li.active a {font-weight: bold; background: #F2F2F2; font-size: 11pt;}
 #content-nav-wrapper ul.content-nav li ul {display: none;}
 #content-nav-wrapper ul.content-nav li:hover ul {background: #f8f8f8;border: 1px solid #aaa;display: block;position: absolute;}
 #content-nav-wrapper ul.content-nav li ul li {border-bottom: 1px solid #ccc;border-right: 0;border-top: 0;float: none;margin-bottom: 0;}
 #content-nav-wrapper ul.content-nav li ul li a:link, ul.content-nav li ul li a:visited {font-family: verdana;font-size: 0.9em;font-weight: normal;line-height: 25px;margin: 4px;min-width: 122px;text-decoration:none;}
 #content-nav-wrapper ul.content-nav li ul li a:hover {background: #eee;}
+#content-nav-wrapper ul.content-nav li.selected a {font-weight: bold;}
 
 .problem h1.title {text-align:center;}
 .problem pre {background:#fff;border:1px dotted #ccc;padding:3px;}
+
+/*Tambahan untuk language chooser*/
+.login-dd-init,
+.menu-guest > li > a {
+	color: #444;
+	text-decoration: none;
+    margin-top: 1px;
+}
+.login-dd-init:hover,
+.menu-guest > li > a:hover {
+	color: #333;
+}
+.menu-guest > li {
+	display:inline-block;
+}
+
+.login-dd-init {
+	height: 20px;
+	display: block;
+	line-height: 20px;
+	cursor: pointer;
+	padding: 7px 20px 0 10px;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.login-dd-init .arrow-down {
+	top:13px;
+}
+.login-dd-container .arrow-down {
+	right: 5px;
+}
+.login-dd-container.active .arrow-down {
+	right: 6px;
+}
+.login-dd-init:hover {
+	background: #fff;
+}
+
+.login-dd-container.active .login-dd-init {
+	background: white;
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+
+	box-shadow: 1px 1px 1px #aaa;
+	-webkit-box-shadow: 1px 1px 1px #aaa;
+	-moz-box-shadow: 1px 1px 1px #aaa;
+	-o-box-shadow: 1px 1px 1px #aaa;
+}
+
+.login-dd-container {
+	position: relative;
+	display: inline-block;
+
+	margin-right: 1px;
+	margin-left: 1px;
+}
+.login-dd-container.active {
+	margin-right:0;
+	margin-left:0;
+}
+.login-dd-container:hover {
+	background: #fff;
+}
+
+.login-dd-container.active .login-dd-content {
+	display: block;
+}
+
+.login-dd-container .login-dd-content {
+	display: none;
+
+	position:absolute;
+	top:20px;
+	right:0px;
+	background:#fff;
+	border: 1px solid #ccc;
+	border-top:0;
+	z-index:10;
+
+	box-shadow: 1px 1px 1px #aaa;
+	-webkit-box-shadow: 1px 1px 1px #aaa;
+	-moz-box-shadow: 1px 1px 1px #aaa;
+	-o-box-shadow: 1px 1px 1px #aaa;
+}
+
+.login-dd-content .fake-border-top {
+	position: absolute;
+	top: 0;
+	right: 60px;
+	left: 0;
+	height: 1px;
+	background: #CCC;
+	z-index: 13;
+}
+.login-dd-content .inner {
+	margin: 20px;
+}
+
+.login-dd-content input[type="text"],
+.login-dd-content input[type="password"] {
+	width: 308px;
+}
+.login-dd-content .remember-forgot {
+	float: left;
+}
+.login-dd-content .input-submit {
+	float: right;
+}
+
+.flag-dd-cc {
+	width: 97%;
+}
+.flag-dd-items {
+	margin: 4px;
+	padding: 0;
+	list-style: none;
+	margin-left: 10px;
+}
+
+.active .menu-dd-items {
+	display: block;
+}
+
+.menu-dd-items {
+	display:none;
+	list-style: none;
+	margin:0;
+	padding:0;
+
+	-webkit-transition:display .15s ease-in;
+	-moz-transition:display .15s ease-in;
+	-o-transition:display .15s ease-in;
+	transition:display .15s ease-in;
+}
+
+.menu-dd-items li {
+	/*padding: 4px;
+	padding-left: 0;*/
+
+    /*padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 3px;
+    padding-left: 10px;*/
+    
+    padding: 10px 20px 3px 10px;
+}
+/* TODO: add li to dd-menu */
+.menu-dd-items li.dd-divider {
+	height: 1px;
+	background: #dedede;
+	padding: 0 !important;
+	margin: 8px 5px;
+}
+
+.menu-dd-items li:hover {
+	/*background: #eee;*/
+}
+.menu-dd-items li a {
+	text-decoration: none;
+	display: block;
+}
+.arrow-down {
+	position:absolute;
+	right: 6px;
+	top: 11px;
+
+	width: 0;
+	height: 0;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+
+	border-top: 4px solid #333;
+}

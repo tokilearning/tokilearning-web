@@ -12,7 +12,7 @@
  * CLinkPager displays a list of hyperlinks that lead to different pages of target.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CLinkPager.php 2070 2010-04-26 18:39:57Z qiang.xue $
+ * @version $Id: CLinkPager.php 2212 2010-06-17 20:57:41Z qiang.xue $
  * @package system.web.widgets.pagers
  * @since 1.0
  */
@@ -94,10 +94,10 @@ class CLinkPager extends CBasePager
 	 */
 	public function run()
 	{
+		$this->registerClientScript();
 		$buttons=$this->createPageButtons();
 		if(empty($buttons))
 			return;
-		$this->registerClientScript();
 		echo $this->header;
 		echo CHtml::tag('ul',$this->htmlOptions,implode("\n",$buttons));
 		echo $this->footer;

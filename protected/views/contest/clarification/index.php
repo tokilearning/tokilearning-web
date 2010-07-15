@@ -12,20 +12,20 @@ Yii::app()->clientScript->registerCss('clarification-css', '
         $(\'#clarificationlistview\').yiiListView.update(\'clarificationlistview\', {
             url:\'?filterbyproblem=\'+$(this).val()
         });
-        
+
     });
 ');?>
 <br/>
-<?php echo CHtml::link('Minta klarifikasi', $this->createUrl('create'), array('id' => 'form-link', 'class' => 'linkbutton'));?>
+<?php echo CHtml::link(Yii::t('contest', 'Minta klarifikasi'), $this->createUrl('contest/clarification/create'), array('id' => 'form-link', 'class' => 'linkbutton'));?>
 <div class="spacer"></div>
 <div id="clarification-list-wrapper">
     <?php if ($dataProvider->itemCount > 0):?>
     <div class="dtable">
         <div class="drow">
-            <span class="shead">Saring Per Soal</span>
+            <span class="shead"><?php echo Yii::t('contest', 'Saring Per Soal'); ?></span>
             <span>
             <?php
-            $arfilterproblem = array('all' => 'Semua Soal', 'others' => 'Lain-lain');
+            $arfilterproblem = array('all' => Yii::t('contest', 'Semua Soal'), 'others' => Yii::t('contest', 'Lain-lain'));
             $problems = $this->getContest()->openproblems;
             foreach($problems as $problem){
                 $arfilterproblem[$this->getContest()->getProblemAlias($problem)] = $this->getContest()->getProblemAlias($problem).". ".$problem->title;
@@ -40,11 +40,12 @@ Yii::app()->clientScript->registerCss('clarification-css', '
     <?php $this->widget('zii.widgets.CListView', array(
         'dataProvider' => $dataProvider,
         'itemView' => '_clarification',   // refers to the partial view named '_post'
-        'emptyText' => 'Belum ada klarifikasi',
-        'summaryText' => 'Menampilkan {end} pertanyaan dari {count}. ',
+        'emptyText' => Yii::t('contest', 'Belum ada klarifikasi'),
+        'summaryText' => Yii::t('contest', 'Menampilkan {end} pertanyaan dari {count}.'),
         'enableSorting' => false,
         'id' => 'clarificationlistview',
-        'afterAjaxUpdate' => 'function(id, data){$(\'.content\').hide();$(\'.clarification-view\').click(function(){$(this).children(\'.content\').toggle();});}'
+        'afterAjaxUpdate' => 'function(id, data){$(\'.content\').hide();$(\'.clarification-view\').click(function(){$(this).children(\'.content\').toggle();});}',
+        'cssFile' => Yii::app()->request->baseUrl.'/css/yii/listview/style.css',
     ));
     ?>
     </div>

@@ -1,30 +1,25 @@
-<?php $this->setPageTitle("Soal - ".$problem->title);?>
+<?php $this->setPageTitle($model->title);?>
+<?php $this->renderPartial('_menu', array('model' => $model)); ?>
+
+<?php if ($this->isProblemClosed() || $this->isContestExpired()):?>
+    <div class="error" style="text-align:center;font-weight:bold;">
+        Pengumpulan untuk soal ini telah ditutup
+    </div>
+<?php endif;?>
+
 <?php
-if (!isset($activeTab) || $activeTab == null){
-    $activeTab = 'problem';
-}
-$this->widget('CTabView',
-    array(
-        'tabs' => array(
-            'problem' => array(
-                'title' => 'Soal',
-                'view' => '_problemview',
-                'data' => array('problem' => $problem)
-            ),
-            'submit' => array(
-                'title' => 'Kumpul Jawaban',
-                'view' => '_submit',
-                'data' => array('model' => $problem, 'submission' => $submission)
-            ),
-            'submission' => array(
-                'title' => 'Jawaban',
-                'view' => '_submissions',
-                'data' => array('submissionDataProvider' => $submissionDataProvider)
+Yii::import('ext.evaluator.ProblemTypeHandler');
+$handler = ProblemTypeHandler::getHandler($model);
+$handler->problemViewWidget(
+            array(
+                'problem' => $model,
+                'contest' => $this->getContest(),
+                'submitter' => Yii::app()->user,
+                //'submitStatus' => Submission::GRADE_STATUS_NOGRADE,
+		'submitStatus' => Submission::GRADE_STATUS_PENDING,
+                'submitSuccessUrl' => array('contest/problem/submissions/alias/' . $_GET['alias']),
+                'submitLocked' => (!$this->isProblemOpen() || $this->isContestExpired()),
+                'submitLockedText' => Yii::t('contest', 'Pengumpulan soal ini ditutup')
             )
-        ),
-        'id' => 'problem-tab',
-        'htmlOptions' => array('class' => 'tab'),
-        'cssFile' => Yii::app()->request->baseUrl . "/css/arrastheme/tabs.css",
-        'activeTab' => $activeTab
-   ));
+        );
 ?>

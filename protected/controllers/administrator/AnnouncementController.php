@@ -45,9 +45,9 @@ class AnnouncementController extends CAdminController {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['Announcement'])) {
-            
+
             $model->attributes = $_POST['Announcement'];
-            if ($model->save()){
+            if ($model->save()) {
                 $this->redirect(array('view', 'id' => $model->id));
             }
         }
@@ -65,18 +65,18 @@ class AnnouncementController extends CAdminController {
             $this->redirect(array('index'));
     }
 
-    public function actionPublish(){
+    public function actionPublish() {
         $model = $this->loadModel();
         $model->publish()->save();
         $this->redirect(array('index'));
     }
 
-    public function actionUnpublish(){
+    public function actionUnpublish() {
         $model = $this->loadModel();
         $model->unpublish()->save();
         $this->redirect(array('index'));
     }
-    
+
     public function loadModel() {
         if ($this->_model === null) {
             if (isset($_GET['id']))

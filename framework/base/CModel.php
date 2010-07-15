@@ -15,7 +15,7 @@
  * CModel defines the basic framework for data models that need to be validated.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CModel.php 2034 2010-04-08 03:27:57Z qiang.xue $
+ * @version $Id: CModel.php 2365 2010-08-29 14:10:01Z qiang.xue $
  * @package system.base
  * @since 1.0
  */
@@ -161,6 +161,7 @@ abstract class CModel extends CComponent implements IteratorAggregate, ArrayAcce
 	 * You may override this method to do preliminary checks before validation.
 	 * Make sure the parent implementation is invoked so that the event can be raised.
 	 * @return boolean whether validation should be executed. Defaults to true.
+	 * If false is returned, the validation will stop and the model is considered invalid.
 	 */
 	protected function beforeValidate()
 	{
@@ -444,9 +445,23 @@ abstract class CModel extends CComponent implements IteratorAggregate, ArrayAcce
 		{
 			if(isset($attributes[$name]))
 				$this->$name=$value;
-			else
+			else if($safeOnly)
 				$this->onUnsafeAttribute($name,$value);
 		}
+	}
+
+	/**
+	 * Unsets the attributes.
+	 * @param array list of attributes to be set null. If this parameter is not given,
+	 * all attributes as specified by {@link attributeNames} will have their values unset.
+	 * @since 1.1.3
+	 */
+	public function unsetAttributes($names=null)
+	{
+		if($names===null)
+			$names=$this->attributeNames();
+		foreach($names as $name)
+			$this->$name=null;
 	}
 
 	/**
@@ -507,7 +522,7 @@ abstract class CModel extends CComponent implements IteratorAggregate, ArrayAcce
 		$unsafe=array();
 		foreach($this->getValidators() as $validator)
 		{
-			if($validator instanceof CUnsafeValidator)
+			if(!$validator->safe)
 			{
 				foreach($validator->attributes as $name)
 					$unsafe[]=$name;

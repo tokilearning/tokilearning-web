@@ -12,7 +12,7 @@
  * CDbCommandBuilder provides basic methods to create query commands for tables.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbCommandBuilder.php 2074 2010-04-28 15:34:33Z qiang.xue $
+ * @version $Id: CDbCommandBuilder.php 2424 2010-09-04 18:13:42Z qiang.xue $
  * @package system.db.schema
  * @since 1.0
  */
@@ -76,6 +76,17 @@ class CDbCommandBuilder extends CComponent
 		if($criteria->alias!='')
 			$alias=$criteria->alias;
 		$alias=$this->_schema->quoteTableName($alias);
+
+		// issue 1432: need to expand * when SQL has JOIN
+		if($select==='*' && !empty($criteria->join))
+		{
+			$prefix=$alias.'.';
+			$select=array();
+			foreach($table->getColumnNames() as $name)
+				$select[]=$prefix.$this->_schema->quoteColumnName($name);
+			$select=implode(', ',$select);
+		}
+
 		$sql=($criteria->distinct ? 'SELECT DISTINCT':'SELECT')." {$select} FROM {$table->rawName} $alias";
 		$sql=$this->applyJoin($sql,$criteria->join);
 		$sql=$this->applyCondition($sql,$criteria->condition);
@@ -101,7 +112,12 @@ class CDbCommandBuilder extends CComponent
 		if($criteria->alias!='')
 			$alias=$criteria->alias;
 		$alias=$this->_schema->quoteTableName($alias);
-		if($criteria->distinct)
+
+		if(is_string($criteria->select) && stripos($criteria->select,'count')===0)
+			$sql="SELECT ".$criteria->select;
+		else if(!empty($criteria->group))
+			$sql="SELECT COUNT(DISTINCT {$criteria->group})";
+		else if($criteria->distinct)
 		{
 			if(is_array($table->primaryKey))
 			{
@@ -119,6 +135,8 @@ class CDbCommandBuilder extends CComponent
 		$sql.=" FROM {$table->rawName} $alias";
 		$sql=$this->applyJoin($sql,$criteria->join);
 		$sql=$this->applyCondition($sql,$criteria->condition);
+		$sql=$this->applyGroup($sql,$criteria->group);
+		$sql=$this->applyHaving($sql,$criteria->having);
 		$command=$this->_connection->createCommand($sql);
 		$this->bindValues($command,$criteria->params);
 		return $command;
@@ -250,8 +268,8 @@ class CDbCommandBuilder extends CComponent
 	/**
 	 * Creates an UPDATE command that increments/decrements certain columns.
 	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param CDbCriteria the query criteria
 	 * @param array counters to be updated (counter increments/decrements indexed by column names.)
+	 * @param CDbCriteria the query criteria
 	 * @return CDbCommand the created command
 	 * @throws CException if no counter is specified
 	 */
@@ -414,7 +432,6 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a query criteria.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
 	 * @param mixed query condition or criteria.
 	 * If a string, it is treated as query condition (the WHERE clause);
 	 * If an array, it is treated as the initial values for constructing a {@link CDbCriteria} object;
@@ -495,7 +512,7 @@ class CDbCommandBuilder extends CComponent
 	 * If an array, it is treated as the initial values for constructing a {@link CDbCriteria};
 	 * Otherwise, it should be an instance of {@link CDbCriteria}.
 	 * @param array parameters to be bound to an SQL statement.
-	 * This is only used when the second parameter is a string (query condition).
+	 * This is only used when the third parameter is a string (query condition).
 	 * In other cases, please use {@link CDbCriteria::params} to set parameters.
 	 * @param string column prefix (ended with dot). If null, it will be the table name
 	 * @return CDbCriteria the created query criteria
@@ -581,6 +598,7 @@ class CDbCommandBuilder extends CComponent
 			$condition=array();
 			foreach($keywords as $keyword)
 			{
+				$keyword='%'.strtr($keyword,array('%'=>'\%', '_'=>'\_')).'%';
 				if($caseSensitive)
 					$condition[]=$prefix.$column->rawName.' LIKE '.$this->_connection->quoteValue('%'.$keyword.'%');
 				else

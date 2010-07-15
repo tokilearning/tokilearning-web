@@ -2,7 +2,7 @@
     <?php
     $this->widget('zii.widgets.CMenu', array(
         'items' => array(
-            array('label' => 'Daftar', 'url' => array('index'))
+            array('label' => Yii::t('contest', 'Daftar'), 'url' => array('index'))
             ),
         'htmlOptions' => array('class' => 'content-nav')
     ));

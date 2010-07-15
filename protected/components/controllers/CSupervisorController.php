@@ -1,6 +1,6 @@
 <?php
 
-class CSupervisorController extends CController {
+class CSupervisorController extends CCommonController {
 
     public $layout = 'application.views.layouts.column2';
 

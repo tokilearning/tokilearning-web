@@ -11,7 +11,18 @@
         Announcement::STATUS_PUBLISHED => 'Published',
     ));?>
 </div>
-<div><?php echo CHtml::activeTextArea($model, 'content', array('style' => 'width:95%;height:150px;'));?></div>
+<div>
+    <?php $this->widget('ext.ckeditor.CKEditor', array(
+        'model' => $model,
+        'attribute' => 'content',
+        'editorTemplate' => 'advanced',
+        'toolbar' => array(
+            array('Bold', 'Italic', '-', 'Image', 'Link', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'NumberedList', 'BulletedList', '-', 'Styles','Format', '-', 'Source', '-', 'About')
+        ),
+        'width' => '600px'
+    ));?>
+</div>
 <?php echo CHtml::error($model, 'content');?>
+<br/>
 <?php echo CHtml::submitButton('Simpan');?>
 <?php echo CHtml::endForm();?>

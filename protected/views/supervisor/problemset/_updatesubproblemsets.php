@@ -2,26 +2,21 @@
     <div class="drow">
         <span class="shead">Tambah Bundel Soal </span>
         <span>
-    <?php $this->widget('CAutoComplete',
+    <?php $this->widget('zii.widgets.jui.CJuiAutoComplete',
           array(
-             'name' => 'problemset_lookup',
-             'url' => array('problemsetlookup', 'id' => $model->id),
-             'max' => 10,
-             'minChars' => 1,
-             'delay' => 500,
-             'matchCase' => false,
-             'htmlOptions' => array('size'=>'30'),
-             'methodChain' => ".result(function(event,item){\$(\"#addproblemset_id\").val(item[1]);})",
+                'name' => 'problemset_lookup',
+                'sourceUrl' => array('problemsetlookup', 'id' => $model->id),
              ));
     ?>
-    <?php echo CHtml::hiddenField('addproblemset_id'); ?>
     <?php echo CHtml::ajaxButton('Tambah', $this->createUrl('addproblemset'), array(
         'type' => 'GET',
         'data'=> array(
                 "id" => $model->id,
-                "problemsetid" => "js:$(\"#addproblemset_id\").val()",
+                "problemsetid" => "js:$(\"#problemset_lookup\").val()",
             ),
-        'success' => "function(data, textStatus, XMLHttpRequest) { $('#subproblemsetgridview').yiiGridView.update('subproblemsetgridview');}"
+        'success' => "function(data, textStatus, XMLHttpRequest) {".
+        " $('#subproblemsetgridview').yiiGridView.update('subproblemsetgridview');".
+        "$('#problemset_lookup').val('');}"
     ));?></span>
     </div>
 </div>

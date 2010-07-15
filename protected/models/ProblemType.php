@@ -2,7 +2,6 @@
 
 class ProblemType extends CActiveRecord {
 
-    private static $problemTypeRepositoryPath;
     private $_config;
     
     public static function model($className=__CLASS__) {
@@ -22,13 +21,8 @@ class ProblemType extends CActiveRecord {
         return $array;
     }
 
-    public function init(){
-        self::$problemTypeRepositoryPath = Yii::app()->params->config['evaluator']['problem']['problem_type_repository_path']."/";
-    }
-
     public function afterFind(){
-        $config_content = file_get_contents($this->getEvaluatorConfigPath());
-        $this->_config = CJSON::decode($config_content);
+        //TODO:
         parent::afterFind();
     }
 
@@ -43,25 +37,5 @@ class ProblemType extends CActiveRecord {
         } else {
             return null;
         }
-    }
-
-    public function getDirectoryPath(){
-        return self::$problemTypeRepositoryPath.$this->name.'/';
-    }
-
-    public function getViewDirectoryPath(){
-        return $this->getDirectoryPath().'view/';
-    }
-
-    public function getEvaluatorDirectoryPath(){
-        return $this->getDirectoryPath().'evaluator/';
-    }
-
-    public function getEvaluatorConfigPath(){
-        return $this->getEvaluatorDirectoryPath().'config.json';
-    }
-
-    public function getEvaluatorScriptPath(){
-        return $this->getEvaluatorDirectoryPath().'evaluator.php';
     }
 }

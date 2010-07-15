@@ -17,7 +17,7 @@
         'attribute' => 'content',
         'editorTemplate' => 'advanced',
         'toolbar' => array(
-            array('Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About')
+            array('Bold', 'Italic', '-', 'Image', 'Link', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'NumberedList', 'BulletedList', '-', 'Styles','Format', '-', 'Source', '-', 'About')
         ),
         'width' => '600px'
     ));?>
@@ -26,5 +26,6 @@
 <?php echo CHtml::error($model, 'content');?>
 <?php echo CHtml::link('Hapus', $this->createUrl('delete', array('id' => $model->id)),
         array('onclick' => 'return confirm("Are you sure you want to delete this item?");'));?>&nbsp;
+        <br/>
 <?php echo CHtml::submitButton('Simpan');?>
 <?php echo CHtml::endForm();?>

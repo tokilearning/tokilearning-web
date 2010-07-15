@@ -5,9 +5,11 @@ Yii::app()->clientScript->registerCss('profile_information_css', '
     #information-wrapper {width:430px;float:right;}
     #profile-spacer {clear:both;}
     #information-wrapper div.dtable {display:table;}
-    #information-wrapper div.dtable div.drow {display:table-row;}
-    #information-wrapper div.dtable div.drow span {display:table-cell;padding:0px 5px 0px 5px;}
-    #information-wrapper div.dtable div.drow span.name {font-weight:bold;text-align:right;}
+    #information-wrapper div.dtable div.drow {}
+    #information-wrapper div.dtable div.drow span {padding:3px 7px 3px 7px;}
+    #information-wrapper div.dtable div.drow span.name {}
+    #information-wrapper .site_url {display:block;text-decoration:none;}
+    #information-wrapper .site_url:hover {text-decoration:underline;}
 ');
 ?>
 <div id="profile-wrapper">
@@ -16,6 +18,10 @@ Yii::app()->clientScript->registerCss('profile_information_css', '
     </div>
     <div id="information-wrapper">
         <div class="dtable">
+            <div class="drow">
+                <span class="name">Username</span>
+                <span><?php echo $user->username; ?></span>
+            </div>
             <div class="drow">
                 <span class="name">Nama Panjang</span>
                 <span><?php echo $user->full_name; ?></span>
@@ -36,9 +42,22 @@ Yii::app()->clientScript->registerCss('profile_information_css', '
                         </span>
                     </div>
             <?php endif; ?>
+            <?php if ($user->site_url != null && strlen($user->site_url) > 0) : ?>
+                <div class="drow">
+                    <span class="name">Alamat Situs</span>
+                    <span>
+                        <?php $sites = explode(',', $user->site_url);?>
+                        <?php foreach($sites as $site):?>
+                            <?php echo CHtml::link($site, $site, array('class' => 'site_url'));?>
+                        <?php endforeach;?>
+                    </span>
+                </div>
+            <?php endif;?>
+
+
                     <div class="drow">
                         <span class="name">Bergabung</span>
-                        <span><?php echo date("D d M Y", strtotime($user->join_time)); ?></span>
+                        <span><?php echo CDateHelper::timespanAbbr($user->join_time); ?></span>
             </div>
             <div></div>
         </div>

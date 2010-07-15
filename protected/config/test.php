@@ -10,11 +10,10 @@ return CMap::mergeArray(
                 'db' => array(
                     'connectionString' => 'mysql:host=localhost;dbname=lc3test',
                     'emulatePrepare' => true,
-                    'username' => 'lc3test',
-                    'password' => 'lc3test',
+                    'username' => '',
+                    'password' => '',
                     'charset' => 'utf8',
                 ),
-                
             ),
         )
 );

@@ -5,7 +5,7 @@
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008-2010 Yii Software LLC
  * @license http://www.yiiframework.com/license/
- * @version $Id: jquery.yiigridview.js 165 2010-05-01 14:12:28Z qiang.xue $
+ * @version $Id: jquery.yiigridview.js 208 2010-08-06 20:03:22Z qiang.xue $
  */
 
 ;(function($) {
@@ -40,9 +40,8 @@
 			}
 
 			var inputSelector='#'+id+' .'+settings.filterClass+' input, '+'#'+id+' .'+settings.filterClass+' select';
-			// temporary fix for the bug of supporting live change in IE
-			$(inputSelector).live($.browser.msie ? 'click keyup' : 'change', function(){
-				var data = $.param($(inputSelector))+'&'+settings.ajaxVar+'='+id;
+			$('body').delegate(inputSelector, 'change', function(){
+				var data = $.param($(inputSelector));
 				$.fn.yiiGridView.update(id, {data: data});
 			});
 
@@ -147,11 +146,31 @@
 			options.url = $.param.querystring(options.url, options.data);
 			options.data = {};
 		}
-		options.url = $.param.querystring(options.url, settings.ajaxVar+'='+id)
 
-		if(settings.beforeAjaxUpdate != undefined)
-			settings.beforeAjaxUpdate(id);
-		$.ajax(options);
+		if(settings.ajaxUpdate!==false) {
+			options.url = $.param.querystring(options.url, settings.ajaxVar+'='+id);
+			if(settings.beforeAjaxUpdate != undefined)
+				settings.beforeAjaxUpdate(id, options);
+			$.ajax(options);
+		}
+		else {  // non-ajax mode
+			if(options.type=='GET') {
+				window.location.href=options.url;
+			}
+			else {  // POST mode
+				var $form=$('<form action="'+options.url+'" method="post"></form').appendTo('body');
+				if(options.data==undefined) {
+					options.data={};
+				}
+				if(options.data['returnUrl']==undefined) {
+					options.data['returnUrl']=window.location.href;
+				}
+				$.each(options.data, function(name,value) {
+					$form.append($('<input type="hidden" name="t" value="" />').attr('name',name).val(value));
+				});
+				$form.submit();
+			}
+		}
 	};
 
 	/**

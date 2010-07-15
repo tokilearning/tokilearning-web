@@ -3,10 +3,10 @@
 /**
  *
  */
-class AnnouncementController extends CMemberController {
+class AnnouncementController extends CPublicController {
 
     public $defaultAction = 'view';
-
+    
     public function actionView() {
         if (isset($_GET['id'])) {
             $announcement = Announcement::model()->findByPk($_GET['id']);

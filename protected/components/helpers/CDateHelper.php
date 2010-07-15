@@ -143,20 +143,20 @@ class CDateHelper {
             $difference = $difference . ' ' . ($difference === 1 ? ($output) : $output);
         }
         //TODO: Optimize this
-        $difference = str_replace('years', 'tahun', $difference);
-        $difference = str_replace('months', 'bulan', $difference);
-        $difference = str_replace('weeks', 'minggu', $difference);
-        $difference = str_replace('days', 'hari', $difference);
-        $difference = str_replace('hours', 'jam', $difference);
-        $difference = str_replace('minutes', 'menit', $difference);
-        $difference = str_replace('seconds', 'detik', $difference);
+        $difference = str_replace('years', Yii::t('labels', 'tahun'), $difference);
+        $difference = str_replace('months', Yii::t('labels', 'bulan'), $difference);
+        $difference = str_replace('weeks', Yii::t('labels', 'minggu'), $difference);
+        $difference = str_replace('days', Yii::t('labels', 'hari'), $difference);
+        $difference = str_replace('hours', Yii::t('labels', 'jam'), $difference);
+        $difference = str_replace('minutes', Yii::t('labels', 'menit'), $difference);
+        $difference = str_replace('seconds', Yii::t('labels', 'detik'), $difference);
         return $difference;
     }
 
     public static function timespanAbbr($time){
         //<abbr title="\'.$data->questioned_time.\'">\'.(($data->questioned_time == \'0000-00-00 00:00:00\')? \'never\' : CDateHelper::timespan_string2(strtotime($data->questioned_time)).\' ago\').\'</abbr>\''
         $t = strtotime($time);
-        $l = ($t > time())? ' lagi' : (($t < time()) ? ' lalu' : '');
+        $l = ($t > time())? Yii::t('labels', ' lagi') : (($t < time()) ? Yii::t('labels', ' lalu') : '');
         $date1 = ($time == null || $time == '0000-00-00 00:00:00')? 'n/a' : self::timespan_string2(strtotime($time)).$l;
         $date2 = ($time == null || $time == '0000-00-00 00:00:00')? 'n/a' : date("D d M Y H:i", strtotime($time));
         return "<abbr title='$date2'>$date1</abbr>";

@@ -2,99 +2,114 @@
 
 class ProblemController extends CContestController {
 
+    private $_model;
+    public static $aliases;
+
     public function actionIndex() {
-         $dataProvider = new CActiveDataProvider('Problem', array(
-            'pagination' => array(
-                'pageSize' => 10,
-            ),
-            'criteria' => array(
-                'join' => 'JOIN contests_problems ON problem_id = id',
-                'condition' => 'contest_id = '.$this->getContest()->id.' AND contests_problems.status != '.Contest::CONTEST_VISIBILITY_HIDDEN,
-            )
-        ));
+        $c = new CDbCriteria();
+         if ($this->getContest()->hasStarted()) {
+             $dataProvider = new CActiveDataProvider('Problem', array(
+                'pagination' => array(
+                    'pageSize' => 10,
+                ),
+                'criteria' => array(
+                    'join' => 'JOIN contests_problems ON problem_id = id',
+                    'condition' => 'contest_id = '.$this->getContest()->id.' AND contests_problems.status != '.Contest::CONTEST_PROBLEM_HIDDEN,
+                )
+            ));
+            $c->join = 'JOIN contests_problems ON problem_id = id';
+            $c->condition = 'contest_id = '.$this->getContest()->id.' AND contests_problems.status != '.Contest::CONTEST_PROBLEM_HIDDEN;
+         }
+         else {
+             $dataProvider = new CActiveDataProvider('Problem', array(
+                'pagination' => array(
+                    'pageSize' => 10,
+                ),
+                'criteria' => array(
+                    'join' => 'JOIN contests_problems ON problem_id = id',
+                    'condition' => 'NULL',
+                )
+            ));
+            $c->join = 'JOIN contests_problems ON problem_id = id';
+            $c->condition = 'NULL';
+         }
+
+        $problems = Problem::model()->findAll($c);
+
+        ProblemController::$aliases = array();
+        foreach ($problems as $p)
+            ProblemController::$aliases[$p->id] = $this->contest->getProblemAlias($p);
+        
+        uasort($problems , "ProblemController::comp");
+
+        $dataProvider = new CArrayDataProvider($problems);
         $this->render('index', array('dataProvider' => $dataProvider));
     }
 
-    public function actionView() {
-        if (isset($_GET['alias'])){
-            $problem = $this->getContest()->getProblemByAlias($_GET['alias']);
-        }
-        if($problem == null){
-            throw new CHttpException(404, 'The requested page does not exist.');
-        } else {
-            if (isset($_GET['view']) && $_GET['view'] == 'full'){
-                $this->layout = 'application.views.layouts.column1';
-                $this->render('_problemview2', array('problem' =>  $problem));
-            } else {
-                if ($this->getContest()->getProblemStatus($problem) == Contest::CONTEST_PROBLEM_HIDDEN){
-                    throw new CHttpException(400, 'Requested page not found');
-                } else {
-                    $submissionDataProvider = new CActiveDataProvider('Submission', array(
-                        'pagination' => array(
-                            'pageSize' => 20,
-                        ),
-                        'criteria' => array(
-                            'select' => array('id', 'submitted_time', 'grade_status'),
-                            'condition' => 'contest_id = :contest_id AND problem_id = :problem_id AND submitter_id = :submitter_id',
-                            'params' => array(
-                                'problem_id' => $problem->id,
-                                'submitter_id' => Yii::app()->user->getId(),
-                                'contest_id' => $this->getContest()->id
-                            ),
-                        )
-                    ));
-
-                    $activeTab = $_GET['return'];
-                    $this->render('view', array(
-                            'problem' => $problem,
-                            'activeTab' => $activeTab,
-                            'submissionDataProvider' => $submissionDataProvider
-                        ));
-                }
-            }
-        }
+    private static function comp($a , $b) {
+        if (ProblemController::$aliases[$a->id] < ProblemController::$aliases[$b->id])
+            return -1;
+        else
+            return 1;
     }
 
-    public function actionSubmitAnswer(){
-        if (Yii::app()->request->isPostRequest){
-            if (isset($_GET['alias'])){
-                $problem = $this->getContest()->getProblemByAlias($_GET['alias']);
-            }
-            if($problem == null){
+    public function actionView() {
+		$model = $this->loadModel();
+		//ContestLog::readProblem(Yii::app()->user->id, $this->getContest()->id, $model->id);
+        $this->render('view', array('model' => $model));
+    }
+
+    public function actionSubmissions(){
+        $model = $this->loadModel();
+        $submissionDataProvider = new CActiveDataProvider('Submission', array(
+            'pagination' => array(
+                'pageSize' => 20,
+            ),
+            'criteria' => array(
+                'select' => array('id', 'submitted_time', 'grade_status' , 'verdict'),
+                'condition' => 'contest_id = :contest_id AND problem_id = :problem_id AND submitter_id = :submitter_id',
+                'params' => array(
+                    'problem_id' => $model->id,
+                    'submitter_id' => Yii::app()->user->getId(),
+                    'contest_id' => $this->getContest()->id
+                ),
+            )
+        ));
+        $this->render('submissions', array(
+            'model' => $model,
+            'submissionDataProvider' => $submissionDataProvider
+            ));
+    }
+
+    public function isProblemHidden(){
+        return $this->getContest()->getProblemStatus($this->_model) == Contest::CONTEST_PROBLEM_HIDDEN;
+    }
+
+    public function isProblemOpen(){
+        return $this->getContest()->getProblemStatus($this->_model) == Contest::CONTEST_PROBLEM_OPEN;
+    }
+
+    public function isProblemClosed(){
+        return $this->getContest()->getProblemStatus($this->_model) == Contest::CONTEST_PROBLEM_CLOSED;
+    }
+
+    public function getProblemAlias($problem){
+        return $this->getContest()->getProblemAlias($problem);
+    }
+
+    private function loadModel(){
+        if ($this->_model === null) {
+            if (isset($_GET['alias']))
+                $this->_model = $this->getContest()->getProblemByAlias($_GET['alias']);
+            if ($this->_model === null)
                 throw new CHttpException(404, 'The requested page does not exist.');
-            } else {
-                if ($this->getContest()->getProblemStatus($problem) == Contest::CONTEST_PROBLEM_OPEN &&
-                        !$this->getContest()->isExpired()){
-                    if (!isset($_POST['Submission']['id'])){
-                        $submission = new Submission();
-                        $submission->submitter_id = Yii::app()->user->getId();
-                        $submission->problem_id = $problem->id;
-                        $submission->contest_id = $this->getContest()->id;
-                        $submission->grade_status = Submission::GRADE_STATUS_PENDING;
-                        try {
-                            ProblemHelper::submitAnswer($submission);
-                            $submission->save();
-                            $this->redirect(array('view', 'alias' => $_GET['alias'], 'return' => 'submission'));
-                        } catch (Exception $ex) {
-                            $submission->addError('answer', $ex->getMessage());
-                            $this->render('view',
-                                    array(
-                                        'problem' =>  $problem,
-                                        'activeTab' => 'submit',
-                                        'submission' => $submission
-                                        )
-                            );
-                        }
-                    } else {
-                        //TODO
-                    }
-                } else {
-                    throw new CHttpException(404, "Page not found");
-                }
+            if ($this->isProblemHidden($this->_model)){
+                throw new CHttpException(404, 'The requested page does not exist.');
             }
-        } else {
-            throw new CHttpException(400, "Bad request");
+            if (!$this->getContest()->hasStarted())
+                throw new CHttpException(404, 'The requested page does not exist.');
         }
+        return $this->_model;
     }
 
 }

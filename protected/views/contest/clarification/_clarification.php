@@ -15,30 +15,30 @@ Yii::app()->clientScript->registerScript('clarification-view-js', '
 <div class="clarification-view article">
     <h3 class="title"><?php echo $data->subject;?></h3>
     <div class="post-meta">
-        Ditanyakan oleh <?php echo $data->questioner->getFullnameLink();?>
+        <?php echo Yii::t('contest', 'Ditanyakan oleh');?> <?php echo $data->questioner->getFullnameLink();?>
         <?php echo CDateHelper::timespanAbbr($data->questioned_time);?>
-        pada
+        <?php echo Yii::t('contest', 'pada');?>
         <?php if($data->problem_id == null):?>
-                Lain-lain
+                <?php echo Yii::t('contest', 'Lain-lain');?>
         <?php else:?>
                 <?php $problem = Problem::model()->findByPk($data->problem_id);?>
-                Soal <a href="<?php echo $this->createUrl('view', array('alias' => $this->getContest()->getProblemAlias($problem)));?>" class="problem-link">
+                Soal <a href="<?php echo $this->createUrl('/contest/problem/view', array('alias' => $this->getContest()->getProblemAlias($problem)));?>" class="problem-link">
                     <?php echo $this->getContest()->getProblemAlias($problem);?>.
                     <?php echo $problem->title;?>
                 </a>
         <?php endif;?>
 
         <?php if ($data->status == Clarification::STATUS_UNANSWERED):?>
-            <span class="status_unanswered">Belum terjawab</span>
+            <span class="status_unanswered"><?php echo Yii::t('contest', 'Belum terjawab');?></span>
         <?php else:?>
-            <span class="status_answered">Sudah terjawab</span>
+            <span class="status_answered"><?php echo Yii::t('contest', 'Sudah terjawab');?></span>
         <?php endif;?>
     </div>
     <div class="content">
         <?php echo $data->question;?>
         <?php if ($data->status == Clarification::STATUS_ANSWERED):?>
         <div class="answer">
-            <div class="post-meta">Dijawab pada <?php echo CDateHelper::timespanAbbr($data->answered_time);?></div>
+            <div class="post-meta"><?php echo Yii::t('contest', 'Dijawab pada');?> <?php echo CDateHelper::timespanAbbr($data->answered_time);?></div>
             <div>
                 <?php echo $data->answer;?>
             </div>

@@ -7,6 +7,8 @@ class CSyntaxHighlighter {
             'c' => 'C',
             'java' => 'Java',
             'pascal' => 'Pascal',
+            'pas' => 'Pascal',
+            'pp' => 'Pascal',
             'text' => 'Text'
         );
         return $types;
@@ -18,6 +20,8 @@ class CSyntaxHighlighter {
             'c' => 'shBrushCpp.js',
             'java' => 'shBrushJava.js',
             'pascal' => 'shBrushDelphi.js',
+            'pas' => 'shBrushDelphi.js',
+            'pp' => 'shBrushDelphi.js',
             'text' => 'shBrushPlain.js'
         );
         return $scripts[$type];

@@ -28,7 +28,7 @@
  * </ol>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CCaptchaAction.php 1909 2010-03-14 19:49:29Z qiang.xue $
+ * @version $Id: CCaptchaAction.php 2270 2010-07-19 21:53:38Z qiang.xue $
  * @package system.web.widgets.captcha
  * @since 1.0
  */
@@ -86,6 +86,15 @@ class CCaptchaAction extends CAction
 	 * with the Yii release.
 	 */
 	public $fontFile;
+	/**
+	 * @var string the fixed verification code. When this is property is set,
+	 * {@link getVerifyCode} will always return this value.
+	 * This is mainly used in automated tests where we want to be able to reproduce
+	 * the same verification code each time we run the tests.
+	 * Defaults to null, meaning the verification code will be randomly generated.
+	 * @since 1.1.4
+	 */
+	public $fixedVerifyCode;
 
 	/**
 	 * Runs the action.
@@ -96,10 +105,10 @@ class CCaptchaAction extends CAction
 	{
 		if(isset($_GET[self::REFRESH_GET_VAR]))  // AJAX request for regenerating code
 		{
-			$code=$this->getVerifyCode(true);
+			$this->getVerifyCode(true);
 			// we add a random 'v' parameter so that FireFox can refresh the image
 			// when src attribute of image tag is changed
-			echo $this->getController()->createUrl($this->getId(),array('v'=>rand(0,10000)));
+			echo $this->getController()->createUrl($this->getId(),array('v'=>uniqid()));
 		}
 		else
 		{
@@ -115,6 +124,9 @@ class CCaptchaAction extends CAction
 	 */
 	public function getVerifyCode($regenerate=false)
 	{
+		if($this->fixedVerifyCode!==null)
+			return $this->fixedVerifyCode;
+
 		$session=Yii::app()->session;
 		$session->open();
 		$name=$this->getSessionKey();

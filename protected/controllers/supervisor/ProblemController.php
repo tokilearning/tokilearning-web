@@ -1,25 +1,67 @@
 <?php
 
+Yii::import('ext.language.LanguageFactory');
+
 class ProblemController extends CSupervisorController {
 
+    //public $pageTitle = "Soal";
     private $_model;
-    
+    private $categories = array(
+            "Dynamic Programming",
+            "Graph",
+            "Tree",
+            "Ad hoc"
+        );
+
     public function actionIndex() {
+        /*$problems = Problem::model()->findAll();
+
+        foreach ($problems as $p) {
+            $dir =  $p->getDirectoryPath() . 'evaluator/files';
+            //echo $dir . "<br />";
+            echo exec("dos2unix $dir/*");
+        }*/
+
         $criteria = new CDbCriteria;
         $filter = 'all';
-        if (isset($_GET['filter'])){
+        /*if (isset($_GET['filter'])) {
             $filter = $_GET['filter'];
-        }
-        switch($filter){
+            switch ($filter) {
+                case 'mine' :
+                    $criteria->addCondition('author_id = ' . Yii::app()->user->getId());
+                    break;
+                case 'all' :
+                default:
+                    break;
+            }
+        }*/
+        $filter = $_GET['filter'];
+        switch ($filter) {
             case 'mine' :
-                $criteria->addCondition('author_id = '.Yii::app()->user->getId());
+                $criteria->addCondition('author_id = ' . Yii::app()->user->getId());
+                break;
+            case 'privileged' :
+                $criteria->join = "LEFT JOIN problem_privileges ON problem_id = id";
+                //$criteria->addCondition('author_id = ' . Yii::app()->user->getId());
+                $criteria->addCondition('user_id = ' . Yii::app()->user->getId() , 'OR');
                 break;
             case 'all' :
             default:
                 break;
         }
+
+        if (isset($_GET['search'])) {
+            $search = $_GET['search'];
+            
+            $searchElements = explode(" ", $search);
+            foreach ($searchElements as $elm) {
+                $criteria->addSearchCondition('title', $elm);
+                $criteria->addSearchCondition('description', $elm, true, 'OR');
+            }
+        }
         //NOTE: Optimize SQL
         $criteria->with = array('author' => array('select' => 'id, full_name'));
+
         $dataProvider = new CActiveDataProvider('Problem', array(
                     'pagination' => array(
                         'pageSize' => 20,
@@ -31,16 +73,34 @@ class ProblemController extends CSupervisorController {
 
     public function actionCreate() {
         $model = new Problem('create');
-        if (isset($_POST['Problem'])){
+        if (isset($_POST['Problem'])) {
             $model->attributes = $_POST['Problem'];
             $model->visibility = Problem::VISIBILITY_DRAFT;
-            if ($model->validate()){
+            if ($model->validate()) {
                 $model->author_id = Yii::app()->user->getId();
                 $model->save(false);
                 $this->redirect(array('update', 'id' => $model->id));
             }
         }
-        $this->render('create', array('model' => $model));
+
+        $f = new LanguageFactory();
+        $availableLanguages = $f->getSupportedLanguages();
+
+        $this->render('create', array('model' => $model , 'availableLanguages' => $availableLanguages));
+    }
+    
+    public function actionCategoryLookup($term) {
+        $retval = array();
+        
+        if(Yii::app()->request->isAjaxRequest && !empty($term)) {
+            foreach ($this->categories as $cat) {
+                if (strpos($cat , $term) !== false) {
+                    $retval[] = $cat;
+                }
+            }
+        }
+        
+        echo CJSON::encode($retval);
     }
 
     public function actionDelete() {
@@ -52,141 +112,125 @@ class ProblemController extends CSupervisorController {
 
     public function actionUpdate() {
         $model = $this->loadModel();
-        $activeTab = $_GET['return'];
-        $evalActiveTab = $_GET['ereturn'];
-        $this->render('update', array('model' => $model, 'activeTab' => $activeTab, 'evalActiveTab' => $evalActiveTab));
-    }
-
-    public function actionUpdateInformation(){
-        $model = $this->loadModel();
-        if (isset($_POST['Problem'])){
+        if (isset($_POST['Problem'])) {
             $model->attributes = $_POST['Problem'];
-            if ($model->save()){
+            $model->description = $_POST['category'] . "\n" . $_POST['difficulty'];
+            if ($model->save()) {
                 $this->redirect(array('update', 'id' => $model->id));
             }
         }
-        $this->render('update', array('model' => $model));
+
+        $f = new LanguageFactory();
+        $availableLanguages = $f->getSupportedLanguages();
+        
+        $this->render('update', array('model' => $model , 'availableLanguages' => $availableLanguages));
     }
 
-    public function actionUpdateConfigurationForm(){
-        if (Yii::app()->request->isPostRequest){
-            $model = $this->loadModel();
-            $config = $_POST['config'];
-            ProblemHelper::updateConfig($model, $config);
-            $this->redirect(array('update', 'id' => $model->id, 'return' => 'evaluator', 'ereturn' => 'form'));
-        } else {
-            throw new CHttpException(400, "Bad Request");
-        }
-    }
-
-    public function actionUpdateConfigurationManual(){
-        if (Yii::app()->request->isPostRequest){
-            $model = $this->loadModel();
-            $configs = CJSON::decode($_POST['json_content']);
-            $model->setConfigs($configs);
-            $model->save();
-            $this->redirect(array('update', 'id' => $model->id, 'return' => 'evaluator', 'ereturn' => 'manual'));
-        } else {
-            throw new CHttpException(400, "Bad Request");
-        }
-    }
-
-    public function actionUpdateDescriptionFile(){
-        if (Yii::app()->request->isPostRequest){
-            $model = $this->loadModel();
-            ProblemHelper::updateDescription($model, $_POST['descriptionfile']);
-            $model->save();
-            $this->redirect(array('update', 'id' => $model->id, 'return' => 'display'));
-        } else {
-            throw new CHttpException(400, "Bad Request");
-        }
-    }
-
-    public function actionGetEvaluatorFile(){
+    public function actionConfigure() {
         $model = $this->loadModel();
-        $filename = $_GET['file'];
-        $dirpath = $model->getEvaluatorPath();
-        $filepath = $dirpath."files/".basename($filename);
-        if (file_exists($filepath)){
-            header('Content-type: '.CFileHelper::getMimeType($filename));
-            header('Content-Disposition: attachment; filename="'.$filename.'"');
-            readfile($filepath);
-            exit;
-        } else {
-            throw new CHttpException(404, "File not found");
+        $this->render('configure', array('model' => $model));
+    }
+
+    public function actionGrantPrivilege() {
+        if (Yii::app()->request->isAjaxRequest && isset($_GET['id'])) {
+            $model = Problem::model()->findByPK($_GET['id']);
+
+            $model->grantPrivilege(User::model()->findByPK($_GET['userid']));
         }
     }
 
-    public function actionUploadEvaluatorFile(){
-        if (Yii::app()->request->isPostRequest){
-            $model = $this->loadModel();
-            $uploads_dir = $model->getEvaluatorPath().'files';
-            foreach ($_FILES["evaluatorfileupload"]["error"] as $key => $error) {
-                if ($error == UPLOAD_ERR_OK) {
-                    $tmp_name = $_FILES["evaluatorfileupload"]["tmp_name"][$key];
-                    $name = $_FILES["evaluatorfileupload"]["name"][$key];
-                    move_uploaded_file($tmp_name, "$uploads_dir/$name");
-                }
+    public function actionSupervisorLookup() {
+        if (Yii::app()->request->isAjaxRequest && isset($_GET['term'])){
+            $query = $_GET['term'];
+            $criteria = new CDbCriteria;
+            $criteria->join = "JOIN groups_users ON user_id = id";
+            $criteria->condition = "(id LIKE :sterm OR username LIKE :sterm OR full_name LIKE :sterm OR email LIKE :sterm) AND group_id = :groupid AND id <> " . Yii::app()->user->id;
+            $criteria->params = array(
+                ":sterm" => "%$query%",
+                ":groupid" => 2,
+            );
+            $users = User::model()->findAll($criteria);
+            $retval = array();
+            foreach($users as $user)
+            {
+                $retval[] = array(
+                    'value' => $user->getAttribute('id'),
+                    'label' => $user->getAttribute('id').'. '.
+                        $user->getAttribute('full_name').' ('.
+                        $user->getAttribute('username').'/'.
+                        $user->getAttribute('email').')',
+                );
             }
-            $model->save();
-            $this->redirect(array('update', 'id' => $model->id, 'return' => 'evaluator'));
-        } else {
-            throw new CHttpException(400, "Bad Request");
+            echo CJSON::encode($retval);
         }
     }
 
-    public function actionDeleteEvaluatorFile(){
+    public function actionRevokePrivilege() {
         $model = $this->loadModel();
-        $file = $_GET['file'];
-        $model->deleteEvaluatorFile($file);
-        $model->save();
-        if (!isset($_GET['ajax']))
-            $this->redirect(array('index'));
+
+        $model->revokePrivilege(User::model()->findByPK($_GET['userid']));
     }
 
-    public function actionGetViewFile(){
+    public function actionPrivilege() {
         $model = $this->loadModel();
-        $filename = $_GET['file'];
-        $dirpath = $model->getViewPath();
-        $filepath = $dirpath."files/".basename($filename);
-        if (file_exists($filepath)){
-            header('Content-type: '.CFileHelper::getMimeType($filename));
-            header('Content-Disposition: attachment; filename="'.$filename.'"');
-            readfile($filepath);
-            exit;
-        } else {
-            throw new CHttpException(404, "File not found");
-        }
+
+        $dataProvider = new CArrayDataProvider($model->privileged_users, array(
+            'pagination' => array(
+                'pageSize' => 20
+            )
+        ));
+        
+        $this->render('privilege' , array('model' => $model , 'dataProvider' => $dataProvider));
     }
 
-    public function actionUploadViewFile(){
-        if (Yii::app()->request->isPostRequest){
+    public function actionArena() {
+        $model = $this->loadModel();
+
+        $dataProvider = new CArrayDataProvider($model->arenas, array(
+            'pagination' => array(
+                'pageSize' => 20
+            )
+        ));
+
+        $this->render('arena' , array('model' => $model , 'dataProvider' => $dataProvider));
+    }
+
+    public function actionAddArena() {
+        if (Yii::app()->request->isAjaxRequest && isset($_GET['id'])) {
             $model = $this->loadModel();
-            $uploads_dir = $model->getViewPath().'files';
-            foreach ($_FILES["viewfileupload"]["error"] as $key => $error) {
-                if ($error == UPLOAD_ERR_OK) {
-                    $tmp_name = $_FILES["viewfileupload"]["tmp_name"][$key];
-                    $name = $_FILES["viewfileupload"]["name"][$key];
-                    move_uploaded_file($tmp_name, "$uploads_dir/$name");
-                }
-            }
-            $model->save();
-            $this->redirect(array('update', 'id' => $model->id, 'return' => 'display'));
-        } else {
-            throw new CHttpException(400, "Bad Request");
+
+            $model->addArena(Arena::model()->findByPK($_GET['arenaid']));
         }
     }
 
-    public function actionDeleteViewFile(){
+    public function actionRemoveArena() {
         $model = $this->loadModel();
-        $file = $_GET['file'];
-        $model->deleteViewFile($file);
-        $model->save();
-        if (!isset($_GET['ajax']))
-            $this->redirect(array('index'));
+
+        $model->removeArena(Arena::model()->findByPK($_GET['arenaid']));
     }
 
-    public function actionPublish(){
+    public function actionArenaLookup() {
+        if (Yii::app()->request->isAjaxRequest && isset($_GET['term'])){
+            $query = $_GET['term'];
+            $criteria = new CDbCriteria;
+            $criteria->condition = "name LIKE :sterm";
+            $criteria->params = array(
+                ":sterm" => "%$query%"
+            );
+            $arenas = Arena::model()->findAll($criteria);
+            $retval = array();
+            foreach($arenas as $arena)
+            {
+                $retval[] = array(
+                    'value' => $arena->getAttribute('id'),
+                    'label' => $arena->getAttribute('id').'. '.$arena->getAttribute('name')
+                );
+            }
+            echo CJSON::encode($retval);
+        }
+    }
+
+    public function actionPublish() {
         $model = $this->loadModel();
         $model->visibility = Problem::VISIBILITY_PUBLIC;
         $model->save();
@@ -194,7 +238,7 @@ class ProblemController extends CSupervisorController {
             $this->redirect(array('index'));
     }
 
-    public function actionUnpublish(){
+    public function actionUnpublish() {
         $model = $this->loadModel();
         $model->visibility = Problem::VISIBILITY_DRAFT;
         $model->save();
@@ -202,84 +246,93 @@ class ProblemController extends CSupervisorController {
             $this->redirect(array('index'));
     }
 
-
-    public function actionView() {
+    public function actionRegrade() {
         $model = $this->loadModel();
-        if (isset($_GET['view']) && $_GET['view'] == 'full'){
-            $this->layout = 'application.views.layouts.column1';
-            $this->render('view/_problem2', array('model' =>  $model));
-        } else {
-            $submissionDataProvider = new CActiveDataProvider('Submission', array(
-                'pagination' => array(
-                    'pageSize' => 20,
-                ),
-                'criteria' => array(
-                    'select' => array('id', 'submitted_time', 'grade_status'),
-                    'condition' => 'contest_id IS NULL AND problem_id = :problem_id',
-                    'params' => array(
-                        'problem_id' => $model->id
-                    ),
-                    'with' => array(
-                            'problem' => array('select' => array('id', 'title')),
-                            'problem.problemtype' => array('select' => array('id', 'name')),
-                            'submitter' => array('select' => array('id', 'full_name'))
-                    )
-                )
-            ));
-
-            $activeTab = $_GET['return'];
-            $this->render('view', array(
-                    'model' =>  $model,
-                    'activeTab' => $activeTab,
-                    'submissionDataProvider' => $submissionDataProvider
-                ));
-        }
-    }
-
-    public function actionSubmitAnswer(){
-        $model = $this->loadModel();
-        if (Yii::app()->request->isPostRequest){
-            if (!isset($_POST['Submission']['id'])){
-                $submission = new Submission();
-                $submission->submitter_id = Yii::app()->user->getId();
-                $submission->problem_id = $model->id;
-                $submission->contest_id = NULL;
-                $submission->grade_status = Submission::GRADE_STATUS_PENDING;
-                try {
-                    ProblemHelper::submitAnswer($submission);
-                    $submission->save();
-                    $this->redirect(array('view', 'id' => $model->id, 'return' => 'submission'));
-                } catch (Exception $ex) {
-                    $submission->addError('answer', $ex->getMessage());
-                    $this->render('view',
-                            array(
-                                'model' =>  $model,
-                                'activeTab' => 'submit',
-                                'submission' => $submission
-                            )
-                    );
-                }
-            } else {
-                //TODO
-            }
-        } else {
-            throw new CHttpException(400, "Bad request");
-        }
-    }
-
-    public function actionRegrade(){
-        $model = $this->loadModel();
-        if (isset($_GET['problemid']))
-            //TODO select id and grade_status only
-            $submission = Submission::model()->findbyPk($_GET['problemid']);
-        if ($submission !== null){
+        if (isset($_GET['submissionid']))
+            $submission = Submission::model()->findbyPk($_GET['submissionid']);
+        //
+        if ($submission !== null) {
             $submission->setGradeStatus(Submission::GRADE_STATUS_PENDING);
             $submission->save(false);
-            $this->redirect(array('view', 'id' => $model->id, 'return' => 'submission'));
+            $this->redirect(array('submissions', 'id' => $model->id));
         } else {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
     }
+
+    //
+    public function actionView() {
+        $model = $this->loadModel();
+        $this->render('view', array('model' => $model));
+    }
+
+    public function actionDownload() {
+        $model = $this->loadModel();
+        $id = $model->id;
+        $tempnam = tempnam("/tmp", "p$id");
+        if (Zip::createZip($model->getDirectoryPath(), $tempnam)) {
+            header('Content-type: application/zip');
+            header('Content-Disposition: attachment; filename="' . $id . '.zip"');
+            readfile($tempnam);
+            unlink($tempnam);
+        }
+        exit();
+    }
+
+    public function actionSubmissions() {
+        $model = $this->loadModel();
+        $submissionDataProvider = new CActiveDataProvider('Submission', array(
+                    'pagination' => array(
+                        'pageSize' => 20,
+                    ),
+                    'criteria' => array(
+                        'select' => array('id', 'submitted_time', 'grade_status', 'score', 'verdict'),
+                        'condition' => 'contest_id IS NULL AND problem_id = :problem_id',
+                        'params' => array(
+                            'problem_id' => $model->id
+                        ),
+                        'with' => array(
+                            'problem' => array('select' => array('id', 'title')),
+                            'problem.problemtype' => array('select' => array('id', 'name')),
+                            'submitter' => array('select' => array('id', 'full_name'))
+                        )
+                    )
+                ));
+        $this->render('submissions', array(
+            'model' => $model,
+            'submissionDataProvider' => $submissionDataProvider,
+        ));
+    }
+
+    public function actionBatchRegrade() {
+        if (Yii::app()->request->isAjaxRequest && Yii::app()->request->isPostRequest) {
+            if (isset($_POST['mark'])) {
+                foreach ($_POST['mark'] as $regradeid) {
+                    $model = Submission::model()->findbyPk($regradeid);
+                    if ($model !== null) {
+                        $model->setGradeStatus(Submission::GRADE_STATUS_PENDING);
+                        $model->save(false);
+                    }
+                }
+            }
+        }
+    }
+
+    public function actionBatchSkip() {
+        if (Yii::app()->request->isAjaxRequest && Yii::app()->request->isPostRequest) {
+            if (isset($_POST['mark'])) {
+                foreach ($_POST['mark'] as $regradeid) {
+                    $model = Submission::model()->findbyPk($regradeid);
+                    if ($model !== null) {
+                        $model->setGradeStatus(Submission::GRADE_STATUS_NOGRADE);
+                        $model->save(false);
+                    }
+                }
+            }
+        }
+    }
+
+    //
 
     public function loadModel() {
         if ($this->_model === null) {
@@ -287,7 +340,13 @@ class ProblemController extends CSupervisorController {
                 $this->_model = Problem::model()->findbyPk($_GET['id']);
             if ($this->_model === null)
                 throw new CHttpException(404, 'The requested page does not exist.');
+            else {
+                if (!$this->_model->isPrivileged(Yii::app()->user)) {
+                        throw new CHttpException(404, 'You are not allowed to access this resource');
+                }
+            }
         }
         return $this->_model;
     }
+
 }

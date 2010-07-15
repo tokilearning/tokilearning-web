@@ -20,7 +20,7 @@ Yii::import('zii.widgets.grid.CGridColumn');
  * and customize the display order of the buttons.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CButtonColumn.php 163 2010-04-20 19:16:43Z qiang.xue $
+ * @version $Id: CButtonColumn.php 2326 2010-08-20 17:02:07Z qiang.xue $
  * @package zii.widgets.grid
  * @since 1.1
  */
@@ -191,7 +191,7 @@ class CButtonColumn extends CGridColumn
 				'options'=>$this->{$id.'ButtonOptions'},
 			);
 			if(isset($this->buttons[$id]))
-				$this->buttons[$id]=array_merge($this->buttons[$id],$button);
+				$this->buttons[$id]=array_merge($button,$this->buttons[$id]);
 			else
 				$this->buttons[$id]=$button;
 		}

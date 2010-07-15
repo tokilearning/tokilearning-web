@@ -1,6 +1,16 @@
 <?php $this->setPageTitle("Konfigurasi Dasar");?>
 <?php $this->renderPartial('_menu');?>
 
+<?php Yii::app()->clientScript->registerScript('span-type-select-js',"
+	$('input[name=Contest[span_type]]').change(function() {
+		if ($(this).val() == ".Contest::CONTEST_SPAN_TYPE_VIRTUAL.") {
+			$('#virtual-span-detail').show();
+		}
+		else
+			$('#virtual-span-detail').hide();
+	});
+");?>
+
 <?php echo CHtml::beginForm();?>
 <div>
     <?php echo CHtml::errorSummary($model);?>
@@ -16,6 +26,18 @@
         <span class="shead"><?php echo CHtml::activeLabel($model, 'description');?></span>
         <span>
             <?php echo CHtml::activeTextArea($model, 'description');?>
+        </span>
+    </div>
+    <div class="drow">
+        <span class="shead">Sifat</span>
+        <span>
+            <?php echo CHtml::activeDropDownList($model, 'status', Contest::getContestVisibilityStrings());?>
+        </span>
+    </div>
+    <div class="drow">
+        <span class="shead"><?php echo CHtml::activeLabel($model, 'contest_type_id');?></span>
+        <span>
+            <?php echo CHtml::activeDropDownList($model, 'contest_type_id', ContestType::toArray());?>
         </span>
     </div>
     <div class="drow">
@@ -58,9 +80,19 @@
                     );?>
         </span>
     </div>
-    <div class="drow">
-        <span></span>
-        <span></span>
+	<div class="drow">
+		<span class="shead"><?php echo CHtml::activeLabel($model, 'span_type');?></span>
+		<span>
+			<?php echo CHtml::activeRadioButtonList($model, 'span_type', array(0 => 'Standar' , 1 => 'Virtual'));?>
+		</span>
+	</div>
+    <div class="drow" id="virtual-span-detail" <?php if ($model->span_type != Contest::CONTEST_SPAN_TYPE_VIRTUAL) echo "style=\"display: none;\"";?>>
+        <span class="shead">
+			Jangka waktu
+		</span>
+        <span>
+			<input type="text" name="timespan" value="<?php echo $model->getConfig('timespan');?>" /> menit
+		</span>
     </div>
     <div class="drow">
         <span></span>

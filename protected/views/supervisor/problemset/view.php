@@ -5,7 +5,6 @@ $parent = $model->parent;
 $children = $model->children;
 $problems = $model->problems;
 ?>
-<h2 class="title">Kontes</h2>
 <div id="problemset-view-wrapper">
     <div class="button" style="float:right">
 <?php echo CHtml::link('Edit', $this->createUrl('update', array('id' => $model->id))); ?>
@@ -29,17 +28,25 @@ $problems = $model->problems;
 <?php if ($children == null): ?>
                     <em>None</em>
 <?php else: ?>
-                <?php foreach ($children as $child)
-                            echo CHtml::link($child->name, $this->createUrl('view', array('id' => $child->id))); ?>
+                    <ul style="margin:0px;padding:3px 0px 0px 9px;">
+                <?php foreach ($children as $child):?>
+                            <li><?php echo CHtml::link($child->name, $this->createUrl('view', array('id' => $child->id))); ?></li>
+                        <?php endforeach;?>
+                    </ul>
                 <?php endif; ?>
                     </span>
                 </div>
                 <div class="drow">
                     <span class="shead">Problems</span>
                     <span>
-<?php if ($problems == null): ?>
+                <?php if ($problems == null): ?>
                             <em>None</em>
-<?php else: ?>
+                <?php else: ?>
+                            <ul style="margin:0px;padding:3px 0px 0px 9px;">
+                    <?php foreach ($problems as $problem):?>
+                                <li><?php echo CHtml::link($problem->title, $this->createUrl('/supervisor/problem/view', array('id' => $problem->id))); ?></li>
+                             <?php endforeach;?>
+                                </ul>
                 <?php endif; ?>
             </span>
         </div>

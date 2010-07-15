@@ -92,7 +92,7 @@
  * {@link CWebApplication::getUrlManager()}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CUrlManager.php 2071 2010-04-26 21:45:22Z qiang.xue $
+ * @version $Id: CUrlManager.php 2303 2010-08-05 12:18:06Z qiang.xue $
  * @package system.web
  * @since 1.0
  */
@@ -200,6 +200,19 @@ class CUrlManager extends CApplicationComponent
 	}
 
 	/**
+	 * Adds new URL rules.
+	 * In order to make the new rules effective, this method must be called BEFORE
+	 * {@link CWebApplication::processRequest}.
+	 * @param array new URL rules (pattern=>route).
+	 * @since 1.1.4
+	 */
+	public function addRules($rules)
+	{
+		foreach($rules as $pattern=>$route)
+			$this->_rules[]=$this->createUrlRule($route,$pattern);
+	}
+
+	/**
 	 * Creates a URL rule instance.
 	 * The default implementation returns a CUrlRule object.
 	 * @param string the pattern part of the rule
@@ -294,7 +307,7 @@ class CUrlManager extends CApplicationComponent
 	{
 		if($this->getUrlFormat()===self::PATH_FORMAT)
 		{
-			$rawPathInfo=urldecode($request->getPathInfo());
+			$rawPathInfo=$request->getPathInfo();
 			$pathInfo=$this->removeUrlSuffix($rawPathInfo,$this->urlSuffix);
 			foreach($this->_rules as $rule)
 			{
@@ -449,7 +462,7 @@ class CUrlManager extends CApplicationComponent
  * may have a set of named parameters.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CUrlManager.php 2071 2010-04-26 21:45:22Z qiang.xue $
+ * @version $Id: CUrlManager.php 2303 2010-08-05 12:18:06Z qiang.xue $
  * @package system.web
  * @since 1.0
  */
@@ -612,6 +625,17 @@ class CUrlRule extends CComponent
 				return false;
 		}
 
+		foreach($this->defaultParams as $key=>$value)
+		{
+			if(isset($params[$key]))
+			{
+				if($params[$key]==$value)
+					unset($params[$key]);
+				else
+					return false;
+			}
+		}
+
 		foreach($this->params as $key=>$value)
 			if(!isset($params[$key]))
 				return false;
@@ -634,6 +658,14 @@ class CUrlRule extends CComponent
 		$suffix=$this->urlSuffix===null ? $manager->urlSuffix : $this->urlSuffix;
 
 		$url=strtr($this->template,$tr);
+
+		if($this->hasHostInfo)
+		{
+			$hostInfo=Yii::app()->getRequest()->getHostInfo();
+			if(strpos($url,$hostInfo)===0)
+				$url=substr($url,strlen($hostInfo));
+		}
+
 		if(empty($params))
 			return $url!=='' ? $url.$suffix : $url;
 
@@ -645,6 +677,7 @@ class CUrlRule extends CComponent
 				$url.=$suffix;
 			$url.='?'.$manager->createPathInfo($params,'=',$ampersand);
 		}
+
 		return $url;
 	}
 

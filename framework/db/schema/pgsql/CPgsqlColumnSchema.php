@@ -12,7 +12,7 @@
  * CPgsqlColumnSchema class describes the column meta data of a PostgreSQL table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CPgsqlColumnSchema.php 2047 2010-04-13 01:52:10Z qiang.xue $
+ * @version $Id: CPgsqlColumnSchema.php 2228 2010-06-25 19:56:58Z qiang.xue $
  * @package system.db.schema.pgsql
  * @since 1.0
  */
@@ -49,7 +49,7 @@ class CPgsqlColumnSchema extends CDbColumnSchema
 			$this->defaultValue=false;
 		else if(strpos($defaultValue,'nextval')===0)
 			$this->defaultValue=null;
-		else if(preg_match('/\'(.*)\'::/',$defaultValue,$matches))
+		else if(preg_match('/^\'(.*)\'::/',$defaultValue,$matches))
 			$this->defaultValue=$this->typecast(str_replace("''","'",$matches[1]));
 		else if(preg_match('/^-?\d+(\.\d*)?$/',$defaultValue,$matches))
 			$this->defaultValue=$this->typecast($defaultValue);

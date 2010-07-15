@@ -19,6 +19,12 @@
         </span>
     </div>
     <div class="drow">
+        <span class="shead"><?php echo CHtml::activeLabel($model, 'contest_type_id');?></span>
+        <span>
+            <?php echo CHtml::activeDropDownList($model, 'contest_type_id', ContestType::toArray());?>
+        </span>
+    </div>
+    <div class="drow">
         <span class="shead"><?php echo CHtml::activeLabel($model, 'start_time');?></span>
         <span>
             <?php

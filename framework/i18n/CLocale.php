@@ -14,7 +14,7 @@
  * The data includes the number formatting information and date formatting information.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CLocale.php 1981 2010-03-31 17:16:28Z qiang.xue $
+ * @version $Id: CLocale.php 2093 2010-05-05 00:45:46Z qiang.xue $
  * @package system.i18n
  * @since 1.0
  */
@@ -230,9 +230,9 @@ class CLocale extends CComponent
 	public function getWeekDayNames($width='wide',$standAlone=false)
 	{
 		if($standAlone)
-			return isset($this->_data['weekDayNamesSA'][$width]) ? $this->_data['weekDayNamesSA'][$width][$day] : $this->_data['weekDayNames'][$width];
+			return isset($this->_data['weekDayNamesSA'][$width]) ? $this->_data['weekDayNamesSA'][$width] : $this->_data['weekDayNames'][$width];
 		else
-			return isset($this->_data['weekDayNames'][$width]) ? $this->_data['weekDayNames'][$width][$day] : $this->_data['weekDayNamesSA'][$width];
+			return isset($this->_data['weekDayNames'][$width]) ? $this->_data['weekDayNames'][$width] : $this->_data['weekDayNamesSA'][$width];
 	}
 
 	/**

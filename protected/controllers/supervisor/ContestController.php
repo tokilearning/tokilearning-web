@@ -3,52 +3,60 @@
 class ContestController extends CSupervisorController {
 
     private $_model;
-    
+
     public function actionIndex() {
         $criteria = new CDbCriteria;
         $criteria->group = 'id';
         $filter = '';
-        if (isset($_GET['filter'])){
+        if (isset($_GET['filter'])) {
             $filter = explode('_', $_GET['filter']);
         } else {
             $filter[0] = 'current';
         }
-        if (isset($filter[1]) && $filter[1] == 'active'){
+        if (isset($filter[1]) && $filter[1] == 'active') {
             $criteria->join = "LEFT JOIN contests_users ON id = contest_id";
-            $criteria->addCondition("owner_id = ".Yii::app()->user->getId()." OR contests_users.user_id = ".Yii::app()->user->getId());
+            $criteria->addCondition("owner_id = " . Yii::app()->user->getId() . " OR contests_users.user_id = " . Yii::app()->user->getId());
         }
-        switch($filter[0]){
+        switch ($filter[0]) {
             case 'current':
                 $now = new CDbExpression('NOW()');
-                $criteria->addCondition('start_time <= '.$now.' AND end_time >= '.$now);
+                $criteria->addCondition('start_time <= ' . $now . ' AND end_time >= ' . $now);
                 break;
             case 'past':
                 $now = new CDbExpression('NOW()');
-                $criteria->addCondition('end_time <= '.$now);
+                $criteria->addCondition('end_time <= ' . $now);
                 break;
             case 'all':
             default :
                 break;
         }
-        $dataProvider = new CActiveDataProvider('Contest', array(
+
+		$contests = Contest::model()->findAll($criteria);
+        /*$dataProvider = new CActiveDataProvider('Contest', array(
                     'pagination' => array(
-                        'pageSize' => 20,
+                        'pageSize' => 40,
                     ),
                     'criteria' => $criteria,
-                ));
+                ));*/
+		$dataProvider = new CArrayDataProvider($contests, array(
+			'pagination' => array('pageSize' => 40)
+		));
         $this->render('index', array('dataProvider' => $dataProvider));
     }
 
     public function actionCreate() {
         $model = new Contest('create');
-        if (isset($_POST['Contest'])){
+        if (isset($_POST['Contest'])) {
             $model->attributes = $_POST['Contest'];
-            $model->start_time = date('Y-m-d H:i:s', strtotime($model->startDate." ".$model->startTime));
-            $model->end_time = date('Y-m-d H:i:s', strtotime($model->endDate." ".$model->endTime));
-            if ($model->validate()){
+            $model->start_time = date('Y-m-d H:i:s', strtotime($model->startDate . " " . $model->startTime));
+            $model->end_time = date('Y-m-d H:i:s', strtotime($model->endDate . " " . $model->endTime));
+            if ($model->validate()) {
                 $model->owner_id = Yii::app()->user->id;
-                $model->status = Contest::CONTEST_VISIBILITY_HIDDEN;
+                $model->status = Contest::CONTEST_VISIBILITY_PRIVATE;
                 $model->save(false);
+                //Yii::import('ext.contest.ContestTypeHandler');
+                //$handler = ContestTypeHandler::getHandler($model);
+                //$handler->initiate($model);
                 $this->redirect(array('contest/supervisor', 'contestid' => $model->id));
             }
         }
@@ -60,7 +68,7 @@ class ContestController extends CSupervisorController {
         $this->render('view', array('contest' => $contest));
     }
 
-    public function actionDelete(){
+    public function actionDelete() {
         
     }
 

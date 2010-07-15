@@ -49,7 +49,7 @@
  * </ul>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CValidator.php 1838 2010-02-26 03:52:44Z qiang.xue $
+ * @version $Id: CValidator.php 2268 2010-07-18 17:44:48Z qiang.xue $
  * @package system.validators
  * @since 1.0
  */
@@ -100,6 +100,12 @@ abstract class CValidator extends CComponent
 	 * Each array value refers to a scenario name with the same name as its array key.
 	 */
 	public $on;
+	/**
+	 * @var boolean whether attributes listed with this validator should be considered safe for massive assignment.
+	 * Defaults to true.
+	 * @since 1.1.4
+	 */
+	public $safe=true;
 
 	/**
 	 * Validates a single attribute.
@@ -140,6 +146,8 @@ abstract class CValidator extends CComponent
 			$validator->attributes=$attributes;
 			$validator->method=$name;
 			$validator->params=$params;
+			if(isset($params['skipOnError']))
+				$validator->skipOnError=$params['skipOnError'];
 		}
 		else
 		{

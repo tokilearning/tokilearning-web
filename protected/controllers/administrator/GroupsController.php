@@ -82,24 +82,24 @@ class GroupsController extends CAdminController {
     }
 
     public function actionMemberLookup(){
-        if (Yii::app()->request->isAjaxRequest && isset($_GET['q'])){
-            $name = $_GET['q'];
-            $limit = min($_GET['limit'], 10);
+        if (Yii::app()->request->isAjaxRequest && isset($_GET['term'])){
+            $query = $_GET['term'];
             $criteria = new CDbCriteria;
             $criteria->condition = "id LIKE :sterm OR username LIKE :sterm OR full_name LIKE :sterm OR email LIKE :sterm";
-            $criteria->params = array(":sterm" => "%$name%");
-            $criteria->limit = $limit;
+            $criteria->params = array(":sterm" => "%$query%");
             $users = User::model()->findAll($criteria);
-            $retval = '';
+            $retval = array();
             foreach($users as $user)
             {
-                $retval .= $user->getAttribute('id'). '. '
-                        .$user->getAttribute('full_name').' ('
-                        .$user->getAttribute('username').' / '
-                        .$user->getAttribute('email')
-                        . ')'.'|'.$user->getAttribute('id')."\n";
+                $retval[] = array(
+                    'value' => $user->getAttribute('id'),
+                    'label' => $user->getAttribute('id').'. '.
+                        $user->getAttribute('full_name').' ('.
+                        $user->getAttribute('username').'/'.
+                        $user->getAttribute('email').')',
+                );
             }
-            echo $retval;
+            echo CJSON::encode($retval);
         }
     }
 

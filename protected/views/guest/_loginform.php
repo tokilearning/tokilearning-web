@@ -28,8 +28,10 @@ Yii::app()->clientScript->registerCss('login-form-css', '
             <?php echo CHtml::link('Lupa Sandi?', array('guest/forgot'), array('class'=>'forgot'))?>
         </span>
     </div>
-    <div class="row">
-        
+    <!--
+    <div style="padding:2px 15px;font-size:0.85em;font-weight:bold;">
+        Belum punya akun? Silakan <?php echo CHtml::link('mendaftar', $this->createUrl('signup'));?>
     </div>
+    -->
     <?php echo CHtml::endForm(); ?>
 </div><!-- form -->

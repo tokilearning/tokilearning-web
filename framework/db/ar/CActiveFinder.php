@@ -15,7 +15,7 @@
  * {@link CActiveRecord}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveFinder.php 2079 2010-04-30 03:07:58Z qiang.xue $
+ * @version $Id: CActiveFinder.php 2396 2010-08-31 12:40:04Z qiang.xue $
  * @package system.db.ar
  * @since 1.0
  */
@@ -52,21 +52,6 @@ class CActiveFinder extends CComponent
 	}
 
 	/**
-	 * Uses the most aggressive join approach.
-	 * By calling this method, even if there is LIMIT/OFFSET option set for
-	 * the primary table query, we will still use a single SQL statement.
-	 * By default (without calling this method), the primary table will be queried
-	 * by itself so that LIMIT/OFFSET can be correctly applied.
-	 * @return CActiveFinder the finder object
-	 * @since 1.0.2
-	 */
-	public function together()
-	{
-		$this->joinAll=true;
-		return $this;
-	}
-
-	/**
 	 * Performs the relational query based on the given DB criteria.
 	 * Do not call this method. This method is used internally.
 	 * @param CDbCriteria the DB criteria
@@ -75,86 +60,31 @@ class CActiveFinder extends CComponent
 	 */
 	public function query($criteria,$all=false)
 	{
-		$this->_joinTree->model->applyScopes($criteria);
-		$this->_joinTree->beforeFind();
+		$this->joinAll=$criteria->together===true;
+		$this->_joinTree->beforeFind(false);
 
-		$alias=$criteria->alias===null ? 't' : $criteria->alias;
-		$this->_joinTree->tableAlias=$alias;
-		$this->_joinTree->rawTableAlias=$this->_builder->getSchema()->quoteTableName($alias);
+		if($criteria->alias!='')
+		{
+			$this->_joinTree->tableAlias=$criteria->alias;
+			$this->_joinTree->rawTableAlias=$this->_builder->getSchema()->quoteTableName($criteria->alias);
+		}
 
 		$this->_joinTree->find($criteria);
 		$this->_joinTree->afterFind();
 
 		if($all)
-			return array_values($this->_joinTree->records);
+			$result = array_values($this->_joinTree->records);
 		else if(count($this->_joinTree->records))
-			return reset($this->_joinTree->records);
+			$result = reset($this->_joinTree->records);
 		else
-			return null;
+			$result = null;
+
+		$this->_joinTree = null;
+		return $result;
 	}
 
 	/**
-	 * This is the relational version of {@link CActiveRecord::find()}.
-	 */
-	public function find($condition='',$params=array())
-	{
-		Yii::trace(get_class($this->_joinTree->model).'.find() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createCriteria($condition,$params);
-		return $this->query($criteria);
-	}
-
-	/**
-	 * This is the relational version of {@link CActiveRecord::findAll()}.
-	 */
-	public function findAll($condition='',$params=array())
-	{
-		Yii::trace(get_class($this->_joinTree->model).'.findAll() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createCriteria($condition,$params);
-		return $this->query($criteria,true);
-	}
-
-	/**
-	 * This is the relational version of {@link CActiveRecord::findByPk()}.
-	 */
-	public function findByPk($pk,$condition='',$params=array())
-	{
-		Yii::trace(get_class($this->_joinTree->model).'.findByPk() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createPkCriteria($this->_joinTree->model->getTableSchema(),$pk,$condition,$params,$this->_joinTree->rawTableAlias.'.');
-		return $this->query($criteria);
-	}
-
-	/**
-	 * This is the relational version of {@link CActiveRecord::findAllByPk()}.
-	 */
-	public function findAllByPk($pk,$condition='',$params=array())
-	{
-		Yii::trace(get_class($this->_joinTree->model).'.findAllByPk() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createPkCriteria($this->_joinTree->model->getTableSchema(),$pk,$condition,$params,$this->_joinTree->rawTableAlias.'.');
-		return $this->query($criteria,true);
-	}
-
-	/**
-	 * This is  the relational version of {@link CActiveRecord::findByAttributes()}.
-	 */
-	public function findByAttributes($attributes,$condition='',$params=array())
-	{
-		Yii::trace(get_class($this->_joinTree->model).'.findByAttributes() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createColumnCriteria($this->_joinTree->model->getTableSchema(),$attributes,$condition,$params,$this->_joinTree->rawTableAlias.'.');
-		return $this->query($criteria);
-	}
-
-	/**
-	 * This is the relational version of {@link CActiveRecord::findAllByAttributes()}.
-	 */
-	public function findAllByAttributes($attributes,$condition='',$params=array())
-	{
-		Yii::trace(get_class($this->_joinTree->model).'.findAllByAttributes() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createColumnCriteria($this->_joinTree->model->getTableSchema(),$attributes,$condition,$params,$this->_joinTree->rawTableAlias.'.');
-		return $this->query($criteria,true);
-	}
-
-	/**
-	 * This is the relational version of {@link CActiveRecord::findBySql()}.
+	 * This method is internally called.
 	 */
 	public function findBySql($sql,$params=array())
 	{
@@ -162,7 +92,7 @@ class CActiveFinder extends CComponent
 		if(($row=$this->_builder->createSqlCommand($sql,$params)->queryRow())!==false)
 		{
 			$baseRecord=$this->_joinTree->model->populateRecord($row,false);
-			$this->_joinTree->beforeFind();
+			$this->_joinTree->beforeFind(false);
 			$this->_joinTree->findWithBase($baseRecord);
 			$this->_joinTree->afterFind();
 			return $baseRecord;
@@ -170,7 +100,7 @@ class CActiveFinder extends CComponent
 	}
 
 	/**
-	 * This is the relational version of {@link CActiveRecord::findAllBySql()}.
+	 * This method is internally called.
 	 */
 	public function findAllBySql($sql,$params=array())
 	{
@@ -178,7 +108,7 @@ class CActiveFinder extends CComponent
 		if(($rows=$this->_builder->createSqlCommand($sql,$params)->queryAll())!==array())
 		{
 			$baseRecords=$this->_joinTree->model->populateRecords($rows,false);
-			$this->_joinTree->beforeFind();
+			$this->_joinTree->beforeFind(false);
 			$this->_joinTree->findWithBase($baseRecords);
 			$this->_joinTree->afterFind();
 			return $baseRecords;
@@ -188,14 +118,12 @@ class CActiveFinder extends CComponent
 	}
 
 	/**
-	 * This is the relational version of {@link CActiveRecord::count()}.
-	 * @since 1.0.3
+	 * This method is internally called.
 	 */
-	public function count($condition='',$params=array())
+	public function count($criteria)
 	{
 		Yii::trace(get_class($this->_joinTree->model).'.count() eagerly','system.db.ar.CActiveRecord');
-		$criteria=$this->_builder->createCriteria($condition,$params);
-		$this->_joinTree->model->applyScopes($criteria);
+		$this->joinAll=$criteria->together!==true;
 
 		$alias=$criteria->alias===null ? 't' : $criteria->alias;
 		$this->_joinTree->tableAlias=$alias;
@@ -255,15 +183,20 @@ class CActiveFinder extends CComponent
 
 			$relation=clone $relation;
 			$model=CActiveRecord::model($relation->className);
+			if($relation instanceof CActiveRelation)
+			{
+				$oldAlias=$model->getTableAlias(false,false);
+				$model->setTableAlias($relation->alias===null?$relation->name:$relation->alias);
+			}
 			if(($scope=$model->defaultScope())!==array())
-				$relation->mergeWith($scope);
+				$relation->mergeWith($scope,true);
 			if(!empty($scopes))
 			{
 				$scs=$model->scopes();
 				foreach($scopes as $scope)
 				{
 					if(isset($scs[$scope]))
-						$relation->mergeWith($scs[$scope]);
+						$relation->mergeWith($scs[$scope],true);
 					else
 						throw new CDbException(Yii::t('yii','Active record class "{class}" does not have a scope named "{scope}".',
 							array('{class}'=>get_class($model), '{scope}'=>$scope)));
@@ -273,6 +206,9 @@ class CActiveFinder extends CComponent
 			// dynamic options
 			if($options!==null)
 				$relation->mergeWith($options);
+
+			if($relation instanceof CActiveRelation)
+				$model->setTableAlias($oldAlias);
 
 			if($relation instanceof CStatRelation)
 				return new CStatElement($this,$relation,$parent);
@@ -301,7 +237,7 @@ class CActiveFinder extends CComponent
  * CJoinElement represents a tree node in the join tree created by {@link CActiveFinder}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveFinder.php 2079 2010-04-30 03:07:58Z qiang.xue $
+ * @version $Id: CActiveFinder.php 2396 2010-08-31 12:40:04Z qiang.xue $
  * @package system.db.ar
  * @since 1.0
  */
@@ -377,8 +313,8 @@ class CJoinElement
 			$this->model=$relation;
 			$this->_builder=$relation->getCommandBuilder();
 			$this->_table=$relation->getTableSchema();
-			$this->tableAlias='t';
-			$this->rawTableAlias=$this->_builder->getSchema()->quoteTableName('t');
+			$this->tableAlias=$this->model->getTableAlias();
+			$this->rawTableAlias=$this->_builder->getSchema()->quoteTableName($this->tableAlias);
 		}
 
 		// set up column aliases, such as t1_c2
@@ -458,6 +394,7 @@ class CJoinElement
 		$query->conditions[]=$child->relation->condition;
 		$query->conditions[]=$child->relation->on;
 		$query->groups[]=$child->relation->group;
+		$query->joins[]=$child->relation->join;
 		$query->havings[]=$child->relation->having;
 		$query->orders[]=$child->relation->order;
 		if(is_array($child->relation->params))
@@ -469,6 +406,7 @@ class CJoinElement
 			$query->offset=$child->relation->offset;
 		}
 
+		$child->beforeFind();
 		$child->applyLazyCondition($query,$baseRecord);
 
 		$this->_joined=true;
@@ -694,9 +632,13 @@ class CJoinElement
 	 * Calls {@link CActiveRecord::beforeFind}.
 	 * @since 1.0.11
 	 */
-	public function beforeFind()
+	public function beforeFind($isChild=true)
 	{
-		$this->model->beforeFindInternal();
+		if($isChild)
+			$this->model->beforeFindInternal();
+
+		foreach($this->children as $child)
+			$child->beforeFind(true);
 	}
 
 	/**
@@ -709,6 +651,8 @@ class CJoinElement
 			$record->afterFindInternal();
 		foreach($this->children as $child)
 			$child->afterFind();
+
+		$this->children = null;
 	}
 
 	/**
@@ -720,7 +664,7 @@ class CJoinElement
 		foreach($this->children as $child)
 		{
 			if($child->relation instanceof CHasOneRelation || $child->relation instanceof CBelongsToRelation
-				|| $this->_finder->joinAll || !$this->_finder->baseLimited && $child->relation->together)
+				|| $this->_finder->joinAll || $child->relation->together || (!$this->_finder->baseLimited && $child->relation->together===null))
 			{
 				$child->_joined=true;
 				$query->join($child);
@@ -1101,7 +1045,7 @@ class CJoinElement
  * CJoinQuery represents a JOIN SQL statement.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveFinder.php 2079 2010-04-30 03:07:58Z qiang.xue $
+ * @version $Id: CActiveFinder.php 2396 2010-08-31 12:40:04Z qiang.xue $
  * @package system.db.ar
  * @since 1.0
  */
@@ -1194,6 +1138,7 @@ class CJoinQuery
 		$this->conditions[]=$element->relation->condition;
 		$this->orders[]=$element->relation->order;
 		$this->joins[]=$element->getJoinCondition();
+		$this->joins[]=$element->relation->join;
 		$this->groups[]=$element->relation->group;
 		$this->havings[]=$element->relation->having;
 
@@ -1257,7 +1202,7 @@ class CJoinQuery
  * CStatElement represents STAT join element for {@link CActiveFinder}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveFinder.php 2079 2010-04-30 03:07:58Z qiang.xue $
+ * @version $Id: CActiveFinder.php 2396 2010-08-31 12:40:04Z qiang.xue $
  * @package system.db.ar
  * @since 1.0.4
  */
@@ -1339,9 +1284,9 @@ class CStatElement
 
 		$records=$this->_parent->records;
 
-		$where=empty($relation->condition)?'' : ' WHERE ('.$relation->condition.')';
+		$where=empty($relation->condition)?' WHERE ' : ' WHERE ('.$relation->condition.') AND ';
 		$group=empty($relation->group)?'' : ', '.$relation->group;
-		$having=empty($relation->having)?'' : ' AND ('.$relation->having.')';
+		$having=empty($relation->having)?'' : ' HAVING ('.$relation->having.')';
 		$order=empty($relation->order)?'' : ' ORDER BY '.$relation->order;
 
 		$c=$schema->quoteColumnName('c');
@@ -1352,9 +1297,8 @@ class CStatElement
 		{
 			$col=$table->columns[$fks[0]]->rawName;
 			$sql="SELECT $col AS $c, {$relation->select} AS $s FROM {$table->rawName}"
-				.$where
+				.$where.'('.$builder->createInCondition($table,$fks[0],array_keys($records)).')'
 				." GROUP BY $col".$group
-				." HAVING ".$builder->createInCondition($table,$fks[0],array_keys($records))
 				.$having.$order;
 			$command=$builder->getDbConnection()->createCommand($sql);
 			if(is_array($relation->params))
@@ -1380,9 +1324,8 @@ class CStatElement
 				$cols[$name]=$name.' AS '.$schema->quoteColumnName('c'.$n);
 			}
 			$sql='SELECT '.implode(', ',$cols).", {$relation->select} AS $s FROM {$table->rawName}"
-				.$where
+				.$where.'('.$builder->createInCondition($table,$fks,$keys).')'
 				.' GROUP BY '.implode(', ',array_keys($cols)).$group
-				.' HAVING '.$builder->createInCondition($table,$fks,$keys)
 				.$having.$order;
 			$command=$builder->getDbConnection()->createCommand($sql);
 			if(is_array($relation->params))

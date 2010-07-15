@@ -43,16 +43,31 @@ class ClarificationController extends CContestController {
         }
         $dataProvider = new CActiveDataProvider('Clarification', array(
             'pagination' => array(
-                'pageSize' => 10,
+                'pageSize' => 100,
             ),
             'criteria' => $criteria,
         ));
         $this->render('index', array('dataProvider' => $dataProvider));
     }
 
+    public function actionGetUnreadClar() {
+        if (Yii::app()->request->isAjaxRequest) {
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'status = ' . Clarification::STATUS_UNANSWERED . ' AND contest_id = '.$this->getContest()->id;
+            echo count(Clarification::model()->findAll($criteria));
+        }
+    }
+
     public function actionView(){
         $model = $this->loadModel();
         $this->render('view', array('model' => $model));
+    }
+
+    public function actionDelete() {
+        $model = $this->loadModel();
+        $model->delete();
+        if (!isset($_GET['ajax']))
+            $this->redirect(array('index'));
     }
 
     public function actionAnswer(){

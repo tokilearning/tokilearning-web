@@ -8,6 +8,8 @@ class ProblemSet extends CActiveRecord {
     const PROBLEM_SET_STATUS_UNPUBLISHED = 0;
     const PROBLEM_SET_STATUS_PUBLISHED = 1;
 
+    private $_joinFields;
+
     public static function model($className=__CLASS__) {
         return parent::model($className);
     }
@@ -86,16 +88,51 @@ class ProblemSet extends CActiveRecord {
         return $this->parent->name;
     }
 
+    public function getPath(){
+        $node = &$this;
+        $path = array();
+        while ($node != NULL){
+            $path[] = array(
+                'id' => $node->id,
+                'name' => $node->name,
+            );
+            $node = &$node->parent;
+        }
+        return $path;
+    }
+
     public function addProblem($problem){
+        //TODO: Clean this
         $sql = "INSERT INTO problemsets_problems (problemset_id, problem_id) VALUES ('".$this->id."', ".$problem->id.");";
         $command = $this->dbConnection->createCommand($sql);
         $command->execute();
     }
 
     public function removeProblem($problem){
+        //TODO: Clean this
         $sql = "DELETE FROM problemsets_problems WHERE problemset_id = '".$this->id."' AND problem_id = '".$problem->id."';";
         $command = $this->dbConnection->createCommand($sql);
         $command->execute();
+    }
+
+    public function hasProblem($problem){
+        //TODO: Clean this
+        $sql = "SELECT * FROM problemsets_problems WHERE problemset_id = '".$this->id."' AND problem_id = '".$problem->id."';";
+        $command = $this->dbConnection->createCommand($sql);
+        $result = $command->query();
+        return $result->rowCount == 1;
+    }
+
+    public function increaseProblemRank($problem){
+        
+    }
+
+    public function decreaseProblemRank($problem){
+        
+    }
+
+    public function generateProblemRank($problem){
+        
     }
 
     public function addProblemSet($problemset){
@@ -108,5 +145,30 @@ class ProblemSet extends CActiveRecord {
         $problemset->save(false);
     }
 
+    public function getJoinField($problem = NULL, $field = NULL){
+        if (($problem === NULL) && ($field === NULL)){
+            return $this->_joinFields;
+        } else if ($field === NULL) {
+            return $this->_joinFields[$problem->id];
+        } else {
+            return $this->_joinFields[$problem->id][$field];
+        }
+    }
+
+    private function loadJoinFields(){
+        $problemset_id = $this->id;
+        $sql = "SELECT * FROM problemsets_problems WHERE problemset_id  = $problemset_id";
+        $command = $this->dbConnection->createCommand($sql);
+        $result = $command->query();
+        $this->_joinFields = array();
+        foreach($result as $r) {
+            $this->_joinFields[$r['problem_id']] = $r;
+        }
+        return $this->_joinFields;
+    }
+
+    private function saveJoinFields(){
+        
+    }
 }
 //end of file

@@ -76,6 +76,7 @@ class CKEditor extends CInputWidget{
     public function  __construct($owner=null) {
         parent::__construct($owner);
         $this->setLanguage(Yii::app()->language);
+        //echo Yii::app()->language;
     }
 
     public function setLanguage($value){
@@ -87,8 +88,8 @@ class CKEditor extends CInputWidget{
              $suffix = empty($lang) ? 'en' : ($p !== false) ? strtolower(substr($lang, 0, $p)) : strtolower($lang);
              if (in_array($suffix, $this->allowedLanguages)) $this->language = $suffix;
           }
-        if(isset($this->allowedLanguages[$language]))
-            $this->language=$language;
+        if(isset($this->allowedLanguages[$lang]))
+            $this->language=$lang;
     }
 
     public function getLanguage(){

@@ -35,25 +35,22 @@ class ProblemController extends CContestController {
         $this->render('index', array('dataProvider' => $dataProvider));
     }
 
-    public function actionView() {
-        $this->render('view');
-    }
-
     public function actionProblemLookup(){
-        if (Yii::app()->request->isAjaxRequest && isset($_GET['q'])){
-            $title = $_GET['q'];
-            $limit = min($_GET['limit'], 10);
+        if (Yii::app()->request->isAjaxRequest && isset($_GET['term'])){
+            $title = $_GET['term'];
             $criteria = new CDbCriteria;
-            $criteria->condition = "title LIKE :sterm";
+            $criteria->join = "LEFT JOIN problem_privileges ON problem_id = id";
+            $criteria->condition = "title LIKE :sterm AND (user_id = " . Yii::app()->user->id . " OR author_id = " . Yii::app()->user->id . ")";
             $criteria->params = array(":sterm" => "%$title%");
-            $criteria->limit = $limit;
             $problems = Problem::model()->findAll($criteria);
-            $retval = '';
+            $retval = array();
             foreach ($problems as $problem) {
-                $retval .= $problem->getAttribute('id') . '. ' . $problem->getAttribute('title').'|'
-                        . $problem->getAttribute('id') . "\n";
+                $retval[] = array(
+                    'value' => $problem->getAttribute('id'),
+                    'label' => $problem->getAttribute('id') . '. ' . $problem->getAttribute('title')
+                );
             }
-            echo $retval;
+            echo CJSON::encode($retval);
         }
     }
 
@@ -87,6 +84,18 @@ class ProblemController extends CContestController {
         $model = $this->loadModel();
         $this->getContest()->setProblemStatus($model, Contest::CONTEST_PROBLEM_HIDDEN);
         $this->redirect(array('index'));
+    }
+
+    public function actionView() {
+        $this->render('view');
+    }
+
+    public function actionSubmit() {
+        $this->render('view');
+    }
+
+    public function actionSubmissions() {
+        $this->render('view');
     }
 
     public function loadModel() {

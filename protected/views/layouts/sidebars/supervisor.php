@@ -1,7 +1,7 @@
 <div class="widget">
-    <?php if (Yii::app()->user->checkAccess('supervisor')):?>
-    <h4>Menu Supervisor</h4>
-    <div>
+    <?php if (Yii::app()->user->checkAccess('supervisor')): ?>
+        <h4>Menu Supervisor</h4>
+        <div>
         <?php
         $this->widget('zii.widgets.CMenu', array(
             'items' => array(
@@ -10,10 +10,14 @@
                 array('label' => 'Tipe Soal', 'url' => array('/supervisor/problemtypes')),
                 array('label' => 'Jawaban', 'url' => array('/supervisor/submission')),
                 array('label' => 'Kontes', 'url' => array('/supervisor/contest')),
-                array('label' => 'PasteBin', 'url' => array('/supervisor/pastebin'))),
+                array('label' => 'Latihan', 'url' => array('/supervisor/training')),
+                array('label' => 'PasteBin', 'url' => array('/supervisor/pastebin')),
+                array('label' => 'Public File', 'url' => array('/supervisor/file')),
+                array('label' => 'Statistik', 'url' => array('/supervisor/statistics')),
+            ),
             'htmlOptions' => array('class' => 'menu')
         ));
         ?>
     </div>
-    <?php endif;?>
+    <?php endif; ?>
 </div>

@@ -1,0 +1,1 @@
+<?php $this->renderPartial("ext.evaluator.base.view.problemupdate.files", array('problem' => $problem)); ?>

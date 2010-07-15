@@ -29,7 +29,7 @@
  * You may also call {@link prepare} to explicitly prepare an SQL statement.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbCommand.php 1880 2010-03-10 21:48:45Z qiang.xue $
+ * @version $Id: CDbCommand.php 2417 2010-09-02 16:01:38Z qiang.xue $
  * @package system.db
  * @since 1.0
  */
@@ -118,8 +118,9 @@ class CDbCommand extends CComponent
 			catch(Exception $e)
 			{
 				Yii::log('Error in preparing SQL: '.$this->getText(),CLogger::LEVEL_ERROR,'system.db.CDbCommand');
+                $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
 				throw new CDbException(Yii::t('yii','CDbCommand failed to prepare the SQL statement: {error}',
-					array('{error}'=>$e->getMessage())));
+					array('{error}'=>$e->getMessage())),(int)$e->getCode(),$errorInfo);
 			}
 		}
 	}
@@ -154,7 +155,7 @@ class CDbCommand extends CComponent
 		else
 			$this->_statement->bindParam($name,$value,$dataType,$length);
 		if($this->_connection->enableParamLogging)
-			$this->_params[$name]='['.gettype($value).']';
+			$this->_params[$name]=&$value;
 		return $this;
 	}
 
@@ -198,9 +199,10 @@ class CDbCommand extends CComponent
 	{
 		if($this->_connection->enableParamLogging && ($pars=array_merge($this->_params,$params))!==array())
 		{
+			$p=array();
 			foreach($pars as $name=>$value)
-				$pars[$name]=$name.'='.$value;
-			$par='. Bind with parameter ' .implode(', ',$pars);
+				$p[$name]=$name.'='.$value;
+			$par='. Bind with parameter ' .implode(', ',$p);
 		}
 		else
 			$par='';
@@ -211,7 +213,10 @@ class CDbCommand extends CComponent
 				Yii::beginProfile('system.db.CDbCommand.execute('.$this->getText().')','system.db.CDbCommand.execute');
 
 			$this->prepare();
-			$this->_statement->execute($params===array() ? null : $params);
+			if($params===array())
+				$this->_statement->execute();
+			else
+				$this->_statement->execute($params);
 			$n=$this->_statement->rowCount();
 
 			if($this->_connection->enableProfiling)
@@ -224,8 +229,10 @@ class CDbCommand extends CComponent
 			if($this->_connection->enableProfiling)
 				Yii::endProfile('system.db.CDbCommand.execute('.$this->getText().')','system.db.CDbCommand.execute');
 			Yii::log('Error in executing SQL: '.$this->getText().$par,CLogger::LEVEL_ERROR,'system.db.CDbCommand');
+            $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
+
 			throw new CDbException(Yii::t('yii','CDbCommand failed to execute the SQL statement: {error}',
-				array('{error}'=>$e->getMessage())));
+				array('{error}'=>$e->getMessage())),(int)$e->getCode(),$errorInfo);
 		}
 	}
 
@@ -339,9 +346,10 @@ class CDbCommand extends CComponent
 	{
 		if($this->_connection->enableParamLogging && ($pars=array_merge($this->_params,$params))!==array())
 		{
+			$p=array();
 			foreach($pars as $name=>$value)
-				$pars[$name]=$name.'='.$value;
-			$par='. Bind with parameter ' .implode(', ',$pars);
+				$p[$name]=$name.'='.$value;
+			$par='. Bind with parameter ' .implode(', ',$p);
 		}
 		else
 			$par='';
@@ -352,7 +360,10 @@ class CDbCommand extends CComponent
 				Yii::beginProfile('system.db.CDbCommand.query('.$this->getText().')','system.db.CDbCommand.query');
 
 			$this->prepare();
-			$this->_statement->execute($params===array() ? null : $params);
+			if($params===array())
+				$this->_statement->execute();
+			else
+				$this->_statement->execute($params);
 
 			if($method==='')
 				$result=new CDbDataReader($this);
@@ -372,8 +383,9 @@ class CDbCommand extends CComponent
 			if($this->_connection->enableProfiling)
 				Yii::endProfile('system.db.CDbCommand.query('.$this->getText().')','system.db.CDbCommand.query');
 			Yii::log('Error in querying SQL: '.$this->getText().$par,CLogger::LEVEL_ERROR,'system.db.CDbCommand');
+            $errorInfo = $e instanceof PDOException ? $e->errorInfo : null;
 			throw new CDbException(Yii::t('yii','CDbCommand failed to execute the SQL statement: {error}',
-				array('{error}'=>$e->getMessage())));
+				array('{error}'=>$e->getMessage())),(int)$e->getCode(),$errorInfo);
 		}
 	}
 }

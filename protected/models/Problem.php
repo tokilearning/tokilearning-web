@@ -13,13 +13,14 @@ class Problem extends CActiveRecord {
     public $directoryPath;
     public $viewPath;
     public $descriptionPath;
+    public $availableLanguages;
     private $_config;
 
     public static function model($className=__CLASS__) {
         return parent::model($className);
     }
 
-    public static function getVisibilityStrings(){
+    public static function getVisibilityStrings() {
         return array(
             self::VISIBILITY_DRAFT => 'Draft',
             self::VISIBILITY_PRIVATE => 'Private',
@@ -31,16 +32,18 @@ class Problem extends CActiveRecord {
         return '{{problems}}';
     }
 
-    public function relations(){
+    public function relations() {
         return array(
             'author' => array(self::BELONGS_TO, 'User', 'author_id'),
             'problemtype' => array(self::BELONGS_TO, 'ProblemType', 'problem_type_id'),
+            'privileged_users' => array(self::MANY_MANY , 'User' , 'problem_privileges(problem_id , user_id)'),
+            'arenas' => array(self::MANY_MANY , 'Arena' , 'arenas_problems(problem_id , arena_id)')
         );
     }
 
-    public function rules(){
+    public function rules() {
         return array(
-            array('title, problem_type_id, visibility, description', 'required'),
+            array('title, problem_type_id, visibility, description, availableLanguages', 'required'),
         );
     }
 
@@ -54,44 +57,143 @@ class Problem extends CActiveRecord {
         );
     }
 
-    public function defaultScope(){
-        return array('order'=>'created_date DESC');
+    public function scopes() {
+        return array(
+            'public' => array(
+                'condition' => 'visibility = ' . self::VISIBILITY_PUBLIC
+            ),
+            'simplebatch' => array(
+                'condition' => 'problem_type_id = 1'
+            )
+        );
     }
 
-    public function beforeSave(){
+    public function defaultScope() {
+        return array('order' => 'created_date DESC');
+    }
+
+    public function isPrivileged($pUser) {
+        if ($this->visibility == self::VISIBILITY_PUBLIC)
+            return true;
+        
+        if ($this->isOwner($pUser))
+            return true;
+
+        ///Check arenas
+        $privileged = false;
+        foreach ($this->arenas as $arena) {
+            if ($arena->isMember($pUser))
+                $privileged = true;
+        }
+
+        $sql = "SELECT user_id FROM problem_privileges WHERE problem_id = " . $this->id . " AND user_id = " . $pUser->id . ";";
+        $command = $this->dbConnection->createCommand($sql);
+        $result = $command->query();
+        return $result->rowCount > 0 || $privileged;
+    }
+
+    public function isOwner($pUser) {
+        return Group::checkMember("administrator", $pUser) || $this->author->id == $pUser->id;
+    }
+
+    public function addArena($pArena) {
+        $this->removeArena($pArena);
+        $sql = "INSERT INTO arenas_problems (problem_id, arena_id) VALUES (" . $this->id . ", " . $pArena->id . ");";
+        $command = $this->dbConnection->createCommand($sql);
+        $command->execute();
+    }
+
+    public function removeArena($pArena) {
+        $sql = "DELETE FROM arenas_problems WHERE problem_id = " . $this->id . " AND arena_id = " . $pArena->id . ";";
+        $command = $this->dbConnection->createCommand($sql);
+        $command->execute();
+    }
+
+    public function grantPrivilege($pUser) {
+        $this->revokePrivilege($pUser);
+        $sql = "INSERT INTO problem_privileges (problem_id, user_id) VALUES (" . $this->id . ", " . $pUser->id . ");";
+        $command = $this->dbConnection->createCommand($sql);
+        $command->execute();
+    }
+
+    public function revokePrivilege($pUser) {
+        $sql = "DELETE FROM problem_privileges WHERE problem_id = " . $this->id . " AND user_id = " . $pUser->id . ";";
+        $command = $this->dbConnection->createCommand($sql);
+        $command->execute();
+    }
+    
+    public function generateChecksum() {
+        $retval = array();
+        $retval['config.json'] = md5_file($this->getConfigurationFilePath());     
+    
+        return array_merge($retval , $this->generateChecksumRec("evaluator/files"));
+    }
+    
+    public function generateChecksumRec($path) {
+        $retval = array();
+        $dir = opendir($this->getDirectoryPath() . "/" . $path);
+        $retval[$path] = '.';
+        
+        while (($file = readdir($dir)) !== false) {
+            $apath = realpath($this->getDirectoryPath() . "/" . $path . "/" . $file);        
+        
+            if (!is_dir($apath)) {
+                //echo $file . "\n";
+                $retval[$path . "/" . $file] = md5_file($apath);
+            }
+            else if ($file != '.' && $file != '..') {
+                $retval = array_merge($retval , $this->generateChecksumRec($path . "/" . $file));
+            }
+        }        
+          
+        closedir($dir);
+        return $retval;
+    }
+
+    public function beforeSave() {
         if ($this->isNewRecord) {
             $this->created_date = new CDbExpression('NOW()');
             $this->modified_date = new CDbExpression('NOW()');
             $this->token = $this->generateToken();
             $this->createProblemDirectory();
+            //Initialize
+            Yii::import('ext.evaluator.ProblemTypeHandler');
+            $handler = ProblemTypeHandler::getHandler($this);
+            $handler->initializeProblem($this);
         } else {
             $this->modified_date = new CDbExpression('NOW()');
+            $configs = CJSON::encode($this->_config);
+            file_put_contents($this->getConfigurationFilePath(), $configs);
         }
-        $configs = CJSON::encode($this->_config);
-        file_put_contents($this->getConfigurationFilePath(), $configs);
+
+        if (count($this->availableLanguages) == 0)
+            $this->availableLanguages = array("c" , "cpp" , "pas");
+
+        $this->available_languages = CJSON::encode($this->availableLanguages);
         return parent::beforeSave();
     }
 
-    public function afterFind(){
+    public function afterFind() {
         //echo $this->getConfigurationFilePath();
         $config_content = file_get_contents($this->getConfigurationFilePath());
         $this->_config = CJSON::decode($config_content);
+        $this->availableLanguages = CJSON::decode($this->available_languages);
         return parent::afterFind();
     }
 
-    public function afterDelete(){
+    public function afterDelete() {
         $problem_directory = $this->getDirectoryPath();
         $this->rmdirRecurse($problem_directory);
         rmdir($problem_directory);
         return parent::afterDelete();
     }
 
-    public function getVisibility(){
+    public function getVisibility() {
         $visibility = self::getVisibilityStrings();
         return $visibility[$this->visibility];
     }
 
-    public function generateToken(){
+    public function generateToken() {
         $exists = false;
         $token = '';
         do {
@@ -100,100 +202,100 @@ class Problem extends CActiveRecord {
             //TODO
             $exists = (self::model()->exists("token = '$token'"));
             //$exists = (bool) ORM::factory('problem')->where('token', $token)->count_all();
-        } while($exists);
+        } while ($exists);
         return $token;
     }
 
-    public function init(){
-        self::$problemRepositoryPath = Yii::app()->params->config['evaluator']['problem']['problem_repository_path']."/";
+    public function init() {
+        self::$problemRepositoryPath = Yii::app()->params->config['evaluator']['problem']['problem_repository_path'] . "/";
     }
 
     /**
      * 
      */
-
-    public function createProblemDirectory(){
+    public function createProblemDirectory() {
         $directory_path = $this->getDirectoryPath();
-        if (!file_exists($directory_path)){
+        if (!file_exists($directory_path)) {
             mkdir($directory_path, 0777);
-        }else if (!is_dir($directory_path)){
+        } else if (!is_dir($directory_path)) {
             ulink($directory_path);
         }
-        mkdir($directory_path . 'evaluator/', 0777);
-        mkdir($directory_path . 'evaluator/files/', 0777);
-        mkdir($directory_path . 'view/', 0777);
-        mkdir($directory_path . 'view/files/', 0777);
-        //
-        copy($this->problemtype->getViewDirectoryPath().'description.html', $directory_path.'view/description.html');
-        
     }
 
-    public function checkDirectory($path){
-        if (!file_exists($path)){
+    public function checkDirectory($path) {
+        if (!file_exists($path)) {
             mkdir($path, 0777);
-        }else if (!is_dir($path)){
+        } else if (!is_dir($path)) {
             unlink($path);
             mkdir($path, 0777);
         }
         return $path;
     }
 
-    public function getDirectoryPath(){
-        return $this->checkDirectory(self::$problemRepositoryPath . $this->token . '/');
+    public function isProblemDirectoryExists() {
+        return file_exists(self::$problemRepositoryPath . $this->token . '/');
     }
 
-    public function getEvaluatorPath(){
-        return $this->checkDirectory($this->getDirectoryPath().'evaluator'.'/');
+    public function getDirectoryPath() {
+        $path = $this->checkDirectory(self::$problemRepositoryPath . $this->token . '/');
+        return realpath($path) . DIRECTORY_SEPARATOR;
     }
 
-    public function getEvaluatorFile($filename){
-        $filename = $this->getEvaluatorPath().'files/'.$filename;
-        if (file_exists($filename)){
+    public function getFile($filename) {
+        $filename = realpath($this->getDirectoryPath() . $filename);
+        if (file_exists($filename) && (strpos($filename, $this->getDirectoryPath()) !== false)) {
             return $filename;
-        }else{
+        } else {
             return NULL;
         }
     }
 
-    public function deleteEvaluatorFile($filename){
-        $filename = $this->getEvaluatorPath().'files/'.$filename;
-        unlink($filename);
+    public function deleteFile($filename) {
+        $filename = realpath($this->getDirectoryPath() . $filename);
+        if (file_exists($filename) && (strpos($filename, $this->getDirectoryPath()) !== false)) {
+            if (is_dir($filename)) {
+                self::rmdirRecurse($filename);
+            } else {
+                unlink($filename);
+            }
+        }
     }
 
-    public function getEvaluatorFileList($noindex = true){
-        $path = $this->getEvaluatorPath()."/files";
+    public function getFileList($dirname, $noindex = true) {
+        $dirpath = $this->getDirectoryPath();
+        $path = realpath($dirpath . $dirname);
+
         $ar_file = array();
         $ff = array();
-        if(is_dir($path)){
+        if (is_dir($path)) {
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
-                $absolutepath = $path."/".$file;
-                if (filetype($absolutepath) == 'file'){
-                    if (!$noindex){
+                $absolutepath = $path . "/" . $file;
+                if (filetype($absolutepath) == 'file') {
+                    if (!$noindex) {
                         $ff[] = $file;
-                        $ar_file[$file] = array (
-                                'name' => $file,
-                                'path' => $absolutepath,
-                                'size' => filesize($absolutepath),
-                                'modified' => filemtime($absolutepath),
+                        $ar_file[$file] = array(
+                            'name' => $file,
+                            'path' => $absolutepath,
+                            'size' => filesize($absolutepath),
+                            'modified' => filemtime($absolutepath),
                         );
                     } else {
-                        $ar_file[] = array (
-                                'name' => $file,
-                                'path' => $absolutepath,
-                                'size' => filesize($absolutepath),
-                                'modified' => filemtime($absolutepath),
+                        $ar_file[] = array(
+                            'name' => $file,
+                            'path' => $absolutepath,
+                            'size' => filesize($absolutepath),
+                            'modified' => filemtime($absolutepath),
                         );
                     }
                 }
             }
             closedir($dh);
         }
-        if (!$noindex){
+        if (!$noindex) {
             $ar_file2 = array();
             sort($ff);
-            foreach($ff as $ff1)
-            {
+            foreach ($ff as $ff1) {
                 $ar_file2[$ff1] = array(
                     'name' => $ar_file[$ff1]['name'],
                     'path' => $ar_file[$ff1]['path'],
@@ -206,96 +308,24 @@ class Problem extends CActiveRecord {
         }
     }
 
-    public function getDescriptionPath(){
-        $filepath = $this->getViewPath().'description.html';
-        if (file_exists($filepath) && !is_file($filepath)){
-            if (is_dir($filepath)){
+    public function getConfigurationFilePath() {
+        $filepath = $this->getDirectoryPath() . 'config.json';
+        if (file_exists($filepath) && !is_file($filepath)) {
+            if (is_dir($filepath)) {
                 $this->rmdirRecurse($filepath);
                 rmdir($filepath);
             } else {
                 unlink($filepath);
             }
         }
-        if (!file_exists($filepath)){
-            copy($this->problemtype->getViewDirectoryPath().'description.html', $filepath);
-        }
-        return $filepath;
-    }
-
-    public function getViewPath(){
-        return $this->checkDirectory($this->getDirectoryPath().'view'.'/');
-    }
-
-    public function deleteViewFile($filename){
-        $filename = $this->getViewPath().'files/'.$filename;
-        unlink($filename);
-    }
-
-    public function getViewFileList($noindex = true){
-        $path = $this->getViewPath()."/files";
-        $ar_file = array();
-        $ff = array();
-        if(is_dir($path)){
-            $dh = opendir($path);
-            while (($file = readdir($dh)) !== false) {
-                $absolutepath = $path."/".$file;
-                if (filetype($absolutepath) == 'file'){
-                    if (!$noindex){
-                        $ff[] = $file;
-                        $ar_file[$file] = array (
-                                'name' => $file,
-                                'path' => $absolutepath,
-                                'size' => filesize($absolutepath),
-                                'modified' => filemtime($absolutepath),
-                        );
-                    } else {
-                        $ar_file[] = array (
-                                'name' => $file,
-                                'path' => $absolutepath,
-                                'size' => filesize($absolutepath),
-                                'modified' => filemtime($absolutepath),
-                        );
-                    }
-                }
-            }
-            closedir($dh);
-        }
-        if (!$noindex){
-            $ar_file2 = array();
-            sort($ff);
-            foreach($ff as $ff1)
-            {
-                $ar_file2[$ff1] = array(
-                    'name' => $ar_file[$ff1]['name'],
-                    'path' => $ar_file[$ff1]['path'],
-                    'size' => $ar_file[$ff1]['size'],
-                );
-            }
-            return $ar_file2;
-        } else {
-            return $ar_file;
-        }
-    }
-
-    public function getConfigurationFilePath(){
-        $filepath = $this->getEvaluatorPath().'config.json';
-        if (file_exists($filepath) && !is_file($filepath)){
-            if (is_dir($filepath)){
-                $this->rmdirRecurse($filepath);
-                rmdir($filepath);
-            } else {
-                unlink($filepath);
-            }
-        }
-        if (!file_exists($filepath)){
-            $configs = $this->problemtype->getConfigs();
-            $strconfigs = CJSON::encode($configs);
+        if (!file_exists($filepath)) {
+            $strconfigs = CJSON::encode($this->_config);
             file_put_contents($filepath, $strconfigs);
         }
         return $filepath;
     }
 
-    public function getConfig($name){
+    public function getConfig($name) {
         $var = $this->_config[$name];
         if (isset($var)) {
             return $var;
@@ -304,32 +334,55 @@ class Problem extends CActiveRecord {
         }
     }
 
-    public function setConfig($name, $value){
+    public function setConfig($name, $value) {
         $this->_config[$name] = $value;
     }
 
-    public function getConfigs(){
+    public function getConfigs() {
         return $this->_config;
     }
 
-    public function setConfigs($configs){
+    public function setConfigs($configs) {
         $this->_config = $configs;
     }
 
-    private function rmdirRecurse($path){
-        $path= rtrim($path, '/').'/';
+    private function rmdirRecurse($path) {
+        $path = rtrim($path, '/') . '/';
         $handle = opendir($path);
-        for (;false !== ($file = readdir($handle));)
-        if($file != "." and $file != ".." ){
-            $fullpath= $path.$file;
-            if(is_dir($fullpath)){
-                $this->rmdirRecurse($fullpath);
-                rmdir($fullpath);
-            } else {
-                unlink($fullpath);
+        for (; false !== ($file = readdir($handle));)
+            if ($file != "." and $file != "..") {
+                $fullpath = $path . $file;
+                if (is_dir($fullpath)) {
+                    $this->rmdirRecurse($fullpath);
+                    rmdir($fullpath);
+                } else {
+                    unlink($fullpath);
+                }
             }
-        }
         closedir($handle);
     }
+    
+    public static function exportProblem($pProblems , &$output , $target = "") {
+        if ($target == "")
+            $target = tempnam("/tmp", "lx-export-") . ".zip";
+        
+        $execstring = "zip -r $target ";
+        
+        foreach ($pProblems as $problem) {
+            $execstring .= $problem->getDirectoryPath() . " ";
+        }
+        
+        exec($execstring , $output);
+        
+        $output = implode("\n", $output) . "\n";
+        
+        return $target;
+    }
+
+    public function getProblemTypeClass() {
+        Yii::import('ext.evaluators.ProblemTypeFactory');
+    }
+
 }
+
 //end of file

@@ -22,26 +22,21 @@
     <div class="drow">
         <span class="shead">Tambah Anggota </span>
         <span>
-    <?php $this->widget('CAutoComplete',
+    <?php $this->widget('zii.widgets.jui.CJuiAutoComplete',
           array(
-             'name' => 'user_name',
-             'url' => array('memberlookup'),
-             'max' => 10,
-             'minChars' => 1,
-             'delay' => 500,
-             'matchCase' => false,
-             'htmlOptions' => array('size'=>'40'),
-             'methodChain' => ".result(function(event,item){\$(\"#addmember_id\").val(item[1]);})",
+                'name' => 'member_lookup',
+                'sourceUrl' => array('memberlookup'),
              ));
     ?>
-    <?php echo CHtml::hiddenField('addmember_id'); ?>
     <?php echo CHtml::ajaxButton('Tambah', $this->createUrl('addmember'), array(
         'type' => 'GET',
         'data'=> array(
                 "id" => $model->id,
-                "memberid"=> "js:$(\"#addmember_id\").val()",
+                "memberid"=> "js:$(\"#member_lookup\").val()",
             ),
-        'success' => "function(data, textStatus, XMLHttpRequest) { $('#membergridview').yiiGridView.update('membergridview');}"
+        'success' => "function(data, textStatus, XMLHttpRequest) {".
+                "$('#membergridview').yiiGridView.update('membergridview');".
+                "$('#member_lookup').val('');}"
     ));?></span>
     </div>
 </div>

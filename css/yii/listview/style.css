@@ -1,0 +1,19 @@
+.list-view-loading {background:url(loading.gif) no-repeat; }
+.list-view .summary {margin: 0 0 5px 0; text-align: right;}
+.list-view .sorter {margin: 0 0 5px 0; text-align: right;}
+.list-view .pager{margin: 5px 0 0 0;text-align: right;}
+.list-view .sorter{font-size: 0.9em;}
+.list-view .sorter ul{display: inline;list-style-image:none;list-style-position:outside;list-style-type:none;margin:0;padding:0;}
+.list-view .sorter li{display: inline;margin: 0 0 0 5px;padding: 0;}
+.list-view .sorter a.asc {background:url(up.gif) right center no-repeat;padding-right: 10px;}
+.list-view .sorter a.desc {background:url(down.gif) right center no-repeat;padding-right: 10px;}
+.list-view .pager {}
+.list-view .pager ul.yiiPager{font-size:11px;border:0;margin:0;padding:0;line-height:100%;display:inline;}
+.list-view .pager ul.yiiPager li{display:inline;}
+.list-view .pager ul.yiiPager a:link,
+.list-view .pager ul.yiiPager a:visited{border:solid 1px #000;font-weight:bold;color:#444;padding:1px 6px;text-decoration:none;}
+.list-view .pager ul.yiiPager .page a{font-weight:normal;}
+.list-view .pager ul.yiiPager a:hover{border:solid 1px #0e509e;}
+.list-view .pager ul.yiiPager .selected a{background:#a0a0a0;color:#fff;font-weight:bold;}
+.list-view .pager ul.yiiPager .hidden a{border:solid 1px #DEDEDE;color:#888888;}
+.list-view .pager ul.yiiPager .first, ul.yiiPager .last{display:none;}

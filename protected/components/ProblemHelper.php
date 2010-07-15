@@ -11,7 +11,6 @@ class ProblemHelper {
         }
     }
 
-
     //---------------------------------------------------------------------------
     public static function updateDescription($problem, $contents){
         return file_put_contents($problem->getDescriptionPath(), $contents);
