@@ -1,0 +1,10 @@
+.tab {padding:0px; margin:0px;}
+.tab ul.tabs{padding: 0px;margin: 0px;border-bottom: 1px solid #bbb;}
+.tab ul.tabs li{list-style: none;margin: 0px;display: inline;padding:0px;line-height:26px;}
+.tab ul.tabs a{padding: 5px 15px;margin: 0px 0px 0px 0px;border: 1px solid #bbb;border-bottom: none;text-decoration: none;font-weight:bold;}
+
+.tab ul.tabs a:link{color: #667;}
+.tab ul.tabs a:visited{color: #667;}
+.tab ul.tabs a:hover{color: #000;background: #f8f8f8;border-color: #000;}
+.tab ul.tabs a.active{border-bottom: 1px solid #f7f6f0;color:#000}
+.tab div.view{border-left: 1px solid #bbb;border-right: 1px solid #bbb;border-bottom: 1px solid #bbb;padding: 8px;margin: 0px;}

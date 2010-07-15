@@ -1,0 +1,30 @@
+.grid-view-loading{background:url("loading.gif") no-repeat;}
+.grid-view table.items{background: white;border-collapse: collapse;width: 100%;border: 1px #D0E3EF solid;}
+.grid-view table.items th, .grid-view table.items td{font-size: 0.9em;border: 1px white solid;padding: 0.3em;}
+.grid-view table.items th{background: #eee; border: 1px solid #ccc; font-weight: bold; padding: 4px 13px;color:#999;}
+.grid-view table.items th a{color: #000;font-weight: bold;text-decoration: underline;}
+.grid-view table.items th a:hover{color: #000;text-decoration: underline;}
+.grid-view table.items th a.asc{background:url("up.gif") right center no-repeat;padding-right: 10px;}
+.grid-view table.items th a.desc{background:url("down.gif") right center no-repeat;padding-right: 10px;}
+.grid-view table.items tr.even td{background: #fcfcfc;}
+.grid-view table.items tr.odd td {background: #f1f1f1;}
+.grid-view table.items tr.selected td {background: #a0a0a0;color:#fff;}
+.grid-view table.items tr:hover td {background: #e1e1e1;color:#444;}
+.grid-view .link-column img{border: 0;}
+.grid-view .button-column{text-align: center;width: 60px;}
+.grid-view .button-column img{border: 0;}
+.grid-view .checkbox-column{width: 15px;}
+.grid-view .summary{margin: 0 0 5px 0;text-align: right;}
+.grid-view .pager{margin: 5px 0 0 0;text-align: right;}
+.grid-view .empty{font-style: italic;}
+.grid-view .filters input,.grid-view .filters select{width: 100%;border: 1px solid #ccc;}
+.grid-view .pager {}
+.grid-view .pager ul.yiiPager{font-size:11px;border:0;margin:0;padding:0;line-height:100%;display:inline;}
+.grid-view .pager ul.yiiPager li{display:inline;}
+.grid-view .pager ul.yiiPager a:link,
+.grid-view .pager ul.yiiPager a:visited{border:solid 1px #000;font-weight:bold;color:#444;padding:1px 6px;text-decoration:none;}
+.grid-view .pager ul.yiiPager .page a{font-weight:normal;}
+.grid-view .pager ul.yiiPager a:hover{border:solid 1px #0e509e;}
+.grid-view .pager ul.yiiPager .selected a{background:#a0a0a0;color:#fff;font-weight:bold;}
+.grid-view .pager ul.yiiPager .hidden a{border:solid 1px #DEDEDE;color:#888888;}
+.grid-view .pager ul.yiiPager .first, ul.yiiPager .last{display:none;}

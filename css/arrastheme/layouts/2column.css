@@ -1,0 +1,22 @@
+#main-left {width:200px;float:left;margin-right:10px;}
+#main-right {width:740px;float:right;margin-left:5px;}
+.widget {margin-bottom: 15px;}
+.widget_author img {border: 1px solid #ccc; float: left; margin-right: 10px; padding: 5px;}
+#main-left .widget h4 {border-bottom:2px solid #1e1b1a;margin:0px 0px 2px 0px;}
+#main-left .widget ul.menu {margin:0px;padding:0px;}
+#main-left .widget ul.menu li {list-style: none; border-bottom: 1px dashed #ccc;}
+#main-left .widget ul.menu li:hover {list-style: none; border-bottom: 1px solid #ccc;}
+#main-left .widget ul.menu li a {display:block;text-decoration:none;height: 21px;line-height: 21px;padding:0px 0px 0px 5px;}
+#main-left .widget ul.menu li a:hover {color:#1e1b1a;font-weight:bold;}
+
+div.content-nav-wrapper {clear:both;border-left: 1px solid #bbb;border-bottom: 2px solid #999;margin:0px 0px 15px 0px;padding:0px;line-height: 30px; height:31px;}
+div.content-nav-wrapper .spacer {clear:both;}
+div.content-nav-wrapper ul.content-nav {clear:both;list-style-type:none;margin:0px;padding:0px;}
+div.content-nav-wrapper ul.content-nav li {float: left;border-right: 1px solid #bbb;border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;margin-bottom: 10px;list-style-type:none;}
+div.content-nav-wrapper ul.content-nav li a, div.content-nav-wrapper ul.content-nav li a:visited {color: #444;display: block;font-size: 1.0em;font-weight: normal;line-height: 30px;padding: 0 15px;text-decoration:none;}
+div.content-nav-wrapper ul.content-nav li a:hover {background: #f2f2f2; text-decoration: none;}
+div.content-nav-wrapper ul.content-nav li ul {display: none;}
+div.content-nav-wrapper ul.content-nav li:hover ul {background: #f8f8f8;border: 1px solid #aaa;display: block;position: absolute;}
+div.content-nav-wrapper ul.content-nav li ul li {border-bottom: 1px solid #ccc;border-right: 0;border-top: 0;float: none;margin-bottom: 0;}
+div.content-nav-wrapper ul.content-nav li ul li a:link, ul.content-nav li ul li a:visited {font-family: verdana;font-size: 0.9em;font-weight: normal;line-height: 25px;margin: 4px;min-width: 122px;text-decoration:none;}
+div.content-nav-wrapper ul.content-nav li ul li a:hover {background: #eee;}

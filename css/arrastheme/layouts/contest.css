@@ -1,0 +1,22 @@
+#contest-nav-wrapper {clear:both;border-left: 1px solid #bbb;border-bottom: 2px solid #999;margin:0px 0px 10px 0px;padding:0px;line-height: 30px; height:31px;}
+#contest-nav-wrapper .spacer {clear:both;}
+#contest-nav-wrapper ul {clear:both;list-style-type:none;margin:0px;padding:0px;}
+#contest-nav-wrapper ul li {float: left;border-right: 1px solid #bbb;border-top: 1px solid #bbb;border-bottom: 1px solid #bbb;margin-bottom: 10px;list-style-type:none;}
+#contest-nav-wrapper ul li a, #contest-nav-wrapper ul li a:visited {color: #444;display: block;font-size: 1.0em;font-weight: bold;line-height: 30px;padding: 0 15px;text-decoration:none;}
+#contest-nav-wrapper ul li a:hover {background: #f2f2f2; text-decoration: none;}
+#contest-nav-wrapper ul li ul {display: none;}
+#contest-nav-wrapper ul li:hover ul {background: #f8f8f8;border: 1px solid #aaa;display: block;position: absolute;}
+#contest-nav-wrapper ul li ul li {border-bottom: 1px solid #ccc;border-right: 0;border-top: 0;float: none;margin-bottom: 0;}
+#contest-nav-wrapper ul li ul li a:link, ul li ul li a:visited {font-family: verdana;font-size: 0.9em;font-weight: normal;line-height: 25px;margin: 4px;min-width: 122px;text-decoration:none;}
+#contest-nav-wrapper ul li ul li a:hover {background: #eee;color:#000;}
+#contest-nav-wrapper ul li ul li:hover {border-bottom:2px solid #ff0000;}
+#contest-nav-wrapper ul li.right {float:right;border:none;}
+#contest-nav-wrapper ul li.right a {background:none;font-weight:bold;color:#000;padding:0px 5px;}
+#contest-nav-wrapper ul li.right a:hover {background:none;text-decoration:underline;}
+#contest-nav-wrapper ul li#manager {border-bottom:2px solid #ff0000;}
+#contest-nav-wrapper ul li#manager a {color:#000;}
+a#changemode {color: #444;display: block;font-size: 1.0em;font-weight: bold;line-height: 15px;padding: 0 15px;text-decoration:none;display:inline;}
+a#changemode:hover {text-decoration:underline;}
+#contestbar-wrapper {margin:0px 0px 5px 0px;border-bottom:1px solid #eee;padding:0px 5px;text-align:right;}
+#clock-wrapper {font-weight:bold;display:inline;margin:0px 5px;}
+#contest-expired {font-weight:bold;padding:3px;text-align:center;}
