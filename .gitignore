@@ -1,0 +1,9 @@
+assets/
+protected/runtime
+.DS_STORE
+.DS_Store
+.buildpath
+.project
+.settings
+*.scss
+*.*~

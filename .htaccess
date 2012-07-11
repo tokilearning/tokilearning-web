@@ -1,0 +1,19 @@
+#AuthUserFile /web/roswell_dev/.htpasswd
+#AuthGroupFile /dev/null
+#AuthName "BOF Roswell Dev"
+#AuthType Basic
+
+#<Limit GET POST>
+#require valid-user
+#</Limit>
+	
+RewriteEngine on
+RewriteBase /
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+
