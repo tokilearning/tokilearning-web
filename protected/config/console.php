@@ -1,24 +1,25 @@
 <?php
 
-// This is the configuration for yiic console application.
-// Any writable CConsoleApplication properties can be configured here.
+define('APP_CONFIG_DIR', dirname(__FILE__) . '/application');
+
+/**
+ * This is the main configuration used for the CLI end of this application.
+ */
 return array(
-	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'My Console Application',
-	// application components
-	'components'=>array(
-		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-		),
-		// uncomment the following to use a MySQL database
-		/*
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
-			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
-			'charset' => 'utf8',
-		),
-		*/
-	),
+        'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
+        'name' => 'TOKI Learning Center',
+        'timeZone' => 'Asia/Jakarta',
+        'import' => array(
+                'application.models.*',
+                'application.components.*',
+                'application.components.helpers.*',
+        ),
+        /**
+         * Application components
+         */
+        'components' => array(
+                'db' => require(APP_CONFIG_DIR . '/database.php'),
+        ),
+        'params' => array(
+        )
 );
