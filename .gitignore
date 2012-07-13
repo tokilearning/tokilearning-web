@@ -10,3 +10,4 @@ protected/data/*.db
 .settings
 *.scss
 *.*~
+nbproject
