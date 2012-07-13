@@ -1,12 +1,3 @@
-#AuthUserFile /web/roswell_dev/.htpasswd
-#AuthGroupFile /dev/null
-#AuthName "BOF Roswell Dev"
-#AuthType Basic
-
-#<Limit GET POST>
-#require valid-user
-#</Limit>
-	
 RewriteEngine on
 RewriteBase /
 
