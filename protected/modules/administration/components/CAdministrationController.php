@@ -17,7 +17,7 @@ abstract class CAdministrationController extends CController {
         /**
          * @var string the layout name for controllers in administration module.
          */
-        public $layout = 'main';
+        public $layout = 'admin';
 
         /**
          * @return string assets URL of this controller's module.
