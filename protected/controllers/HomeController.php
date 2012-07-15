@@ -12,7 +12,7 @@
 class HomeController extends CController {
 
         /**
-         * Landing apge display action.
+         * Landing page display action.
          * 
          * This action only renders index view file.
          */

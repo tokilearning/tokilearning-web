@@ -17,7 +17,9 @@ return array(
                 'application.models.*',
                 'application.components.*',
         ),
-        'modules' => array(),
+        'modules' => array(
+                'administration',
+        ),
         // application components
         'components' => array(
                 'user' => array(
