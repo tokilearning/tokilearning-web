@@ -1,8 +1,8 @@
 <div class="container_12">
 
         <div class="grid_12">
-                <h1>Dashboard</h1>
-                <p>Here you have a quick overview of some features</p>
+                <h1><?php echo AdministrationModule::t('admin', 'Dashboard'); ?></h1>
+                <p><?php echo AdministrationModule::t('admin', 'Here you have a quick overview of some features'); ?></p>
 
                 <div class="alert info"><span class="hide">x</span><strong>Hey there! Welcome to the professional and flexible admin template &quot;Grape&quot;. I hope you enjoy your stay and please make sure, that you visit the other pages.</strong></div>
         </div>

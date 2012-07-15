@@ -9,6 +9,7 @@ return array(
         'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
         'name' => 'TOKI Learning Center',
         'language' => 'id',
+        'sourceLanguage' => 'en',
         'defaultController' => 'home/index',
         // preloading 'log' component
         'preload' => array('log'),
