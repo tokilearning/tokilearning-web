@@ -298,8 +298,7 @@
 
                         <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
                         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-                        <script>window.jQuery || document.write('<script src="<?php $this->module->getScriptFile('libs/jquery-1.6.2.min.js'); ?>"><\/script>')</script>
-
+                        <script>window.jQuery || document.write('<script src="<?php echo $this->getAssetsUrl(); ?>/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
 
                         <!-- scripts concatenated and minified via ant build script-->
                         <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/plugins.js"></script> <!-- lightweight wrapper for consolelog, optional -->
