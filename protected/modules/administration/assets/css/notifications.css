@@ -1,0 +1,191 @@
+/*
+ * Grape - Professional & Flexible Admin Template
+ * by Stammi <http://themeforest.net/user/Stammi>
+ * 
+ * -----------------
+ * TABLE OF CONTENTS
+ * -----------------
+ * 
+ * 1) Notifications
+ *   1.1) Generic
+ *   1.2) Special IE6 Style Positioning
+ *   1.3) Normal Style Positions
+ *   1.4) Cross Browser Styling
+ *   1.5) Themes
+ *   1.6) Hide notifications when printing
+ */
+
+/* ==================================================
+ * 1) Notifications
+ * ================================================== */
+
+/*
+ * 1.1) Generic
+ */
+
+div.jGrowl {
+	padding: 			10px;
+	z-index: 			9999;
+	color: 				#fff !important;
+	font-size: 			12px;
+}
+
+/*
+ * 1.2) Special IE6 Style Positioning
+ */
+
+div.ie6 {
+	position: 			absolute;
+}
+
+div.ie6.top-right {
+	right: 				auto;
+	bottom: 			auto;
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+  	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.top-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-right {
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.center {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	width: 				100%;
+}
+
+/*
+ * 1.3) Normal Style Positions
+ */
+
+div.jGrowl {
+	position:			absolute;
+}
+
+body > div.jGrowl {
+	position:			fixed;
+}
+
+div.jGrowl.top-left {
+	left: 				0px;
+	top: 				0px;
+}
+
+div.jGrowl.top-right {
+	right: 				0px;
+	top: 				0px;
+}
+
+div.jGrowl.bottom-left {
+	left: 				0px;
+	bottom:				0px;
+}
+
+div.jGrowl.bottom-right {
+	right: 				0px;
+	bottom: 			0px;
+}
+
+div.jGrowl.center {
+	top: 				0px;
+	width: 				50%;
+	left: 				25%;
+}
+
+/*
+ * 1.4) Cross Browser Styling
+ */
+
+div.center div.jGrowl-notification, div.center div.jGrowl-closer {
+	margin-left: 		auto;
+	margin-right: 		auto;
+}
+
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color: 		#000;
+	opacity: 				.85;
+    -ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; 
+    filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85); 
+	zoom: 					1;
+	width: 					235px;
+	padding: 				10px;
+	margin-top: 			5px;
+	margin-bottom: 			5px;
+	font-family: 			'PT Sans', Arial, Helvetica, sans-serif;
+	font-size: 				1em;
+	text-align: 			left;
+	display: 				none;
+	-moz-border-radius: 	5px;
+	-webkit-border-radius:	5px;
+}
+
+div.jGrowl div.jGrowl-notification {
+	min-height: 			40px;
+}
+
+div.jGrowl div.jGrowl-notification div.jGrowl-header {
+	font-weight: 			700;
+	font-size:				12px;
+	padding-bottom:			5px;
+}
+
+div.jGrowl div.jGrowl-notification div.jGrowl-close {
+	z-index:				99;
+	float: 					right;
+	font-weight: 			bold;
+	font-size: 				1em;
+	cursor:					pointer;
+}
+
+div.jGrowl div.jGrowl-closer {
+	background: none repeat scroll top left #000;
+	border:					1px solid #000000;
+	color:					#fff;
+	padding-top: 			4px;
+	padding-bottom: 		4px;
+	cursor: 				pointer;
+	font-size:				.9em;
+	font-weight: 			bold;
+	text-align: 			center;
+}
+
+/*
+ * 1.5) Themes
+ */
+
+div.jGrowl div.information, div.jGrowl div.success, div.jGrowl div.error, div.jGrowl div.warning, div.jGrowl div.saved {
+	background: url("../img/icons/packs/fugue/16x16/information.png") no-repeat scroll 10px 50% #000;
+	background-repeat: no-repeat;
+	background-position: 10px 50%;
+	background-color: #000;
+	padding-left: 35px;
+	width: 210px;
+}
+
+div.jGrowl div.success { background-image: url("../img/icons/packs/fugue/16x16/tick-circle.png"); }
+div.jGrowl div.error { background-image: url("../img/icons/packs/fugue/16x16/cross-circle.png"); }
+div.jGrowl div.information { background-image: url("../img/icons/packs/fugue/16x16/information.png"); }
+div.jGrowl div.warning { background-image: url("../img/icons/packs/fugue/16x16/exclamation.png"); }
+div.jGrowl div.saved { background-image: url("../img/icons/packs/fugue/16x16/disk-black.png"); }
+
+/*
+ * 1.6) Hide notifications when printing
+ */
+
+@media print {
+	div.jGrowl {
+		display: 			none;
+	}
+}

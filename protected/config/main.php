@@ -8,6 +8,9 @@ define('APP_CONFIG_DIR', dirname(__FILE__) . '/application');
 return array(
         'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
         'name' => 'TOKI Learning Center',
+        'language' => 'id',
+        'sourceLanguage' => 'en',
+        'defaultController' => 'home/index',
         // preloading 'log' component
         'preload' => array('log'),
         // autoloading model and component classes
@@ -15,7 +18,9 @@ return array(
                 'application.models.*',
                 'application.components.*',
         ),
-        'modules' => array(),
+        'modules' => array(
+                'administration',
+        ),
         // application components
         'components' => array(
                 'user' => array(
@@ -34,7 +39,7 @@ return array(
                 'db' => require(APP_CONFIG_DIR . '/database.php'),
                 'errorHandler' => array(
                         // use 'site/error' action to display errors
-                        'errorAction' => 'site/error',
+                        'errorAction' => 'error/index',
                 ),
                 'log' => array(
                         'class' => 'CLogRouter',
@@ -47,6 +52,5 @@ return array(
                 ),
         ),
         'params' => array(
-                'security' => require(APP_CONFIG_DIR . '/security.php')
         ),
 );
