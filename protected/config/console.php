@@ -21,5 +21,11 @@ return array(
                 'db' => require(APP_CONFIG_DIR . '/database.php'),
         ),
         'params' => array(
-        )
+        ),
+        'commandMap' => array(
+                'migrate' => array(
+                        'class' => 'system.cli.commands.MigrateCommand',
+                        'migrationTable' => 'Migrations',
+                ),
+        ),
 );
