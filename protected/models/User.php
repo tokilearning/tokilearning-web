@@ -52,6 +52,8 @@ class User extends CActiveRecord {
          */
         public function rules() {
                 return array(
+                        array('username', 'length', 'min' => 6),
+                        array('username', 'match', 'pattern' => '/^[a-zA-Z][a-zA-Z0-9_]+$/', 'message' => Yii::t('rules', '{attribute} is invalid. Only alphabet, number, and underscore allowed')),
                         array('username, email, password, fullName', 'required'),
                         array('isRemoved', 'numerical', 'integerOnly' => true),
                         array('username, email', 'length', 'max' => 255),
