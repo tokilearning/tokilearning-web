@@ -78,10 +78,10 @@ class User extends CActiveRecord {
                         array('createdTime, updatedTime, lastLoginTime, lastActivityTime', 'safe'),
                     
 
-                        // login by username scenario
+                        // login by username scenario || update scenario
                         array('username, password', 'required', 'on' => self::SCENARIO_LOGIN_BY_USERNAME),
                         array('username', 'exist', 'criteria' => array(
-                                'condition' => 'password=:pwd',
+                                'condition' => 'password=SHA1(:pwd)',
                                 'params' => array(':pwd' => 'password'),
                             ),
                             'on' => self::SCENARIO_LOGIN_BY_USERNAME
@@ -91,7 +91,7 @@ class User extends CActiveRecord {
                         // login by email scenario
                         array('email, password', 'required', 'on' => self::SCENARIO_LOGIN_BY_EMAIL),
                         array('email', 'exist', 'criteria' => array(
-                                'condition' => 'password=:pwd',
+                                'condition' => 'password=SHA1(:pwd)',
                                 'params' => array(':pwd' => 'password'),
                             ),
                             'on' => self::SCENARIO_LOGIN_BY_EMAIL
@@ -101,12 +101,8 @@ class User extends CActiveRecord {
                         array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
                         array('username, email', 'unique', 'on' => self::SCENARIO_REGISTER),
                     
-                        // update scenario
-                        array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_UPDATE),
+                    
                 );
-        }
-        public function passwordMD5Validation($attributes, $params) {
-                
         }
         
         /**
