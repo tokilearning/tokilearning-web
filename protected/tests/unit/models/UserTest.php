@@ -78,7 +78,6 @@ class UserTest extends CDbTestCase {
                 $this->assertFalse($user->validate());
                 
                 $user = new User(User::SCENARIO_LOGIN_BY_USERNAME);
-                $user->setAttributes($this->users['sample1']);
                 $user->attributes = array (
                     'username' => 'aaaaaA',
                     'password' => 'pass',
@@ -88,7 +87,6 @@ class UserTest extends CDbTestCase {
         
         public function testLoginByEmailScenario(){
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->setAttributes($this->users['sample1']);
                 $user->attributes = array (
                     'email' => 'dainaad',
                 );
@@ -96,14 +94,6 @@ class UserTest extends CDbTestCase {
                 $this->assertFalse($user->validate());
                 
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->setAttributes($this->users['sample1']);
-                $user->attributes = array (
-                    'password' => 'dainaad',
-                );
-                $this->assertFalse($user->validate());
-                
-                $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->setAttributes($this->users['sample1']);
                 $user->attributes = array (
                     'email' => 'mail.dieend@gmail.com',
                     'password' => 'passde',
@@ -111,7 +101,6 @@ class UserTest extends CDbTestCase {
                 $this->assertFalse($user->validate());
                 
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->setAttributes($this->users['sample1']);
                 $user->attributes = array (
                     'email' => 'mail.dieend@gmail.com',
                     'password' => 'pass',
@@ -119,7 +108,6 @@ class UserTest extends CDbTestCase {
                 $this->assertTrue($user->validate());
                 
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->setAttributes($this->users['sample1']);
                 $user->attributes = array (
                     'email' => 'MAIL.dieend@gmail.com',
                     'password' => 'pass',
