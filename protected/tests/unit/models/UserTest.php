@@ -79,10 +79,44 @@ class UserTest extends CDbTestCase {
                 
                 $user = new User(User::SCENARIO_LOGIN_BY_USERNAME);
                 $user->attributes = array (
-                    'username' => 'aaAAAa',
-                    'password' => 'daia',
+                    'username' => 'aaaaaA',
+                    'password' => 'pass',
                 );
                 $this->assertTrue($user->validate());
+        }
+        
+        public function testLoginByEmailScenario(){
+                printf("____________________________________________");
+                
+                $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
+                $user->attributes = array (
+                    'email' => 'dainaad',
+                );
+                
+                $this->assertFalse($user->validate());
+                
+                
+                $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
+                $user->attributes = array (
+                    'password' => 'dainaad',
+                );
+                $this->assertFalse($user->validate());
+                
+                
+                $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
+                $user->attributes = array (
+                    'email' => 'mail.dieend@gmail.com',
+                    'password' => 'passde',
+                );
+                $this->assertFalse($user->validate());
+                
+                $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
+                $user->attributes = array (
+                    'email' => 'mail.dieend@gmail.com',
+                    'password' => 'pass',
+                );
+                $this->assertTrue($user->validate());
+                printf("____________________________________________");
         }
         
         public function testRegisterScenario(){
