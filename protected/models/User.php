@@ -102,7 +102,7 @@ class User extends CActiveRecord {
                         array('username, email', 'unique', 'on' => self::SCENARIO_REGISTER),
                     
                         // update scenario
-                        array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
+                        array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_UPDATE),
                 );
         }
         public function passwordMD5Validation($attributes, $params) {
