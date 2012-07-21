@@ -18,6 +18,7 @@
  * 
  * The followings are additional properties in model 'User':
  * //TODO: Add additional properties when needed.
+ * @property string $password_repeat
  * 
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
@@ -29,8 +30,20 @@ class User extends CActiveRecord {
          * This lists scenario that will be used for attribute validation.
          * 
          * TODO: Put scenario with SCENARIO_ prefix. Put note if really needed.
+         * SCENARIO_LOGIN
+         * SCENARIO_REGISTER
+         * SCENARIO_UPDATE
+         * 
          */
-
+        const SCENARIO_LOGIN = "login";
+        const SCENARIO_REGISTER = "register";
+        const SCENARIO_UPDATE = "update";
+        
+        /**
+         * additional properties in model 'User':
+         */
+        
+        public $passwordRepeat;
         /**
          * Returns the static model of the specified AR class.
          * @param string $className active record class name.
@@ -52,14 +65,29 @@ class User extends CActiveRecord {
          */
         public function rules() {
                 return array(
+                        // general rule
                         array('username', 'length', 'min' => 6),
                         array('username', 'match', 'pattern' => '/^[a-zA-Z][a-zA-Z0-9_]+$/', 'message' => Yii::t('rules', '{attribute} is invalid. Only alphabet, number, and underscore allowed')),
-                        array('username, email, password, fullName', 'required'),
+                        array('username', 'unique'),
                         array('isRemoved', 'numerical', 'integerOnly' => true),
                         array('username, email', 'length', 'max' => 255),
-                        array('password', 'length', 'max' => 32),
+                        array('email', 'email', 'allowName'=>true, 'message' => Yii::t('rules','{attribute} is not an valid email.')),
+                        array('password', 'length', 'max' => 32, 'min' => 4, 'message' => Yii::t('rules','{attribute} must be between 4 and 32 characters')),
                         array('loginCount', 'length', 'max' => 20),
                         array('createdTime, updatedTime, lastLoginTime, lastActivityTime', 'safe'),
+                    
+                        // all scenario
+                        array('username', 'required'),
+
+                        // login scenario
+                        array('password', 'required', 'on' => self::SCENARIO_LOGIN),
+                                            
+                        // register scenario
+                        array('email, password, passwordRepeat, fullName', 'required' , 'on' => self::SCENARIO_REGISTER),
+                        array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
+                    
+                        // update scenario
+                        array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
                 );
         }
 

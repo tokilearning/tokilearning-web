@@ -20,6 +20,10 @@ return array(
         ),
         'modules' => array(
                 'administration',
+                'gii'=>array(
+                        'class'=>'system.gii.GiiModule',
+                        'password'=>'password',
+                ),
         ),
         // application components
         'components' => array(
