@@ -35,7 +35,8 @@ class User extends CActiveRecord {
          * SCENARIO_UPDATE
          * 
          */
-        const SCENARIO_LOGIN = "login";
+        const SCENARIO_LOGIN_BY_EMAIL = "login_email";
+        const SCENARIO_LOGIN_BY_USERNAME = "login_username";
         const SCENARIO_REGISTER = "register";
         const SCENARIO_UPDATE = "update";
         
@@ -68,7 +69,6 @@ class User extends CActiveRecord {
                         // general rule
                         array('username', 'length', 'min' => 6),
                         array('username', 'match', 'pattern' => '/^[a-zA-Z][a-zA-Z0-9_]+$/', 'message' => Yii::t('rules', '{attribute} is invalid. Only alphabet, number, and underscore allowed')),
-                        array('username', 'unique'),
                         array('isRemoved', 'numerical', 'integerOnly' => true),
                         array('username, email', 'length', 'max' => 255),
                         array('email', 'email', 'allowName'=>true, 'message' => Yii::t('rules','{attribute} is not an valid email.')),
@@ -79,18 +79,26 @@ class User extends CActiveRecord {
                         // all scenario
                         array('username', 'required'),
 
-                        // login scenario
-                        array('password', 'required', 'on' => self::SCENARIO_LOGIN),
-                                            
+                        // login by username scenario
+                        array('password', 'required', 'on' => self::SCENARIO_LOGIN_BY_USERNAME),
+                        array('username', 'exist', 'on' => self::SCENARIO_LOGIN_BY_USERNAME),
+                        
+                        // login by email scenario
+                        array('password', 'required', 'on' => self::SCENARIO_LOGIN_BY_EMAIL),
+                        array('email', 'exist', 'on' => self::SCENARIO_LOGIN_BY_EMAIL),
+                    
                         // register scenario
                         array('email, password, passwordRepeat, fullName', 'required' , 'on' => self::SCENARIO_REGISTER),
                         array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
-                    
+                        array('username', 'unique', 'on' => self::SCENARIO_REGISTER),
                         // update scenario
                         array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
                 );
         }
-
+        private function validateLogin() {
+                
+        }
+        
         /**
          * @return array relational rules.
          */
@@ -119,4 +127,3 @@ class User extends CActiveRecord {
         }
 
 }
-
