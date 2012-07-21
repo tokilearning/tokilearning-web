@@ -144,11 +144,12 @@ abstract class CModel extends CComponent implements IteratorAggregate, ArrayAcce
 	 * validated. If this parameter is given as a list of attributes, only
 	 * the listed attributes will be validated.
 	 * @param boolean $clearErrors whether to call {@link clearErrors} before performing validation
+         * @param boolean $printError whether to print error or not
 	 * @return boolean whether the validation is successful without any error.
 	 * @see beforeValidate
 	 * @see afterValidate
 	 */
-	public function validate($attributes=null, $clearErrors=true)
+	public function validate($attributes=null, $clearErrors=true, $printError=false)
 	{
 		if($clearErrors)
 			$this->clearErrors();
@@ -157,6 +158,9 @@ abstract class CModel extends CComponent implements IteratorAggregate, ArrayAcce
 			foreach($this->getValidators() as $validator)
 				$validator->validate($this,$attributes);
 			$this->afterValidate();
+                        
+                        if ($printError) print_r ($this->_errors);
+                        
 			return !$this->hasErrors();
 		}
 		else
