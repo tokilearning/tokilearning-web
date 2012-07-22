@@ -83,7 +83,7 @@ class User extends CActiveRecord {
 
                         // login by username scenario || update scenario
                         array('username, password', 'required', 'on' => self::SCENARIO_LOGIN_BY_USERNAME),
-                        array('username', 'exist', 'criteria' => array(
+                        array('username', 'application.components.validators.LXExistValidator', 'criteria' => array(
                                 'condition' => 'password=SHA1(:pwd)',
                                 'params' => array(':pwd' => 'password'),
                             ),
@@ -93,7 +93,7 @@ class User extends CActiveRecord {
                     
                         // login by email scenario
                         array('email, password', 'required', 'on' => self::SCENARIO_LOGIN_BY_EMAIL),
-                        array('email', 'exist', 'criteria' => array(
+                        array('email', 'application/components/validators/LXExistValidator', 'criteria' => array(
                                 'condition' => 'password=SHA1(:pwd)',
                                 'params' => array(':pwd' => 'password'),
                             ),

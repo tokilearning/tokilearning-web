@@ -1,11 +1,8 @@
 <?php
-/**
- * CExistValidator class file.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2011 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 /**
@@ -21,12 +18,9 @@
  * <ul>
  * <li>{value}: replaced with value of the attribute.</li>
  * </ul>
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CExistValidator.php 3549 2012-01-27 15:36:43Z qiang.xue $
- * @package system.validators
+ * @author dieend
  */
-class CExistValidator extends CValidator
+class LXExistValidator extends CValidator
 {
 	/**
 	 * @var string the ActiveRecord class name that should be used to
@@ -78,6 +72,15 @@ class CExistValidator extends CValidator
 		$criteria=array('condition'=>$column->rawName.'=:vp','params'=>array(':vp'=>$value));
 		if($this->criteria!==array())
 		{
+                        if (isset($this->criteria['params'])) {
+                                $tmp = array();
+                                foreach ($this->criteria['params'] as $k => $v) {
+                                        $tmp[$k] = $object->$v;
+                                }
+                                $this->criteria['params'] = $tmp;
+                                $tmp = null;
+                        }
+                        
 			$criteria=new CDbCriteria($criteria);
 			$criteria->mergeWith($this->criteria);
 		}
@@ -90,3 +93,5 @@ class CExistValidator extends CValidator
 	}
 }
 
+
+?>
