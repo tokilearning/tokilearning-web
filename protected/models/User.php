@@ -30,24 +30,21 @@ class User extends CActiveRecord {
          * This lists scenario that will be used for attribute validation.
          * 
          * TODO: Put scenario with SCENARIO_ prefix. Put note if really needed.
-         * SCENARIO_LOGIN_BY_EMAIL
-         * SCENARIO_LOGIN_BY_USERNAME
+         * SCENARIO_LOGIN
          * SCENARIO_REGISTER
          * SCENARIO_UPDATE
-         * SCENARIO_ADMIN_UPDATE
          * 
          */
         const SCENARIO_LOGIN_BY_EMAIL = "login_email";
         const SCENARIO_LOGIN_BY_USERNAME = "login_username";
         const SCENARIO_REGISTER = "register";
         const SCENARIO_UPDATE = "update";
-        const SCENARIO_ADMIN_UPDATE = "admin_update";
         
         /**
          * additional properties in model 'User':
          */
-        public $passwordRepeat;
         
+        public $passwordRepeat;
         /**
          * Returns the static model of the specified AR class.
          * @param string $className active record class name.
