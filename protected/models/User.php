@@ -117,6 +117,18 @@ class User extends CActiveRecord {
         }
 
         /**
+         * @return array scopes.
+         */
+        public function scopes() {
+                $t = $this->tableAlias;
+                return array(
+                        'sortNewestCreatedTime' => array(
+                                'order' => "`{$t}`.`createdTime` DESC",
+                        ),
+                );
+        }
+
+        /**
          * @return array customized attribute labels (name=>label)
          */
         public function attributeLabels() {
