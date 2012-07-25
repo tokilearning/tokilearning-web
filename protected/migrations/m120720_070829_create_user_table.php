@@ -30,6 +30,7 @@ class m120720_070829_create_user_table extends CDbMigration {
                         'lastLoginTime' => 'datetime NULL',
                         'lastActivityTime' => 'datetime NULL',
                         'loginCount' => 'bigint unsigned NOT NULL DEFAULT 0',
+                        'removedTime' => 'datetime NULL',
                         'isRemoved' => 'tinyint unsigned  NOT NULL DEFAULT 0',
                         //Primary key
                         'primary key (id)'

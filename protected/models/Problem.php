@@ -4,17 +4,18 @@
  * This is the model class for table "Problems".
  *
  * The followings are the available columns in table 'Problems':
- * @property string $id
- * @property string $title
- * @property string $authorId
- * @property string $shortDescription
- * @property string $description
- * @property integer $privacyLevel
- * @property string $createdTime
- * @property string $modifiedTime
+ * @property string $id problem's id.
+ * @property string $title problem's title.
+ * @property string $authorId the id of this problem's author.
+ * @property string $shortDescription problem's short description.
+ * @property string $description problem's long description.
+ * @property integer $privacyLevel //TODO what's this?
+ * @property string $createdTime time when the problem is first created by user.
+ * @property string $modifiedTime time when the problem is last modified by user.
+ * @property boolean $isRemoved flag whether the problem is removed or not.
  *
  * The followings are the available model relations:
- * @property User $author
+ * @property User $author problem's author
  * 
  * @author Muhammad Adinata <mail.dieend@gmail.com>
  * @package application.models

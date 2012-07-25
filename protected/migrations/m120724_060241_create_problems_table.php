@@ -29,6 +29,8 @@ class m120724_060241_create_problems_table extends CDbMigration {
                         //System Information
                         'createdTime' => 'datetime NOT NULL',
                         'modifiedTime' => 'datetime NULL',
+                        'removedTime' => 'datetime NULL',
+                        'isRemoved' => 'tinyint unsigned  NOT NULL DEFAULT 0',
                         //Primary key
                         'primary key (id)'
                 ));

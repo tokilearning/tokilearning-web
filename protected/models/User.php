@@ -4,22 +4,23 @@
  * This is the model class for table "Users".
  *
  * The followings are the available columns in table 'Users':
- * @property string $id primary key for the User
- * @property string $username user's identifier name
- * @property string $email user's email
- * @property string $password
- * @property string $fullName user's display name
- * @property string $createdTime time when user created by user or registered
- * @property string $updatedTime time when user data being updated by admin or user him/herself
- * @property string $lastLoginTime time when user last logged in
- * @property string $lastActivityTime time when user last accessed a controller
- * @property string $loginCount how many times user logged in
- * @property integer $isRemoved flag whether a user 
+ * @property string $id primary key for the User.
+ * @property string $username user's identifier name.
+ * @property string $email user's email.
+ * @property string $password user's password.
+ * @property string $fullName user's display name.
+ * @property string $createdTime time when user created by user or registered.
+ * @property string $updatedTime time when user data being updated by admin or user him/herself.
+ * @property string $lastLoginTime time when user last logged in.
+ * @property string $lastActivityTime time when user last accessed a controller.
+ * @property string $loginCount how many times user logged in.
+ * @property boolean $isRemoved flag whether a user is removed or not.
  * 
  * The followings are additional properties in model 'User':
  * //TODO: Add additional properties when needed.
  * //Additional properties are properties that are accessed by PHP's magic method
  * //i.e. not declared explicitly.
+ * @property Problem $problem the problem authored by this user.
  * 
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
@@ -117,6 +118,7 @@ class User extends CActiveRecord {
          */
         public function relations() {
                 return array(
+                        'problem' => array(self::HAS_MANY, 'User', 'authorId'),
                 );
         }
 
