@@ -261,6 +261,21 @@ p {
 	color: #f3f3f3;
 }
 
+.grid-view {
+	text-shadow: 0 1px 0 #fff;
+	font-weight: 400;
+}
+
+.grid-view .items thead th:hover {
+	color: #023a73;
+}
+
+.grid-view .block-actions {
+	text-shadow: 0 1px 0 #000;
+	color: #f3f3f3;
+}
+
+
 .paginate_button, .paginate_active {
 	color: #373737;
 	text-shadow: 0 1px 0 #FFFFFF;
