@@ -14,6 +14,7 @@
  * @property string $lastLoginTime time when user last logged in.
  * @property string $lastActivityTime time when user last accessed a controller.
  * @property string $loginCount how many times user logged in.
+ * @property string $removedTime time when the problem is marked as removed.
  * @property boolean $isRemoved flag whether a user is removed or not.
  * 
  * The followings are additional properties in model 'User':
@@ -70,6 +71,15 @@ class User extends CActiveRecord {
          */
         public function tableName() {
                 return 'Users';
+        }
+
+        /**
+         * @return array the behavior configurations (behavior name=>behavior configuration).
+         */
+        public function behaviors() {
+                return array(
+                        'removable' => 'application.components.behaviors.RemovableBehavior',
+                );
         }
 
         /**
@@ -149,6 +159,7 @@ class User extends CActiveRecord {
                         'lastLoginTime' => Yii::t('labels', 'Last Login Time'),
                         'lastActivityTime' => Yii::t('labels', 'Last Activity Time'),
                         'loginCount' => Yii::t('labels', 'Login Count'),
+                        'removedTime' => Yii::t('labels', 'Removed Time'),
                         'isRemoved' => Yii::t('labels', 'Is Removed'),
                 );
         }

@@ -12,6 +12,7 @@
  * @property integer $privacyLevel //TODO what's this?
  * @property string $createdTime time when the problem is first created by user.
  * @property string $modifiedTime time when the problem is last modified by user.
+ * @property string $removedTime time when the problem is marked as removed.
  * @property boolean $isRemoved flag whether the problem is removed or not.
  *
  * The followings are the available model relations:
@@ -36,6 +37,15 @@ class Problem extends CActiveRecord {
          */
         public function tableName() {
                 return 'Problems';
+        }
+
+        /**
+         * @return array the behavior configurations (behavior name=>behavior configuration).
+         */
+        public function behaviors() {
+                return array(
+                        'removable' => 'application.components.behaviors.RemovableBehavior',
+                );
         }
 
         /**
@@ -72,6 +82,8 @@ class Problem extends CActiveRecord {
                         'privacyLevel' => Yii::t('labels', 'Privacy Level'),
                         'createdTime' => Yii::t('labels', 'Created Time'),
                         'modifiedTime' => Yii::t('labels', 'Modified Time'),
+                        'removedTime' => Yii::t('labels', 'Removed Time'),
+                        'isRemoved' => Yii::t('labels', 'Is Removed'),
                 );
         }
 
