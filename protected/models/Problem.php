@@ -18,6 +18,10 @@
  * The followings are the available model relations:
  * @property User $author problem's author
  * 
+ * The followings are additional methods:
+ * @method boolean trash() flag the object as removed.
+ * @method boolean untrash() unflag the remove status of the object.
+ * 
  * @author Muhammad Adinata <mail.dieend@gmail.com>
  * @package application.models
  */

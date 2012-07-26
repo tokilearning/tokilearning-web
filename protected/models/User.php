@@ -23,6 +23,10 @@
  * //i.e. not declared explicitly.
  * @property Problem $problem the problem authored by this user.
  * 
+ * The followings are additional methods:
+ * @method boolean trash() flag the object as removed.
+ * @method boolean untrash() unflag the remove status of the object.
+ * 
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
  */
