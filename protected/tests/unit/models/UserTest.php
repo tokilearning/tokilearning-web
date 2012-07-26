@@ -163,4 +163,22 @@ class UserTest extends CDbTestCase {
                 );
                 $this->assertFalse($user->validate());
         }
+        
+        public function testBehaviorRemovable() {
+                $user = new User(User::SCENARIO_REGISTER);
+                $user->attributes = array (
+                    'username' => 'adafasg',
+                    'email' => 'mail.d@gmail.com',
+                    'password' => 'pass',
+                    'passwordRepeat' => 'pass',
+                    'fullName' => 'adin'
+                );
+                $this->assertTrue($user->validate());
+                $user->save();
+                $user->trash();
+                $this->assertTrue($user->isRemoved == TRUE);
+                
+                $user->untrash();
+                $this->assertFalse($user->isRemoved == TRUE);
+        }
 }
