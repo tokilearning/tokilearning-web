@@ -11,3 +11,4 @@ protected/data/*.db
 *.scss
 *.*~
 nbproject
+database
