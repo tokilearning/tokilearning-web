@@ -9,7 +9,7 @@
  * @property string $authorId the id of this problem's author.
  * @property string $shortDescription problem's short description.
  * @property string $description problem's long description.
- * @property integer $privacyLevel //TODO what's this?
+ * @property integer $privacyLevel problem's privacy level
  * @property string $createdTime time when the problem is first created by user.
  * @property string $modifiedTime time when the problem is last modified by user.
  * @property string $removedTime time when the problem is marked as removed.
