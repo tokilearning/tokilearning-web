@@ -85,31 +85,4 @@ class Submission extends CActiveRecord
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('problemId',$this->problemId,true);
-		$criteria->compare('submitterId',$this->submitterId,true);
-		$criteria->compare('content',$this->content,true);
-		$criteria->compare('submittedTime',$this->submittedTime,true);
-		$criteria->compare('gradeTime',$this->gradeTime,true);
-		$criteria->compare('gradeStatus',$this->gradeStatus);
-		$criteria->compare('gradeResult',$this->gradeResult,true);
-		$criteria->compare('file',$this->file,true);
-		$criteria->compare('context',$this->context);
-		$criteria->compare('contextId',$this->contextId);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
 }
