@@ -50,7 +50,6 @@ class Submission extends CActiveRecord
 			array('problemId, submitterId', 'length', 'max'=>20),
 			array('gradeTime, gradeResult, file', 'safe'),
 			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
 			array('id, problemId, submitterId, submittedTime, gradeTime, gradeStatus, context, contextId', 'safe', 'on'=>'search'),
 		);
 	}
@@ -71,17 +70,17 @@ class Submission extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'problemId' => 'Problem',
-			'submitterId' => 'Submitter',
-			'content' => 'Content',
-			'submittedTime' => 'Submitted Time',
-			'gradeTime' => 'Grade Time',
-			'gradeStatus' => 'Grade Status',
-			'gradeResult' => 'Grade Result',
-			'file' => 'File',
-			'context' => 'Context Type',
-			'contextId' => 'Context ID',
+			'id' => Yii::t('labels','ID'),
+			'problemId' => Yii::t('labels','Problem'),
+			'submitterId' => Yii::t('labels','Submitter'),
+			'content' => Yii::t('labels','Content'),
+			'submittedTime' => Yii::t('labels','Submitted Time'),
+			'gradeTime' => Yii::t('labels','Grade Time'),
+			'gradeStatus' => Yii::t('labels','Grade Status'),
+			'gradeResult' => Yii::t('labels','Grade Result'),
+			'file' => Yii::t('labels','File'),
+			'context' => Yii::t('labels','Context Type'),
+			'contextId' => Yii::t('labels','Context ID'),
 		);
 	}
 
