@@ -28,7 +28,7 @@ class m120729_044604_create_submission_table extends CDbMigration
                         'contextId' =>'smallint',
                         'primary key (id)',
                 ));
-                $this->addForeignKey('submitterIdFK', self::TABLE_SUBMISSION, 'problemId', 'Users', 'id', 'RESTRICT');
+                $this->addForeignKey('submitterIdFK', self::TABLE_SUBMISSION, 'submitterId', 'Users', 'id', 'RESTRICT');
 	}
 
 	public function down()
