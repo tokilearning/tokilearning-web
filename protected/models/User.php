@@ -16,29 +16,30 @@
  * @property string $loginCount how many times user logged in.
  * @property string $removedTime time when the problem is marked as removed.
  * @property boolean $isRemoved flag whether a user is removed or not.
- * 
+ *
  * The followings are additional properties in model 'User':
  * //TODO: Add additional properties when needed.
  * //Additional properties are properties that are accessed by PHP's magic method
  * //i.e. not declared explicitly.
- * @property Problem $problem the problem authored by this user.
- * 
+ * @property Problem $problems the problems authored by this user.
+ * @property Submission $submissions the submissions authored by this user.
+ *
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
  */
 class User extends CActiveRecord {
         /**
          * Scenario lists.
-         * 
+         *
          * This lists scenario that will be used for attribute validation.
-         * 
+         *
          * TODO: Put scenario with SCENARIO_ prefix. Put note if really needed.
          * SCENARIO_LOGIN_BY_EMAIL
          * SCENARIO_LOGIN_BY_USERNAME
          * SCENARIO_REGISTER
          * SCENARIO_UPDATE
          * SCENARIO_ADMIN_UPDATE
-         * 
+         *
          */
 
         const SCENARIO_LOGIN_BY_EMAIL = "login_email";
@@ -128,7 +129,8 @@ class User extends CActiveRecord {
          */
         public function relations() {
                 return array(
-                        'problem' => array(self::HAS_MANY, 'User', 'authorId'),
+                        'problems' => array(self::HAS_MANY, 'User', 'authorId'),
+                        'submissions' => array(self::HAS_MANY, 'Submission','submitterId'),
                 );
         }
 
