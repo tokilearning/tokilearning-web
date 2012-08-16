@@ -27,6 +27,10 @@ CSS
                                                         return CHtml::link($data->fullName);
                                                 }
                                         ),
+                                        array(
+                                                'class' => 'CButtonColumn',
+                                                'template' => '{update}'
+                                        )
                                 ),
                                 'dataProvider' => $dataProvider,
                         ));

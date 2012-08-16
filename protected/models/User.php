@@ -49,7 +49,7 @@ class User extends CActiveRecord {
         const SCENARIO_LOGIN_BY_USERNAME = "login_username";
         const SCENARIO_REGISTER = "register";
         const SCENARIO_UPDATE = "update";
-        const SCENARIO_ADMIN_UPDATE = "admin_update";
+        const SCENARIO_ADMIN_UPDATE = "adminUpdate";
 
         /**
          * Additional properties in model 'User':
@@ -124,6 +124,8 @@ class User extends CActiveRecord {
                         array('username, email, password, passwordRepeat, fullName', 'required', 'on' => self::SCENARIO_REGISTER),
                         array('password', 'compare', 'compareAttribute' => 'passwordRepeat', 'on' => self::SCENARIO_REGISTER),
                         array('username, email', 'unique', 'on' => self::SCENARIO_REGISTER),
+                        //SCENARIO_ADMIN_UPDATE
+                        array('username, email, fullName', 'required', 'on' => self::SCENARIO_ADMIN_UPDATE),
                 );
         }
 

@@ -38,4 +38,31 @@ class UsersController extends CAdministrationController {
                 ));
         }
 
+        /**
+         * User update form display action.
+         * 
+         * This action displays a form to update the user information.
+         * 
+         * @param int $id The ID of displayed user.
+         */
+        public function actionUpdate($id) {
+                $user = User::model()->findByPk($id);
+                if ($user === NULL)
+                        throw new CHttpException(404);
+
+                if (isset($_POST['User'])) {
+                        $user->setScenario(User::SCENARIO_ADMIN_UPDATE);
+                        $user->setAttributes($_POST['User']);
+                        if ($user->save()) {
+                                Yii::app()->user->setFlash('userUpdateSuccess', true);
+                        }
+                }
+                $this->pageTitle = Yii::t('admin', 'Viewing User: {user}', array(
+                                '{user}' => $user->fullName,
+                        ));
+                $this->render('update', array(
+                        'user' => $user,
+                ));
+        }
+
 }

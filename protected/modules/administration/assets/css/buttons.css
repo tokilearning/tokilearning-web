@@ -30,7 +30,7 @@
 	height: 14px;
 }
 
-input[type="submit"].button {
+input[type="submit"].button, input[type="reset"].button {
 	height: 26px;
 }
 

@@ -7,4 +7,7 @@
  * @package application.messages.id
  */
 return array(
+        'ID' => 'ID',
+        'Username' => 'Username',
+        'Full Name' => 'Nama Lengkap',
 );
