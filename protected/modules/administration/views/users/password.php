@@ -12,29 +12,22 @@
                         <?php if (Yii::app()->user->getFlash('userUpdateSuccess')): ?>
                                 <div class="alert success">
                                         <strong><?php echo Yii::t('common', 'Success'); ?></strong>
-                                        <?php echo Yii::t('translations', 'User successfully updated'); ?>
+                                        <?php echo Yii::t('translations', 'User\'s password successfully updated'); ?>
                                 </div>
                         <?php endif; ?>
                         <div class="_100">
                                 <p>
-                                        <?php echo CHtml::activeLabel($user, 'fullName'); ?>
-                                        <?php echo CHtml::activeTextField($user, 'fullName', array('class' => 'required text')); ?>
+                                        <?php echo CHtml::activeLabel($user, 'password'); ?>
+                                        <?php echo CHtml::activePasswordField($user, 'password', array('class' => 'required text')); ?>
                                 </p>
-                                <?php echo CHtml::error($user, 'fullName'); ?>
+                                <?php echo CHtml::error($user, 'password'); ?>
                         </div>
                         <div class="_100">
                                 <p>
-                                        <?php echo CHtml::activeLabel($user, 'username'); ?>
-                                        <?php echo CHtml::activeTextField($user, 'username', array('class' => 'required text')); ?>
+                                        <?php echo CHtml::activeLabel($user, 'passwordRepeat'); ?>
+                                        <?php echo CHtml::activePasswordField($user, 'passwordRepeat', array('class' => 'required text')); ?>
                                 </p>
-                                <?php echo CHtml::error($user, 'username'); ?>
-                        </div>
-                        <div class="_100">
-                                <p>
-                                        <?php echo CHtml::activeLabel($user, 'email'); ?>
-                                        <?php echo CHtml::activeTextField($user, 'email', array('class' => 'required text')); ?>
-                                </p>
-                                <?php echo CHtml::error($user, 'email'); ?>
+                                <?php echo CHtml::error($user, 'passwordRepeat'); ?>
                         </div>
                         <div class="clear"></div>
                         <div class="block-actions">

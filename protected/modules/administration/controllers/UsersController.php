@@ -39,6 +39,35 @@ class UsersController extends CAdministrationController {
         }
 
         /**
+         * User password update action.
+         * 
+         * This action handles user's password update by the admin.
+         * 
+         * @param int $id the ID of the user.
+         */
+        public function actionPassword($id) {
+                $user = User::model()->findByPk($id);
+                /* @var $user User */
+                if ($user === NULL)
+                        throw new CHttpException(404);
+
+                if (isset($_POST['User'])) {
+                        $user->setScenario(User::SCENARIO_ADMIN_UPDATE_PASSWORD);
+                        $user->setAttributes($_POST['User']);
+                        if ($user->save()) {
+                                Yii::app()->user->setFlash('userUpdateSuccess', true);
+                        }
+                }
+                $user->password = '';
+                $this->pageTitle = Yii::t('admin', 'Updating Password: {user}', array(
+                                '{user}' => $user->fullName,
+                        ));
+                $this->render('password', array(
+                        'user' => $user,
+                ));
+        }
+
+        /**
          * User update form display action.
          * 
          * This action displays a form to update the user information.

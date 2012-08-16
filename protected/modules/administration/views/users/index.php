@@ -29,7 +29,17 @@ CSS
                                         ),
                                         array(
                                                 'class' => 'CButtonColumn',
-                                                'template' => '{update}'
+                                                'buttons' => array(
+                                                        'password' => array(
+                                                                'label' => Yii::t('common', 'Change Password'),
+                                                                'imageUrl' => $this->module->getImage('icons/key_16x16.png'),
+                                                                'url' => function($data, $row) {
+                                                                        /* @var $data User */
+                                                                        return array('users/password', 'id' => $data->id);
+                                                                }
+                                                        )
+                                                ),
+                                                'template' => '{update} {password}',
                                         )
                                 ),
                                 'dataProvider' => $dataProvider,

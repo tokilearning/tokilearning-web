@@ -90,7 +90,7 @@ class AdministrationModule extends CWebModule {
          * @return string image URL.
          */
         public function getImage($file) {
-                return $this->getAssetsUrl() . '/images/' . $file;
+                return $this->getAssetsUrl() . '/img/' . $file;
         }
 
         /**

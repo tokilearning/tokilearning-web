@@ -6,8 +6,9 @@
  * @package administration.messages
  */
 return array(
-        //controllers/UsersController.php
+        //protected/modules/administration/controllers/UsersController.php
+        'Updating Password: {user}' => 'Mengubah Sandi: {user}',
         'Viewing User: {user}' => 'Melihat Pengguna: {user}',
-        //views/dashboard/index.php
+        //protected/modules/administration/views/dashboard/index.php
         'Here you have a quick overview of some features' => 'Di sini anda akan melihat pratinjau cepat dari beberapa fitur',
 );
