@@ -45,12 +45,13 @@ class User extends CActiveRecord {
          * 
          */
 
+        const SCENARIO_ADMIN_CREATE = 'adminCreate';
+        const SCENARIO_ADMIN_UPDATE = 'adminUpdate';
+        const SCENARIO_ADMIN_UPDATE_PASSWORD = 'adminUpdatePassword';
         const SCENARIO_LOGIN_BY_EMAIL = "login_email";
         const SCENARIO_LOGIN_BY_USERNAME = "login_username";
         const SCENARIO_REGISTER = "register";
         const SCENARIO_UPDATE = "update";
-        const SCENARIO_ADMIN_UPDATE = 'adminUpdate';
-        const SCENARIO_ADMIN_UPDATE_PASSWORD = 'adminUpdatePassword';
 
         /**
          * Additional properties in model 'User':

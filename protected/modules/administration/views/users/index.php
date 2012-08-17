@@ -5,6 +5,11 @@
 <div class="grid_12">
         <div class="block-border">
                 <div class="block-content">
+                        <div class="block-actions">
+                                <ul>
+                                        <li><?php echo CHtml::link(Yii::t('admin', 'Create User'), array('create'), array('class' => 'button')); ?></li>
+                                </ul>
+                        </div>
                         <?php
                         Yii::app()->clientScript->registerCss('test', <<<CSS
 CSS

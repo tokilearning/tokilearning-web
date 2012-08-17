@@ -12,6 +12,25 @@
 class UsersController extends CAdministrationController {
 
         /**
+         * User create action.
+         * 
+         * This action displays form for the admin to create a new user.
+         */
+        public function actionCreate() {
+                $user = new User(User::SCENARIO_ADMIN_CREATE);
+                if (isset($_POST['User'])) {
+                        $user->setAttributes($_POST['User']);
+                        if ($user->save()) {
+                                $this->redirect(array('index'));
+                        }
+                }
+                $this->pageTitle = Yii::t('admin', 'Create A New User');
+                $this->render('create', array(
+                        'user' => $user
+                ));
+        }
+
+        /**
          * User list display action.
          * 
          * This action displays table consisting of current users registered
