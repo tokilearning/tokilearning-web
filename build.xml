@@ -1,0 +1,6 @@
+<project name="TOKI Learning Front End Sites" default="dist" basedir=".">
+        <description></description>
+        <target name="clean-assets"
+                description="Clean Up The Assets File" >
+        </target>
+</project>

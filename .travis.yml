@@ -5,3 +5,18 @@ php:
 
 env:
   - DB=mysql
+
+before_script:
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE tokilearning;'; fi"
+  - echo "<?php
+    return array(
+        'connectionString' => 'mysql:host=localhost;dbname=tokilearning',
+        'emulatePrepare' => true,
+        'username' => 'travis',
+        'password' => '',
+        'charset' => 'utf8',
+    );" > protected/config/application/database.php
+  - php protected/yiic migrate
+
+script:
+  - phpunit --configuration protected/tests/phpunit.xml protected/tests/unit/

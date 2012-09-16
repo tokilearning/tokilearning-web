@@ -8,7 +8,7 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.tests.unit.components.behaviors
  */
-class RemovableBehaviorTest extends CDbTestCase {
+class RemovableBehaviorTest extends \CDbTestCase {
 
         /**
          * Trash testing method.

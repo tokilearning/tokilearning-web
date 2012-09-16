@@ -8,10 +8,12 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.tests.unit.models
  */
-class UserTest extends CDbTestCase {
-        public $fixtures = array (
-            'users'=>':Users'
+class UserTest extends \CDbTestCase {
+
+        public $fixtures = array(
+                'users' => ':Users'
         );
+
         /**
          * General rules testing method.
          * 
@@ -34,7 +36,7 @@ class UserTest extends CDbTestCase {
                         $user->validate(); //Invoking rule testing.
                         $this->assertTrue($user->hasErrors('username'));
                 }
-                
+
                 //Testing email
                 //False Testcase
                 $user->username = 'userad';
@@ -49,7 +51,7 @@ class UserTest extends CDbTestCase {
                         $user->validate();
                         $this->assertTrue($user->hasErrors('email'));
                 }
-                
+
                 //Test password
                 $testcases = array(
                         'p', // < 4
@@ -61,124 +63,124 @@ class UserTest extends CDbTestCase {
                         $user->validate();
                         $this->assertTrue($user->hasErrors('email'));
                 }
-                
-                
         }
-        public function testLoginByUsernameScenario(){
+
+        public function testLoginByUsernameScenario() {
                 $user = new User(User::SCENARIO_LOGIN_BY_USERNAME);
-                $user->attributes = array (
-                    'username' => 'dainaad',
+                $user->attributes = array(
+                        'username' => 'dainaad',
                 );
                 $this->assertFalse($user->validate());
-                
+
                 $user = new User(User::SCENARIO_LOGIN_BY_USERNAME);
-                $user->attributes = array (
-                    'password' => 'dainaad',
+                $user->attributes = array(
+                        'password' => 'dainaad',
                 );
                 $this->assertFalse($user->validate());
-                
+
                 $user = new User(User::SCENARIO_LOGIN_BY_USERNAME);
-                $user->attributes = array (
-                    'username' => 'aaaaaA',
-                    'password' => 'pass',
+                $user->attributes = array(
+                        'username' => 'aaaaaA',
+                        'password' => 'pass',
                 );
                 $this->assertTrue($user->validate());
         }
-        
-        public function testLoginByEmailScenario(){
+
+        public function testLoginByEmailScenario() {
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->attributes = array (
-                    'email' => 'dainaad',
+                $user->attributes = array(
+                        'email' => 'dainaad',
                 );
-                
+
                 $this->assertFalse($user->validate());
-                
+
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->attributes = array (
-                    'email' => 'mail.dieend@gmail.com',
-                    'password' => 'passde',
+                $user->attributes = array(
+                        'email' => 'mail.dieend@gmail.com',
+                        'password' => 'passde',
                 );
                 $this->assertFalse($user->validate());
-                
+
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->attributes = array (
-                    'email' => 'mail.dieend@gmail.com',
-                    'password' => 'pass',
+                $user->attributes = array(
+                        'email' => 'mail.dieend@gmail.com',
+                        'password' => 'pass',
                 );
                 $this->assertTrue($user->validate());
-                
+
                 $user = new User(User::SCENARIO_LOGIN_BY_EMAIL);
-                $user->attributes = array (
-                    'email' => 'MAIL.dieend@gmail.com',
-                    'password' => 'pass',
+                $user->attributes = array(
+                        'email' => 'MAIL.dieend@gmail.com',
+                        'password' => 'pass',
                 );
                 $this->assertTrue($user->validate());
         }
-        
-        public function testRegisterScenario(){
+
+        public function testRegisterScenario() {
                 $user = new User(User::SCENARIO_REGISTER);
                 $user->scenario = User::SCENARIO_REGISTER;
-                $user->attributes = array (
-                    'username' => 'aaaaaa',
-                    'email' => 'ad@a.com',
-                    'password' => 'pass',
-                    'passwordRepeat' => 'pass',
-                    'fullName' => 'adin'
+                $user->attributes = array(
+                        'username' => 'aaaaaa',
+                        'email' => 'ad@a.com',
+                        'password' => 'pass',
+                        'passwordRepeat' => 'pass',
+                        'fullName' => 'adin'
                 );
                 $this->assertFalse($user->validate());
-                
-                $user->attributes = array (
-                    'username' => 'adafasg',
-                    'email' => 'mail.DIEEND@gmail.com',
-                    'password' => 'pass',
-                    'passwordRepeat' => 'pass',
-                    'fullName' => 'adin'
+
+                $user->attributes = array(
+                        'username' => 'adafasg',
+                        'email' => 'mail.DIEEND@gmail.com',
+                        'password' => 'pass',
+                        'passwordRepeat' => 'pass',
+                        'fullName' => 'adin'
                 );
                 $this->assertFalse($user->validate());
-                
-                $user->attributes = array (
-                    'username' => 'dainaad',
-                    'email' => 'ad@a.com',
-                    'password' => 'pass',
-                    'passwordRepeat' => 'passs',
-                    'fullName' => 'adin'
+
+                $user->attributes = array(
+                        'username' => 'dainaad',
+                        'email' => 'ad@a.com',
+                        'password' => 'pass',
+                        'passwordRepeat' => 'passs',
+                        'fullName' => 'adin'
                 );
                 $this->assertFalse($user->validate());
-                
-                $user->attributes = array (
-                    'username' => 'dainaad',
-                    'email' => 'ad@a.com',
-                    'password' => '',
-                    'passwordRepeat' => 'pass',
-                    'fullName' => 'adin'
+
+                $user->attributes = array(
+                        'username' => 'dainaad',
+                        'email' => 'ad@a.com',
+                        'password' => '',
+                        'passwordRepeat' => 'pass',
+                        'fullName' => 'adin'
                 );
                 $this->assertFalse($user->validate());
-                
-                $user->attributes = array (
-                    'username' => 'dain',
-                    'email' => 'ad@a.com',
-                    'password' => 'pass',
-                    'passwordRepeat' => 'pass',
-                    'fullName' => 'adin'
+
+                $user->attributes = array(
+                        'username' => 'dain',
+                        'email' => 'ad@a.com',
+                        'password' => 'pass',
+                        'passwordRepeat' => 'pass',
+                        'fullName' => 'adin'
                 );
                 $this->assertFalse($user->validate());
         }
-        
+
         public function testBehaviorRemovable() {
                 $user = new User(User::SCENARIO_REGISTER);
-                $user->attributes = array (
-                    'username' => 'adafasg',
-                    'email' => 'mail.d@gmail.com',
-                    'password' => 'pass',
-                    'passwordRepeat' => 'pass',
-                    'fullName' => 'adin'
+                $user->attributes = array(
+                        'username' => 'adafasg',
+                        'email' => 'mail.d@gmail.com',
+                        'password' => 'pass',
+                        'passwordRepeat' => 'pass',
+                        'fullName' => 'adin'
                 );
                 $this->assertTrue($user->validate());
                 $user->save();
                 $user->trash();
                 $this->assertTrue($user->isRemoved == TRUE);
-                
+
                 $user->untrash();
                 $this->assertFalse($user->isRemoved == TRUE);
         }
+
 }
