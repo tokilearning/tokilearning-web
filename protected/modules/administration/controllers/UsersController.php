@@ -9,7 +9,7 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration.controllers
  */
-class UsersController extends CAdministrationController {
+class UsersController extends \CAdministrationController {
 
         /**
          * User create action.

@@ -10,7 +10,7 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration.controllers
  */
-class DashboardController extends CAdministrationController {
+class DashboardController extends \CAdministrationController {
 
         /**
          * Landing page display action.

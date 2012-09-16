@@ -14,44 +14,43 @@
  * @property string $lastLoginTime time when user last logged in.
  * @property string $lastActivityTime time when user last accessed a controller.
  * @property string $loginCount how many times user logged in.
- * @property string $removedTime time when the problem is marked as removed.
+ * @property string $removedTime time when the user is flagged as removed.
+ * @property string $profileUpdatedTime time when a user change his/her profile.
  * @property boolean $isRemoved flag whether a user is removed or not.
- * 
+ *
  * The followings are additional properties in model 'User':
  * //TODO: Add additional properties when needed.
  * //Additional properties are properties that are accessed by PHP's magic method
- * //i.e. not declared explicitly.
- * @property Problem $problem the problem authored by this user.
- * 
+ * //i.e. not declared explicitly. 
  * The followings are additional methods:
  * @method boolean trash() flag the object as removed.
  * @method boolean untrash() unflag the remove status of the object.
- * 
+ *
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
  */
-class User extends CActiveRecord {
+class User extends \CActiveRecord {
         /**
          * Scenario lists.
-         * 
+         *
          * This lists scenario that will be used for attribute validation.
-         * 
+         *
          * TODO: Put scenario with SCENARIO_ prefix. Put note if really needed.
          * SCENARIO_LOGIN_BY_EMAIL
          * SCENARIO_LOGIN_BY_USERNAME
          * SCENARIO_REGISTER
          * SCENARIO_UPDATE
          * SCENARIO_ADMIN_UPDATE
-         * 
+         *
          */
 
         const SCENARIO_ADMIN_CREATE = 'adminCreate';
         const SCENARIO_ADMIN_UPDATE = 'adminUpdate';
         const SCENARIO_ADMIN_UPDATE_PASSWORD = 'adminUpdatePassword';
-        const SCENARIO_LOGIN_BY_EMAIL = "login_email";
-        const SCENARIO_LOGIN_BY_USERNAME = "login_username";
-        const SCENARIO_REGISTER = "register";
-        const SCENARIO_UPDATE = "update";
+        const SCENARIO_LOGIN_BY_EMAIL = 'userLoginByEmail';
+        const SCENARIO_LOGIN_BY_USERNAME = 'userLoginByUsername';
+        const SCENARIO_REGISTER = 'userRegister';
+        const SCENARIO_UPDATE = 'userUpdate';
 
         /**
          * Additional properties in model 'User':
@@ -136,7 +135,6 @@ class User extends CActiveRecord {
          */
         public function relations() {
                 return array(
-                        'problem' => array(self::HAS_MANY, 'User', 'authorId'),
                 );
         }
 
