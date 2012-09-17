@@ -8,7 +8,7 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration.controllers
  */
-class LoginController extends CAdministrationController {
+class LoginController extends \CAdministrationController {
 
         /**
          * @var string the layout name for login name.

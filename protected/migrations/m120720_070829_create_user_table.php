@@ -23,7 +23,7 @@ class m120720_070829_create_user_table extends \CDbMigration {
                         'id' => 'bigint unsigned NOT NULL AUTO_INCREMENT',
                         'username' => 'varchar(255) NOT NULL',
                         'email' => 'varchar(255) NOT NULL',
-                        'password' => 'varchar(32) NOT NULL',
+                        'password' => 'varchar(40) NOT NULL',
                         'fullName' => 'text NOT NULL',
                         //System information
                         'createdTime' => 'datetime NULL',
