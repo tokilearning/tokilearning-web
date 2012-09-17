@@ -8,7 +8,7 @@ env:
 
 before_script:
   - pear channel-discover pear.phpunit.de
-  - pear install phpunit/PHPUnit_Selenium
+  - pear install --alldeps phpunit/PHPUnit_Selenium
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE tokilearning;'; fi"
   - echo "<?php
     return array(
