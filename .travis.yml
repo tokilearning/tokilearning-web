@@ -16,7 +16,7 @@ before_script:
         'password' => '',
         'charset' => 'utf8',
     );" > protected/config/application/database.php
-  - php protected/yiic migrate
+  - /usr/bin/yes | php protected/yiic migrate
 
 script:
   - phpunit --configuration protected/tests/phpunit.xml protected/tests/unit/
