@@ -5,7 +5,7 @@
  * This file should be removed when the application is deployed for production.
  */
 // change the following paths if necessary
-$yii = dirname(__FILE__) . '/framework/yii.php';
+$yii = dirname(__FILE__) . '/yii/framework/yii.php';
 $config = dirname(__FILE__) . '/protected/config/test.php';
 
 // remove the following line when in production mode
