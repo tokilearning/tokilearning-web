@@ -29,6 +29,11 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.models
  */
+
+namespace application\models;
+
+use \Yii;
+
 class User extends \CActiveRecord {
         /**
          * Scenario lists.
@@ -52,6 +57,11 @@ class User extends \CActiveRecord {
         const SCENARIO_REGISTER = 'userRegister';
         const SCENARIO_UPDATE = 'userUpdate';
 
+        /**
+         * Scopes list.
+         * 
+         * This lists scopes that will use for active record operation.
+         */
         /**
          * Additional properties in model 'User':
          */

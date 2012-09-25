@@ -1,6 +1,14 @@
 <project name="TOKI Learning Front End Sites" default="dist" basedir=".">
         <description></description>
+        <property name="assets.dir" location="${basedir}/assets"/>
         <target name="clean-assets"
                 description="Clean Up The Assets File" >
+                <echo>Deleting assets</echo>
+                <delete includeemptydirs="true">
+                        <fileset dir="${assets.dir}" defaultexcludes="false" id="test">
+                                <exclude name=".gitignore" />
+                                <exclude name="index.html" />
+                        </fileset>
+                </delete>
         </target>
 </project>

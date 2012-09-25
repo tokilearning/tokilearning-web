@@ -1,319 +1,547 @@
-
-<!doctype html>
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<?php
+/* @var $this Controller */
+define('BASE_URL', $this->module->getAssetsUrl());
+define('ADMIN_THEME_CSS', BASE_URL . '/css');
+define('ADMIN_THEME_JS', BASE_URL . '/js');
+define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
+?>
+<!DOCTYPE html>
+<html lang="en">
         <head>
+                <!--
+                        Charisma v1.0.0
+        
+                        Copyright 2012 Muhammad Usman
+                        Licensed under the Apache License v2.0
+                        http://www.apache.org/licenses/LICENSE-2.0
+        
+                        http://usman.it
+                        http://twitter.com/halalit_usman
+                -->
                 <meta charset="utf-8">
-
-                <!-- DNS prefetch -->
-                <link rel=dns-prefetch href="//fonts.googleapis.com">
-
-                <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-                     More info: h5bp.com/b/378 -->
-                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-                <title><?php echo $this->pageTitle; ?></title>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <meta name="language" content="<?php echo Yii::app()->language; ?>" />
+                <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <meta name="description" content="">
                 <meta name="author" content="">
+                <!-- The styles -->
+                <link id="bs-css" href="<?php echo ADMIN_THEME_CSS; ?>/bootstrap-style.css" rel="stylesheet">
+                <style type="text/css">
+                        body {
+                                padding-bottom: 40px;
+                        }
+                        .sidebar-nav {
+                                padding: 9px 0;
+                        }
+                </style>
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/bootstrap-responsive.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/charisma-app.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/jquery-ui-1.8.21.custom.css" rel="stylesheet">
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/fullcalendar.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/fullcalendar.print.css' rel='stylesheet'  media='print'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/chosen.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/uniform.default.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/colorbox.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/jquery.cleditor.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/jquery.noty.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/noty_theme_default.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/elfinder.min.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/elfinder.theme.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/jquery.iphone.toggle.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/opa-icons.css' rel='stylesheet'>
+                <link href='<?php echo ADMIN_THEME_CSS; ?>/uploadify.css' rel='stylesheet'>
+                <script src="<?php echo ADMIN_THEME_JS; ?>/modernizr.custom.js"></script>
 
-                <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-                <meta name="viewport" content="width=device-width,initial-scale=1">
-
-                <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
-
-                <!-- CSS: implied media=all -->
-                <!-- CSS concatenated and minified via ant build script-->
-                <?php $this->module->registerCssFile('style.css'); ?>
-                <?php $this->module->registerCssFile('960.fluid.css'); ?>
-                <?php $this->module->registerCssFile('main.css'); ?>
-                <?php $this->module->registerCssFile('buttons.css'); ?>
-                <?php $this->module->registerCssFile('lists.css'); ?>
-                <?php $this->module->registerCssFile('icons.css'); ?>
-                <?php $this->module->registerCssFile('notifications.css'); ?>
-                <?php $this->module->registerCssFile('typography.css'); ?>
-                <?php $this->module->registerCssFile('forms.css'); ?>
-                <?php $this->module->registerCssFile('tables.css'); ?>
-                <?php $this->module->registerCssFile('charts.css'); ?>
-                <?php $this->module->registerCssFile('jquery-ui-1.8.15.custom.css'); ?>
-
-                <!-- end CSS-->
-
-                <!-- Fonts -->
-                <link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
-                <!-- end Fonts-->
-
-                <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
-
-                <!-- All JavaScript at the bottom, except for Modernizr / Respond.
-                     Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
-                     For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-                <?php $this->module->registerScriptFile('libs/modernizr-2.0.6.min.js', CClientScript::POS_HEAD); ?>
-        </head>
-
-        <body id="top">
-
-                <!-- Begin of #container -->
-                <div id="container">
-                        <!-- Begin of #header -->
-                        <div id="header-surround"><header id="header">
-
-                                        <!-- Place your logo here -->
-                                        <img src="<?php echo $this->getAssetsUrl(); ?>/img/logo.png" alt="Grape" class="logo">
-
-                                        <!-- Divider between info-button and the toolbar-icons -->
-                                        <div class="divider-header divider-vertical"></div>
-
-                                        <!-- Info-Button -->
-                                        <a href="javascript:void(0);" onclick="$('#info-dialog').dialog({ modal: true });"><span class="btn-info"></span></a>
-
-                                        <!-- Modal Box Content -->
-                                        <div id="info-dialog" title="About" style="display: none;">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                        </div> <!--! end of #info-dialog -->
-
-                                        <!-- Begin from Toolbox -->
-                                        <ul class="toolbox-header">
-                                                <!-- First entry -->
-                                                <li>
-                                                        <a rel="tooltip" title="Create a User" class="toolbox-action" href="javascript:void(0);"><span class="i-24-user-business"></span></a>
-                                                        <div class="toolbox-content">
-
-                                                                <!-- Box -->
-                                                                <div class="block-border">
-                                                                        <div class="block-header small">
-                                                                                <h1>Create a User</h1>
-                                                                        </div>
-                                                                        <form id="create-user-form" class="block-content form" action="" method="post">
-                                                                                <div class="_100">
-                                                                                        <p><label for="username">Username</label><input id="username" name="username" class="required" type="text" value="" /></p>
-                                                                                </div>
-                                                                                <div class="_50">
-                                                                                        <p class="no-top-margin"><label for="firstname">Firstname</label><input id="firstname" name="firstname" class="required" type="text" value="" /></p>
-                                                                                </div>
-                                                                                <div class="_50">
-                                                                                        <p class="no-top-margin"><label for="lastname">Lastname</label><input id="lastname" name="lastname" class="required" type="text" value="" /></p>
-                                                                                </div>
-                                                                                <div class="clear"></div>
-
-                                                                                <!-- Buttons with actionbar  -->
-                                                                                <div class="block-actions">
-                                                                                        <ul class="actions-left">
-                                                                                                <li><a class="close-toolbox button red" id="reset" href="javascript:void(0);">Cancel</a></li>
-                                                                                        </ul>
-                                                                                        <ul class="actions-right">
-                                                                                                <li><input type="submit" class="button" value="Create the User"></li>
-                                                                                        </ul>
-                                                                                </div> <!--! end of #block-actions -->
-                                                                        </form>
-                                                                </div> <!--! end of box -->
-
-                                                        </div>
-                                                </li> <!--! end of first entry -->
-
-                                                <!-- Second entry -->
-                                                <li>
-                                                        <a rel="tooltip" title="Write a Message" class="toolbox-action" href="javascript:void(0);"><span class="i-24-inbox-document"></span></a>
-                                                        <div class="toolbox-content">
-
-                                                                <!-- Box -->
-                                                                <div class="block-border">
-                                                                        <div class="block-header small">
-                                                                                <h1>Write a Message</h1>
-                                                                        </div>
-                                                                        <form id="write-message-form" class="block-content form" action="" method="post">							
-                                                                                <p class="inline-mini-label">
-                                                                                        <label for="recipient">Recipient</label>
-                                                                                        <input type="text" name="recipient" class="required">
-                                                                                </p>
-                                                                                <p class="inline-mini-label">
-                                                                                        <label for="subject">Subject</label>
-                                                                                        <input type="text" name="subject">
-                                                                                </p>
-                                                                                <div class="_100">
-                                                                                        <p class="no-top-margin"><label for="message">Message</label><textarea id="message" name="message" class="required" rows="5" cols="40"></textarea></p>
-                                                                                </div>
-
-                                                                                <div class="clear"></div>
-
-                                                                                <!-- Buttons with actionbar  -->
-                                                                                <div class="block-actions">
-                                                                                        <ul class="actions-left">
-                                                                                                <li><a class="close-toolbox button red" id="reset2" href="javascript:void(0);">Cancel</a></li>
-                                                                                        </ul>
-                                                                                        <ul class="actions-right">
-                                                                                                <li><input type="submit" class="button" value="Send Message"></li>
-                                                                                        </ul>
-                                                                                </div> <!--! end of #block-actions -->
-                                                                        </form>
-                                                                </div> <!--! end of box -->
-
-                                                        </div>
-                                                </li> <!--! end of second entry -->
-
-                                                <!-- Third entry -->
-                                                <li>
-                                                        <a rel="tooltip" title="Create a Folder" class="toolbox-action" href="javascript:void(0);"><span class="i-24-folder-horizontal-open"></span></a>
-                                                        <div class="toolbox-content">
-
-                                                                <!-- Box -->
-                                                                <div class="block-border">
-                                                                        <div class="block-header small">
-                                                                                <h1>Create a Folder</h1>
-                                                                        </div>
-                                                                        <form id="create-folder-form" class="block-content form" action="" method="post">
-                                                                                <p class="inline-mini-label">
-                                                                                        <label for="folder-name">Name</label>
-                                                                                        <input type="text" name="folder-name" class="required">
-                                                                                </p>
-
-                                                                                <!-- Buttons with actionbar  -->
-                                                                                <div class="block-actions">
-                                                                                        <ul class="actions-left">
-                                                                                                <li><a class="close-toolbox button red" id="reset3" href="javascript:void(0);">Cancel</a></li>
-                                                                                        </ul>
-                                                                                        <ul class="actions-right">
-                                                                                                <li><input type="submit" class="button" value="Create Folder"></li>
-                                                                                        </ul>
-                                                                                </div> <!--! end of #block-actions -->
-                                                                        </form>
-                                                                </div> <!--! end of box -->
-
-                                                        </div>
-                                                </li> <!--! end of third entry -->
-                                        </ul>
-
-                                        <!-- Begin of #user-info -->
-                                        <div id="user-info">
-                                                <p>
-                                                        <span class="messages">Hello <a href="javascript:void(0);">Administrator</a> ( <a href="javascript:void(0);"><img src="<?php echo $this->getAssetsUrl(); ?>/img/icons/packs/fugue/16x16/mail.png" alt="Messages"> 3 new messages</a> )</span>
-                                                        <a href="javascript:void(0)" class="toolbox-action button">Settings</a> <a href="javascript:void(0);" class="button red">Logout</a>
-                                                </p>
-                                        </div> <!--! end of #user-info -->
-
-                                </header></div> <!--! end of #header -->
-
-                        <div class="fix-shadow-bottom-height"></div>
-
-                        <!-- Begin of Sidebar -->
-                        <aside id="sidebar">
-
-                                <!-- Search -->
-                                <div id="search-bar">
-                                        <form id="search-form" name="search-form" action="search.php" method="post">
-                                                <input type="text" id="query" name="query" value="" autocomplete="off" placeholder="Search">
-                                        </form>
-                                </div> <!--! end of #search-bar -->
-
-                                <!-- Begin of #login-details -->
-                                <section id="login-details">
-                                        <img class="img-left framed" src="<?php echo $this->getAssetsUrl(); ?>/img/misc/avatar_small.png" alt="Hello Admin">
-                                        <h3>Logged in as</h3>
-                                        <h2><a class="user-button" href="javascript:void(0);">Administrator&nbsp;<span class="arrow-link-down"></span></a></h2>
-                                        <?php
-                                        $this->widget('zii.widgets.CMenu', array(
-                                                'items' => array(
-                                                        array('label' => Yii::t('menu', 'Profile'), 'url' => array('dashboard/index')),
-                                                        array('label' => Yii::t('menu', 'Settings'), 'url' => array('users/index')),
-                                                        array('label' => Yii::t('menu', 'Messages'), 'url' => array('problems/index')),
-                                                        array('label' => Yii::t('menu', 'Logout'), 'url' => array('problems/index')),
-                                                ),
-                                                'htmlOptions' => array(
-                                                        'class' => 'dropdown-username-menu'
-                                                )
-                                        ));
-                                        ?>
-                                        <div class="clearfix"></div>
-                                </section> <!--! end of #login-details -->
-
-                                <!-- Begin of Navigation -->
-                                <nav id="nav">
-                                        <?php
-                                        $this->widget('zii.widgets.CMenu', array(
-                                                'items' => array(
-                                                        array('label' => Yii::t('menu', 'Dashboard'), 'url' => array('dashboard/index')),
-                                                        array('label' => Yii::t('menu', 'Users'), 'url' => array('users/index')),
-                                                        array('label' => Yii::t('menu', 'Problems'), 'url' => array('problems/index')),
-                                                ),
-                                                'htmlOptions' => array(
-                                                        'class' => 'menu collapsible shadow-bottom'
-                                                )
-                                        ));
-                                        ?>
-                                </nav> <!--! end of #nav -->
-
-                        </aside> <!--! end of #sidebar -->
-
-                        <!-- Begin of #main -->
-                        <div id="main" role="main">
-
-                                <!-- Begin of titlebar/breadcrumbs -->
-                                <div id="title-bar">
-                                        <?php
-                                        //TODO: Generate Bread Crumb;
-                                        $items = array(
-                                                array('label' => CHtml::tag('span', array('id' => 'bc-home'), ''), 'url' => array('dashboard/index')),
-                                        );
-
-                                        $this->widget('zii.widgets.CMenu', array(
-                                                'encodeLabel' => false,
-                                                'id' => 'breadcrumbs',
-                                                'items' => $items,
-                                        ));
-                                        ?>
-
-                                </div> <!--! end of #title-bar -->
-
-                                <div class="shadow-bottom shadow-titlebar"></div>
-
-                                <!-- Begin of #main-content -->
-                                <div id="main-content" class="container_12">
-                                        <?php echo $content; ?>
-                                        <div class="clear height-fix"></div>
-                                </div> <!--! end of #main-content -->
-                        </div> <!--! end of #main -->
-
-
-                        <footer id="footer"><div class="container_12">
-                                        <div class="grid_12">
-                                                <div class="footer-icon align-center"><a class="top" href="#top"></a></div>
-                                        </div>
-                                </div></footer>
-                </div> <!--! end of #container -->
-
-
-                <!-- JavaScript at the bottom for fast page loading -->
-
-                <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-                <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-                <script>window.jQuery || document.write('<script src="<?php echo $this->getAssetsUrl(); ?>/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
-
-                <!-- scripts concatenated and minified via ant build script-->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/plugins.js"></script> <!-- lightweight wrapper for consolelog, optional -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery-ui-1.8.15.custom.min.js"></script> <!-- jQuery UI -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.notifications.js"></script> <!-- Notifications  -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.uniform.min.js"></script> <!-- Uniform (Look & Feel from forms) -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.validate.min.js"></script> <!-- Validation from forms -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.dataTables.min.js"></script> <!-- Tables -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.tipsy.js"></script> <!-- Tooltips -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/excanvas.js"></script> <!-- Charts -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.visualize.js"></script> <!-- Charts -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/mylibs/jquery.slidernav.min.js"></script> <!-- Contact List -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/common.js"></script> <!-- Generic functions -->
-                <script defer src="<?php echo $this->getAssetsUrl(); ?>/js/script.js"></script> <!-- Generic scripts -->
-
-
-                <!-- end scripts-->
-
-                <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-                     chromium.org/developers/how-tos/chrome-frame-getting-started -->
-                <!--[if lt IE 7 ]>
-                  <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-                  <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+                <!--         The HTML5 shim, for IE6-8 support of HTML5 elements -->
+                <!--[if lt IE 9]>
+                    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
                 <![endif]-->
 
+                <!-- The fav icon -->
+                <link rel="shortcut icon" href="<?php echo ADMIN_THEME_IMAGES; ?>/favicon.ico">
+
+        </head>
+
+        <body>
+                <div class="navbar">
+                        <div class="navbar-inner">
+                                <div class="container-fluid">
+                                        <a data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                                <span class="icon-bar"></span>
+                                        </a>
+                                        <a href="index.html" class="brand"> <span></span></a>
+
+                                        <!-- user dropdown starts -->
+                                        <div class="btn-group pull-right">
+                                                <a href="#" data-toggle="dropdown" class="btn dropdown-toggle">
+                                                        <i class="icon-user"></i><span class="hidden-phone"> admin</span>
+                                                        <span class="caret"></span>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                        <li><a href="#">Profile</a></li>
+                                                        <li class="divider"></li>
+                                                        <li><a href="login.html">Logout</a></li>
+                                                </ul>
+                                        </div>
+                                        <!-- user dropdown ends -->
+
+                                        <div class="top-nav nav-collapse">
+                                                <ul class="nav">
+                                                        <li><a href="#">Visit Site</a></li>
+                                                        <li>
+                                                                <form class="navbar-search pull-left">
+                                                                        <input type="text" name="query" class="search-query span2" placeholder="Search">
+                                                                </form>
+                                                        </li>
+                                                </ul>
+                                        </div><!--/.nav-collapse -->
+                                </div>
+                        </div>
+                </div>
+                <div class="container-fluid">
+                        <div class="row-fluid">
+
+                                <!-- left menu starts -->
+                                <div class="span2 main-menu-span">
+                                        <div class="well nav-collapse sidebar-nav">
+                                                <ul class="nav nav-tabs nav-stacked main-menu">
+                                                        <li class="nav-header hidden-tablet">Main</li>
+                                                        <li class="active"><a href="index.html" class="ajax-link"><i class="icon-home"></i><span class="hidden-tablet"> Dashboard</span></a></li>
+                                                        <li><a href="ui.html" class="ajax-link"><i class="icon-eye-open"></i><span class="hidden-tablet"> UI Features</span></a></li>
+                                                        <li><a href="form.html" class="ajax-link"><i class="icon-edit"></i><span class="hidden-tablet"> Forms</span></a></li>
+                                                        <li><a href="chart.html" class="ajax-link"><i class="icon-list-alt"></i><span class="hidden-tablet"> Charts</span></a></li>
+                                                        <li><a href="typography.html" class="ajax-link"><i class="icon-font"></i><span class="hidden-tablet"> Typography</span></a></li>
+                                                        <li><a href="gallery.html" class="ajax-link"><i class="icon-picture"></i><span class="hidden-tablet"> Gallery</span></a></li>
+                                                        <li class="nav-header hidden-tablet">Sample Section</li>
+                                                        <li style="margin-left: -2px;"><a href="table.html" class="ajax-link"><i class="icon-align-justify"></i><span class="hidden-tablet"> Tables</span></a></li>
+                                                        <li><a href="calendar.html" class="ajax-link"><i class="icon-calendar"></i><span class="hidden-tablet"> Calendar</span></a></li>
+                                                        <li><a href="grid.html" class="ajax-link"><i class="icon-th"></i><span class="hidden-tablet"> Grid</span></a></li>
+                                                        <li><a href="file-manager.html" class="ajax-link"><i class="icon-folder-open"></i><span class="hidden-tablet"> File Manager</span></a></li>
+                                                        <li><a href="tour.html"><i class="icon-globe"></i><span class="hidden-tablet"> Tour</span></a></li>
+                                                        <li><a href="icon.html" class="ajax-link"><i class="icon-star"></i><span class="hidden-tablet"> Icons</span></a></li>
+                                                        <li><a href="error.html"><i class="icon-ban-circle"></i><span class="hidden-tablet"> Error Page</span></a></li>
+                                                        <li><a href="login.html"><i class="icon-lock"></i><span class="hidden-tablet"> Login Page</span></a></li>
+                                                </ul>
+                                                <label for="is-ajax" class="hidden-tablet" id="for-is-ajax"><div class="checker" id="uniform-is-ajax"><span><input type="checkbox" id="is-ajax" style="opacity: 0;"></span></div> Ajax on menu</label>
+                                        </div><!--/.well -->
+                                </div><!--/span-->
+                                <!-- left menu ends -->
+
+                                <noscript>
+                                &lt;div class="alert alert-block span10"&gt;
+                                &lt;h4 class="alert-heading"&gt;Warning!&lt;/h4&gt;
+                                &lt;p&gt;You need to have &lt;a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank"&gt;JavaScript&lt;/a&gt; enabled to use this site.&lt;/p&gt;
+                                &lt;/div&gt;
+                                </noscript>
+
+                                <div class="span10" id="content">
+                                        <!-- content starts -->
+
+
+                                        <div>
+                                                <ul class="breadcrumb">
+                                                        <li>
+                                                                <a href="#">Home</a> <span class="divider">/</span>
+                                                        </li>
+                                                        <li>
+                                                                <a href="#">Dashboard</a>
+                                                        </li>
+                                                </ul>
+                                        </div>
+                                        <div class="sortable row-fluid ui-sortable">
+                                                <a href="#" class="well span3 top-block" data-rel="tooltip" data-original-title="6 new members.">
+                                                        <span class="icon32 icon-red icon-user"></span>
+                                                        <div>Total Members</div>
+                                                        <div>507</div>
+                                                        <span class="notification">6</span>
+                                                </a>
+
+                                                <a href="#" class="well span3 top-block" data-rel="tooltip" data-original-title="4 new pro members.">
+                                                        <span class="icon32 icon-color icon-star-on"></span>
+                                                        <div>Pro Members</div>
+                                                        <div>228</div>
+                                                        <span class="notification green">4</span>
+                                                </a>
+
+                                                <a href="#" class="well span3 top-block" data-rel="tooltip" data-original-title="$34 new sales.">
+                                                        <span class="icon32 icon-color icon-cart"></span>
+                                                        <div>Sales</div>
+                                                        <div>$13320</div>
+                                                        <span class="notification yellow">$34</span>
+                                                </a>
+
+                                                <a href="#" class="well span3 top-block" data-rel="tooltip" data-original-title="12 new messages.">
+                                                        <span class="icon32 icon-color icon-envelope-closed"></span>
+                                                        <div>Messages</div>
+                                                        <div>25</div>
+                                                        <span class="notification red">12</span>
+                                                </a>
+                                        </div>
+
+                                        <div class="row-fluid">
+                                                <div class="box span12">
+                                                        <div class="box-header well">
+                                                                <h2><i class="icon-info-sign"></i> Introduction</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content">
+                                                                <h1>Charisma <small>free, premium quality, responsive, multiple skin admin template.</small></h1>
+                                                                <p>Its a live demo of the template. I have created Charisma to ease the repeat work I have to do on my projects. Now I re-use Charisma as a base for my admin panel work and I am sharing it with you :)</p>
+                                                                <p><b>All pages in the menu are functional, take a look at all, please share this with your followers.</b></p>
+
+                                                                <p class="center">
+                                                                        <a class="btn btn-large btn-primary" href="http://usman.it/free-responsive-admin-template"><i class="icon-chevron-left icon-white"></i> Back to article</a> 
+                                                                        <a class="btn btn-large" href="http://usman.it/free-responsive-admin-template"><i class="icon-download-alt"></i> Download Page</a>
+                                                                </p>
+                                                                <div class="clearfix"></div>
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <div class="row-fluid sortable ui-sortable">
+                                                <div class="box span4">
+                                                        <div class="box-header well">
+                                                                <h2><i class="icon-th"></i> Tabs</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content">
+                                                                <ul id="myTab" class="nav nav-tabs">
+                                                                        <li class="active"><a href="#info">Info</a></li>
+                                                                        <li><a href="#custom">Custom</a></li>
+                                                                        <li><a href="#messages">Messages</a></li>
+                                                                </ul>
+
+                                                                <div class="tab-content" id="myTabContent">
+                                                                        <div id="info" class="tab-pane active">
+                                                                                <h3>Charisma <small>a fully featued template</small></h3>
+                                                                                <p>Its a fully featured, responsive template for your admin panel. Its optimized for tablet and mobile phones. Scan the QR code below to view it in your mobile device.</p> <img src="img/qrcode136.png" class="charisma_qr center" alt="QR Code">
+                                                                        </div>
+                                                                        <div id="custom" class="tab-pane">
+                                                                                <h3>Custom <small>small text</small></h3>
+                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor.</p>
+                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. Nulla tellus elit, varius non commodo eget, mattis vel eros. In sed ornare nulla. Donec consectetur, velit a pharetra ultricies, diam lorem lacinia risus, ac commodo orci erat eu massa. Sed sit amet nulla ipsum. Donec felis mauris, vulputate sed tempor at, aliquam a ligula. Pellentesque non pulvinar nisi.</p>
+                                                                        </div>
+                                                                        <div id="messages" class="tab-pane">
+                                                                                <h3>Messages <small>small text</small></h3>
+                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. Nulla tellus elit, varius non commodo eget, mattis vel eros. In sed ornare nulla. Donec consectetur, velit a pharetra ultricies, diam lorem lacinia risus, ac commodo orci erat eu massa. Sed sit amet nulla ipsum. Donec felis mauris, vulputate sed tempor at, aliquam a ligula. Pellentesque non pulvinar nisi.</p>
+                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor.</p>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                </div><!--/span-->
+
+                                                <div class="box span4">
+                                                        <div data-original-title="" class="box-header well">
+                                                                <h2><i class="icon-user"></i> Member Activity</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content">
+                                                                <div class="box-content">
+                                                                        <ul class="dashboard-list">
+                                                                                <li>
+                                                                                        <a href="#">
+                                                                                                <img src="http://www.gravatar.com/avatar/f0ea51fa1e4fae92608d8affee12f67b.png?s=50" alt="Usman" class="dashboard-avatar"></a>
+                                                                                        <strong>Name:</strong> <a href="#">Usman
+                                                                                        </a><br>
+                                                                                        <strong>Since:</strong> 17/05/2012<br>
+                                                                                        <strong>Status:</strong> <span class="label label-success">Approved</span>                                  
+                                                                                </li>
+                                                                                <li>
+                                                                                        <a href="#">
+                                                                                                <img src="http://www.gravatar.com/avatar/3232415a0380253cfffe19163d04acab.png?s=50" alt="Sheikh Heera" class="dashboard-avatar"></a>
+                                                                                        <strong>Name:</strong> <a href="#">Sheikh Heera
+                                                                                        </a><br>
+                                                                                        <strong>Since:</strong> 17/05/2012<br>
+                                                                                        <strong>Status:</strong> <span class="label label-warning">Pending</span>                                 
+                                                                                </li>
+                                                                                <li>
+                                                                                        <a href="#">
+                                                                                                <img src="http://www.gravatar.com/avatar/46056f772bde7c536e2086004e300a04.png?s=50" alt="Abdullah" class="dashboard-avatar"></a>
+                                                                                        <strong>Name:</strong> <a href="#">Abdullah
+                                                                                        </a><br>
+                                                                                        <strong>Since:</strong> 25/05/2012<br>
+                                                                                        <strong>Status:</strong> <span class="label label-important">Banned</span>                                  
+                                                                                </li>
+                                                                                <li>
+                                                                                        <a href="#">
+                                                                                                <img src="http://www.gravatar.com/avatar/564e1bb274c074dc4f6823af229d9dbb.png?s=50" alt="Saruar Ahmed" class="dashboard-avatar"></a>
+                                                                                        <strong>Name:</strong> <a href="#">Saruar Ahmed
+                                                                                        </a><br>
+                                                                                        <strong>Since:</strong> 17/05/2012<br>
+                                                                                        <strong>Status:</strong> <span class="label label-info">Updates</span>                                  
+                                                                                </li>
+                                                                        </ul>
+                                                                </div>
+                                                        </div>
+                                                </div><!--/span-->
+
+                                                <div class="box span4">
+                                                        <div data-original-title="" class="box-header well">
+                                                                <h2><i class="icon-list-alt"></i> Realtime Traffic</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content">
+                                                                <div style="height: 190px; padding: 0px; position: relative;" id="realtimechart"><canvas class="base" width="322" height="190"></canvas><canvas class="overlay" width="322" height="190" style="position: absolute; left: 0px; top: 0px;"></canvas><div style="font-size:smaller" class="tickLabels"><div style="color:#545454" class="yAxis y1Axis"><div style="position:absolute;text-align:right;top:177px;right:304px;width:18px" class="tickLabel">0</div><div style="position:absolute;text-align:right;top:132px;right:304px;width:18px" class="tickLabel">25</div><div style="position:absolute;text-align:right;top:86px;right:304px;width:18px" class="tickLabel">50</div><div style="position:absolute;text-align:right;top:41px;right:304px;width:18px" class="tickLabel">75</div><div style="position:absolute;text-align:right;top:-5px;right:304px;width:18px" class="tickLabel">100</div></div></div></div>
+                                                                <p class="clearfix">You can update a chart periodically to get a real-time effect by using a timer to insert the new data in the plot and redraw it.</p>
+                                                                <p>Time between updates: <input type="text" style="text-align: right; width:5em" value="" id="updateInterval"> milliseconds</p>
+                                                        </div>
+                                                </div><!--/span-->
+                                        </div><!--/row-->
+
+                                        <div class="row-fluid sortable ui-sortable">
+                                                <div class="box span4">
+                                                        <div data-original-title="" class="box-header well">
+                                                                <h2><i class="icon-list"></i> Buttons</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content buttons">
+                                                                <p class="btn-group">
+                                                                        <button class="btn">Left</button>
+                                                                        <button class="btn">Middle</button>
+                                                                        <button class="btn">Right</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-small"><i class="icon-star"></i> Icon button</button>
+                                                                        <button class="btn btn-small btn-primary">Small button</button>
+                                                                        <button class="btn btn-small btn-danger">Small button</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-small btn-warning">Small button</button>
+                                                                        <button class="btn btn-small btn-success">Small button</button>
+                                                                        <button class="btn btn-small btn-info">Small button</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-small btn-inverse">Small button</button>
+                                                                        <button class="btn btn-large btn-primary btn-round">Round button</button>
+                                                                        <button class="btn btn-large btn-round"><i class="icon-ok"></i></button>
+                                                                        <button class="btn btn-primary"><i class="icon-edit icon-white"></i></button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-mini">Mini button</button>
+                                                                        <button class="btn btn-mini btn-primary">Mini button</button>
+                                                                        <button class="btn btn-mini btn-danger">Mini button</button>
+                                                                        <button class="btn btn-mini btn-warning">Mini button</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-mini btn-info">Mini button</button>
+                                                                        <button class="btn btn-mini btn-success">Mini button</button>
+                                                                        <button class="btn btn-mini btn-inverse">Mini button</button>
+                                                                </p>
+                                                        </div>
+                                                </div><!--/span-->
+
+                                                <div class="box span4">
+                                                        <div data-original-title="" class="box-header well">
+                                                                <h2><i class="icon-list"></i> Buttons</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content  buttons">
+                                                                <p>
+                                                                        <button class="btn btn-large">Large button</button>
+                                                                        <button class="btn btn-large btn-primary">Large button</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-large btn-danger">Large button</button>
+                                                                        <button class="btn btn-large btn-warning">Large button</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-large btn-success">Large button</button>
+                                                                        <button class="btn btn-large btn-info">Large button</button>
+                                                                </p>
+                                                                <p>
+                                                                        <button class="btn btn-large btn-inverse">Large button</button>
+                                                                </p>
+                                                                <div class="btn-group">
+                                                                        <button class="btn btn-large">Large Dropdown</button>
+                                                                        <button data-toggle="dropdown" class="btn btn-large dropdown-toggle"><span class="caret"></span></button>
+                                                                        <ul class="dropdown-menu">
+                                                                                <li><a href="#"><i class="icon-star"></i> Action</a></li>
+                                                                                <li><a href="#"><i class="icon-tag"></i> Another action</a></li>
+                                                                                <li><a href="#"><i class="icon-download-alt"></i> Something else here</a></li>
+                                                                                <li class="divider"></li>
+                                                                                <li><a href="#"><i class="icon-tint"></i> Separated link</a></li>
+                                                                        </ul>
+                                                                </div>
+
+                                                        </div>
+                                                </div><!--/span-->
+
+                                                <div class="box span4">
+                                                        <div data-original-title="" class="box-header well">
+                                                                <h2><i class="icon-list"></i> Weekly Stat</h2>
+                                                                <div class="box-icon">
+                                                                        <a class="btn btn-setting btn-round" href="#"><i class="icon-cog"></i></a>
+                                                                        <a class="btn btn-minimize btn-round" href="#"><i class="icon-chevron-up"></i></a>
+                                                                        <a class="btn btn-close btn-round" href="#"><i class="icon-remove"></i></a>
+                                                                </div>
+                                                        </div>
+                                                        <div class="box-content">
+                                                                <ul class="dashboard-list">
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-arrow-up"></i>                               
+                                                                                        <span class="green">92</span>
+                                                                                        New Comments                                    
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-arrow-down"></i>
+                                                                                        <span class="red">15</span>
+                                                                                        New Registrations
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-minus"></i>
+                                                                                        <span class="blue">36</span>
+                                                                                        New Articles                                    
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-comment"></i>
+                                                                                        <span class="yellow">45</span>
+                                                                                        User reviews                                    
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-arrow-up"></i>                               
+                                                                                        <span class="green">112</span>
+                                                                                        New Comments                                    
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-arrow-down"></i>
+                                                                                        <span class="red">31</span>
+                                                                                        New Registrations
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-minus"></i>
+                                                                                        <span class="blue">93</span>
+                                                                                        New Articles                                    
+                                                                                </a>
+                                                                        </li>
+                                                                        <li>
+                                                                                <a href="#">
+                                                                                        <i class="icon-comment"></i>
+                                                                                        <span class="yellow">254</span>
+                                                                                        User reviews                                    
+                                                                                </a>
+                                                                        </li>
+                                                                </ul>
+                                                        </div>
+                                                </div><!--/span-->
+                                        </div><!--/row-->
+                                        <!-- content ends -->
+                                </div><!--/#content.span10-->
+                        </div>
+
+                        <hr>
+
+
+                        <footer>
+                                <p class="pull-left">&copy; <a href="" target="_blank"></a> 2012</p>
+                                <p class="pull-right"><?php echo Yii::powered(); ?></p>
+                        </footer>
+
+                </div><!--/.fluid-container-->
+
+                <!-- external javascript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery-1.7.2.min.js"></script>
+                <!-- jQuery UI -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery-ui-1.8.21.custom.min.js"></script>
+                <!-- transition / effect library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-transition.js"></script>
+                <!-- alert enhancer library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-alert.js"></script>
+                <!-- modal / dialog library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-modal.js"></script>
+                <!-- scrolspy library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-scrollspy.js"></script>
+                <!-- library for creating tabs -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-tab.js"></script>
+                <!-- library for advanced tooltip -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-tooltip.js"></script>
+                <!-- popover effect library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-popover.js"></script>
+                <!-- button enhancer library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-button.js"></script>
+                <!-- carousel slideshow library (optional, not used in demo) -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-carousel.js"></script>
+                <!-- autocomplete library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-typeahead.js"></script>
+                <!-- tour library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-tour.js"></script>
+                <!-- library for cookie management -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.cookie.js"></script>
+                <!-- calander plugin -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/fullcalendar.min.js"></script>
+                <!-- data table plugin -->
+                <!-- <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.dataTables.min.js"></script> -->
+
+                <!-- chart libraries start -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/excanvas.js"></script>
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.flot.min.js"></script>
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.flot.pie.min.js"></script>
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.flot.stack.js"></script>
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.flot.resize.min.js"></script>
+                <!-- chart libraries end -->
+
+                <!-- select or dropdown enhancer -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.chosen.min.js"></script>
+                <!-- checkbox, radio, and file input styler -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.uniform.min.js"></script>
+                <!-- plugin for gallery image view -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.colorbox.min.js"></script>
+                <!-- rich text editor library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.cleditor.min.js"></script>
+                <!-- notification plugin -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.noty.js"></script>
+                <!-- file manager library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.elfinder.min.js"></script>
+                <!-- star rating plugin -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.raty.min.js"></script>
+                <!-- for iOS style toggle switch -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.iphone.toggle.js"></script>
+                <!-- autogrowing textarea plugin -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.autogrow-textarea.js"></script>
+                <!-- multiple file upload plugin -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.uploadify-3.1.min.js"></script>
+                <!-- history.js for cross-browser state change on ajax -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.history.js"></script>
+                <!-- application script for Charisma demo -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/charisma.js"></script>
         </body>
 </html>
