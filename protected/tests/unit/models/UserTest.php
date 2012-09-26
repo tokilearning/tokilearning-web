@@ -8,6 +8,8 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package application.tests.unit.models
  */
+use application\models\User;
+
 class UserTest extends \CDbTestCase {
 
         public $fixtures = array(
