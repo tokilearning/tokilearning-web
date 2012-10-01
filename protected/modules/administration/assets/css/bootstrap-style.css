@@ -4547,3 +4547,446 @@ i[class^="icon-"] {
 .invisible {
     visibility: hidden;
 }
+
+
+
+[class^="menu-icon-"] a:before,
+[class*=" menu-icon-"] a:before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("../img/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+}
+[class^="menu-icon-"] a:before:last-child,
+[class*=" menu-icon-"] a:before:last-child {
+    *margin-left: 0;
+}
+.menu-icon-white a:before {
+    background-image: url("../img/glyphicons-halflings-white.png");
+}
+.menu-icon-glass a:before {
+    background-position: 0      0;
+}
+.menu-icon-music a:before {
+    background-position: -24px 0;
+}
+.menu-icon-search a:before {
+    background-position: -48px 0;
+}
+.menu-icon-envelope a:before {
+    background-position: -72px 0;
+}
+.menu-icon-heart a:before {
+    background-position: -96px 0;
+}
+.menu-icon-star a:before {
+    background-position: -120px 0;
+}
+.menu-icon-star-empty a:before {
+    background-position: -144px 0;
+}
+.menu-icon-user a:before {
+    background-position: -168px 0;
+}
+.menu-icon-film a:before {
+    background-position: -192px 0;
+}
+.menu-icon-th-large a:before {
+    background-position: -216px 0;
+}
+.menu-icon-th a:before {
+    background-position: -240px 0;
+}
+.menu-icon-th-list a:before {
+    background-position: -264px 0;
+}
+.menu-icon-ok a:before {
+    background-position: -288px 0;
+}
+.menu-icon-remove a:before {
+    background-position: -312px 0;
+}
+.menu-icon-zoom-in a:before {
+    background-position: -336px 0;
+}
+.menu-icon-zoom-out a:before {
+    background-position: -360px 0;
+}
+.menu-icon-off a:before {
+    background-position: -384px 0;
+}
+.menu-icon-signal a:before {
+    background-position: -408px 0;
+}
+.menu-icon-cog a:before {
+    background-position: -432px 0;
+}
+.menu-icon-trash a:before {
+    background-position: -456px 0;
+}
+.menu-icon-home a:before {
+    background-position: 0 -24px;
+}
+.menu-icon-file a:before {
+    background-position: -24px -24px;
+}
+.menu-icon-time a:before {
+    background-position: -48px -24px;
+}
+.menu-icon-road a:before {
+    background-position: -72px -24px;
+}
+.menu-icon-download-alt a:before {
+    background-position: -96px -24px;
+}
+.menu-icon-download a:before {
+    background-position: -120px -24px;
+}
+.menu-icon-upload a:before {
+    background-position: -144px -24px;
+}
+.menu-icon-inbox a:before {
+    background-position: -168px -24px;
+}
+.menu-icon-play-circle a:before {
+    background-position: -192px -24px;
+}
+.menu-icon-repeat a:before {
+    background-position: -216px -24px;
+}
+.menu-icon-refresh a:before {
+    background-position: -240px -24px;
+}
+.menu-icon-list-alt a:before {
+    background-position: -264px -24px;
+}
+.menu-icon-lock a:before {
+    background-position: -287px -24px;
+}
+.menu-icon-flag a:before {
+    background-position: -312px -24px;
+}
+.menu-icon-headphones a:before {
+    background-position: -336px -24px;
+}
+.menu-icon-volume-off a:before {
+    background-position: -360px -24px;
+}
+.menu-icon-volume-down a:before {
+    background-position: -384px -24px;
+}
+.menu-icon-volume-up a:before {
+    background-position: -408px -24px;
+}
+.menu-icon-qrcode a:before {
+    background-position: -432px -24px;
+}
+.menu-icon-barcode a:before {
+    background-position: -456px -24px;
+}
+.menu-icon-tag a:before {
+    background-position: 0 -48px;
+}
+.menu-icon-tags a:before {
+    background-position: -25px -48px;
+}
+.menu-icon-book a:before {
+    background-position: -48px -48px;
+}
+.menu-icon-bookmark a:before {
+    background-position: -72px -48px;
+}
+.menu-icon-print a:before {
+    background-position: -96px -48px;
+}
+.menu-icon-camera a:before {
+    background-position: -120px -48px;
+}
+.menu-icon-font a:before {
+    background-position: -144px -48px;
+}
+.menu-icon-bold a:before {
+    background-position: -167px -48px;
+}
+.menu-icon-italic a:before {
+    background-position: -192px -48px;
+}
+.menu-icon-text-height a:before {
+    background-position: -216px -48px;
+}
+.menu-icon-text-width a:before {
+    background-position: -240px -48px;
+}
+.menu-icon-align-left a:before {
+    background-position: -264px -48px;
+}
+.menu-icon-align-center a:before {
+    background-position: -288px -48px;
+}
+.menu-icon-align-right a:before {
+    background-position: -312px -48px;
+}
+.menu-icon-align-justify a:before {
+    background-position: -336px -48px;
+}
+.menu-icon-list a:before {
+    background-position: -360px -48px;
+}
+.menu-icon-indent-left a:before {
+    background-position: -384px -48px;
+}
+.menu-icon-indent-right a:before {
+    background-position: -408px -48px;
+}
+.menu-icon-facetime-video a:before {
+    background-position: -432px -48px;
+}
+.menu-icon-picture a:before {
+    background-position: -456px -48px;
+}
+.menu-icon-pencil a:before {
+    background-position: 0 -72px;
+}
+.menu-icon-map-marker a:before {
+    background-position: -24px -72px;
+}
+.menu-icon-adjust a:before {
+    background-position: -48px -72px;
+}
+.menu-icon-tint a:before {
+    background-position: -72px -72px;
+}
+.menu-icon-edit a:before {
+    background-position: -96px -72px;
+}
+.menu-icon-share a:before {
+    background-position: -120px -72px;
+}
+.menu-icon-check a:before {
+    background-position: -144px -72px;
+}
+.menu-icon-move a:before {
+    background-position: -168px -72px;
+}
+.menu-icon-step-backward a:before {
+    background-position: -192px -72px;
+}
+.menu-icon-fast-backward a:before {
+    background-position: -216px -72px;
+}
+.menu-icon-backward a:before {
+    background-position: -240px -72px;
+}
+.menu-icon-play a:before {
+    background-position: -264px -72px;
+}
+.menu-icon-pause a:before {
+    background-position: -288px -72px;
+}
+.menu-icon-stop a:before {
+    background-position: -312px -72px;
+}
+.menu-icon-forward a:before {
+    background-position: -336px -72px;
+}
+.menu-icon-fast-forward a:before {
+    background-position: -360px -72px;
+}
+.menu-icon-step-forward a:before {
+    background-position: -384px -72px;
+}
+.menu-icon-eject a:before {
+    background-position: -408px -72px;
+}
+.menu-icon-chevron-left a:before {
+    background-position: -432px -72px;
+}
+.menu-icon-chevron-right a:before {
+    background-position: -456px -72px;
+}
+.menu-icon-plus-sign a:before {
+    background-position: 0 -96px;
+}
+.menu-icon-minus-sign a:before {
+    background-position: -24px -96px;
+}
+.menu-icon-remove-sign a:before {
+    background-position: -48px -96px;
+}
+.menu-icon-ok-sign a:before {
+    background-position: -72px -96px;
+}
+.menu-icon-question-sign a:before {
+    background-position: -96px -96px;
+}
+.menu-icon-info-sign a:before {
+    background-position: -120px -96px;
+}
+.menu-icon-screenshot a:before {
+    background-position: -144px -96px;
+}
+.menu-icon-remove-circle a:before {
+    background-position: -168px -96px;
+}
+.menu-icon-ok-circle a:before {
+    background-position: -192px -96px;
+}
+.menu-icon-ban-circle a:before {
+    background-position: -216px -96px;
+}
+.menu-icon-arrow-left a:before {
+    background-position: -240px -96px;
+}
+.menu-icon-arrow-right a:before {
+    background-position: -264px -96px;
+}
+.menu-icon-arrow-up a:before {
+    background-position: -289px -96px;
+}
+.menu-icon-arrow-down a:before {
+    background-position: -312px -96px;
+}
+.menu-icon-share-alt a:before {
+    background-position: -336px -96px;
+}
+.menu-icon-resize-full a:before {
+    background-position: -360px -96px;
+}
+.menu-icon-resize-small a:before {
+    background-position: -384px -96px;
+}
+.menu-icon-plus a:before {
+    background-position: -408px -96px;
+}
+.menu-icon-minus a:before {
+    background-position: -433px -96px;
+}
+.menu-icon-asterisk a:before {
+    background-position: -456px -96px;
+}
+.menu-icon-exclamation-sign a:before {
+    background-position: 0 -120px;
+}
+.menu-icon-gift a:before {
+    background-position: -24px -120px;
+}
+.menu-icon-leaf a:before {
+    background-position: -48px -120px;
+}
+.menu-icon-fire a:before {
+    background-position: -72px -120px;
+}
+.menu-icon-eye-open a:before {
+    background-position: -96px -120px;
+}
+.menu-icon-eye-close a:before {
+    background-position: -120px -120px;
+}
+.menu-icon-warning-sign a:before {
+    background-position: -144px -120px;
+}
+.menu-icon-plane a:before {
+    background-position: -168px -120px;
+}
+.menu-icon-calendar a:before {
+    background-position: -192px -120px;
+}
+.menu-icon-random a:before {
+    background-position: -216px -120px;
+}
+.menu-icon-comment a:before {
+    background-position: -240px -120px;
+}
+.menu-icon-magnet a:before {
+    background-position: -264px -120px;
+}
+.menu-icon-chevron-up a:before {
+    background-position: -288px -120px;
+}
+.menu-icon-chevron-down a:before {
+    background-position: -313px -119px;
+}
+.menu-icon-retweet a:before {
+    background-position: -336px -120px;
+}
+.menu-icon-shopping-cart a:before {
+    background-position: -360px -120px;
+}
+.menu-icon-folder-close a:before {
+    background-position: -384px -120px;
+}
+.menu-icon-folder-open a:before {
+    background-position: -408px -120px;
+}
+.menu-icon-resize-vertical a:before {
+    background-position: -432px -119px;
+}
+.menu-icon-resize-horizontal a:before {
+    background-position: -456px -118px;
+}
+.menu-icon-hdd a:before {
+    background-position: 0 -144px;
+}
+.menu-icon-bullhorn a:before {
+    background-position: -24px -144px;
+}
+.menu-icon-bell a:before {
+    background-position: -48px -144px;
+}
+.menu-icon-certificate a:before {
+    background-position: -72px -144px;
+}
+.menu-icon-thumbs-up a:before {
+    background-position: -96px -144px;
+}
+.menu-icon-thumbs-down a:before {
+    background-position: -120px -144px;
+}
+.menu-icon-hand-right a:before {
+    background-position: -144px -144px;
+}
+.menu-icon-hand-left a:before {
+    background-position: -168px -144px;
+}
+.menu-icon-hand-up a:before {
+    background-position: -192px -144px;
+}
+.menu-icon-hand-down a:before {
+    background-position: -216px -144px;
+}
+.menu-icon-circle-arrow-right a:before {
+    background-position: -240px -144px;
+}
+.menu-icon-circle-arrow-left a:before {
+    background-position: -264px -144px;
+}
+.menu-icon-circle-arrow-up a:before {
+    background-position: -288px -144px;
+}
+.menu-icon-circle-arrow-down a:before {
+    background-position: -312px -144px;
+}
+.menu-icon-globe a:before {
+    background-position: -336px -144px;
+}
+.menu-icon-wrench a:before {
+    background-position: -360px -144px;
+}
+.menu-icon-tasks a:before {
+    background-position: -384px -144px;
+}
+.menu-icon-filter a:before {
+    background-position: -408px -144px;
+}
+.menu-icon-briefcase a:before {
+    background-position: -432px -144px;
+}
+.menu-icon-fullscreen a:before {
+    background-position: -456px -144px;
+}

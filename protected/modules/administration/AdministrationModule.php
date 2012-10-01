@@ -7,7 +7,7 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration
  */
-class AdministrationModule extends CWebModule {
+class AdministrationModule extends \CWebModule {
 
         /**
          * @var string url for assets.

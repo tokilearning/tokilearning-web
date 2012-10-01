@@ -9,6 +9,8 @@
  * @author Petra Barus <petra.barus@gmail.com>
  * @package administration.controllers
  */
+use application\models\User;
+
 class UsersController extends \CAdministrationController {
 
         /**
