@@ -23,8 +23,9 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                 <meta name="language" content="<?php echo Yii::app()->language; ?>" />
                 <title><?php echo CHtml::encode($this->pageTitle); ?></title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <meta name="description" content="">
-                <meta name="author" content="">
+                <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
+                <meta name="author" content="Muhammad Usman">
+
                 <!-- The styles -->
                 <link id="bs-css" href="<?php echo ADMIN_THEME_CSS; ?>/bootstrap-style.css" rel="stylesheet">
                 <style type="text/css">
@@ -38,24 +39,23 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                 <link href="<?php echo ADMIN_THEME_CSS; ?>/bootstrap-responsive.css" rel="stylesheet">
                 <link href="<?php echo ADMIN_THEME_CSS; ?>/charisma-app.css" rel="stylesheet">
                 <link href="<?php echo ADMIN_THEME_CSS; ?>/jquery-ui-1.8.21.custom.css" rel="stylesheet">
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/fullcalendar.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/fullcalendar.print.css' rel='stylesheet'  media='print'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/chosen.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/uniform.default.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/colorbox.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/jquery.cleditor.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/jquery.noty.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/noty_theme_default.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/elfinder.min.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/elfinder.theme.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/jquery.iphone.toggle.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/opa-icons.css' rel='stylesheet'>
-                <link href='<?php echo ADMIN_THEME_CSS; ?>/uploadify.css' rel='stylesheet'>
-                <script src="<?php echo ADMIN_THEME_JS; ?>/modernizr.custom.js"></script>
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/fullcalendar.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/fullcalendar.print.css" rel="stylesheet"  media="print">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/chosen.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/uniform.default.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/colorbox.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/jquery.cleditor.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/jquery.noty.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/noty_theme_default.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/elfinder.min.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/elfinder.theme.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/jquery.iphone.toggle.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/opa-icons.css" rel="stylesheet">
+                <link href="<?php echo ADMIN_THEME_CSS; ?>/uploadify.css" rel="stylesheet">
 
-                <!--         The HTML5 shim, for IE6-8 support of HTML5 elements -->
+                <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
                 <!--[if lt IE 9]>
-                    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+                  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
                 <![endif]-->
 
                 <!-- The fav icon -->
@@ -64,19 +64,20 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
         </head>
 
         <body>
+                <!-- topbar starts -->
                 <div class="navbar">
                         <div class="navbar-inner">
                                 <div class="container-fluid">
-                                        <a data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+                                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
                                                 <span class="icon-bar"></span>
                                                 <span class="icon-bar"></span>
                                                 <span class="icon-bar"></span>
                                         </a>
-                                        <a href="index.html" class="brand"> <span></span></a>
+                                        <a class="brand" href="index.html"> <img alt="Charisma Logo" src="<?php echo ADMIN_THEME_IMAGES; ?>/logo20.png" /> <span>Charisma</span></a>
 
                                         <!-- user dropdown starts -->
-                                        <div class="btn-group pull-right">
-                                                <a href="#" data-toggle="dropdown" class="btn dropdown-toggle">
+                                        <div class="btn-group pull-right" >
+                                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                                                         <i class="icon-user"></i><span class="hidden-phone"> admin</span>
                                                         <span class="caret"></span>
                                                 </a>
@@ -93,7 +94,7 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                                                         <li><a href="#">Visit Site</a></li>
                                                         <li>
                                                                 <form class="navbar-search pull-left">
-                                                                        <input type="text" name="query" class="search-query span2" placeholder="Search">
+                                                                        <input placeholder="Search" class="search-query span2" name="query" type="text">
                                                                 </form>
                                                         </li>
                                                 </ul>
@@ -101,11 +102,28 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                                 </div>
                         </div>
                 </div>
+                <!-- topbar ends -->
                 <div class="container-fluid">
                         <div class="row-fluid">
                                 <?php echo $content; ?>
-                        </div>
+                        </div><!--/fluid-row-->
+
                         <hr>
+
+                        <div class="modal hide fade" id="myModal">
+                                <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">×</button>
+                                        <h3>Settings</h3>
+                                </div>
+                                <div class="modal-body">
+                                        <p>Here settings can be configured...</p>
+                                </div>
+                                <div class="modal-footer">
+                                        <a href="#" class="btn" data-dismiss="modal">Close</a>
+                                        <a href="#" class="btn btn-primary">Save changes</a>
+                                </div>
+                        </div>
+
                         <footer>
                                 <p class="pull-left">&copy; <a href="" target="_blank"></a> 2012</p>
                                 <p class="pull-right"><?php echo Yii::powered(); ?></p>
@@ -116,6 +134,8 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                 <!-- external javascript
                 ================================================== -->
                 <!-- Placed at the end of the document so the pages load faster -->
+
+                <!-- jQuery -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/jquery-1.7.2.min.js"></script>
                 <!-- jQuery UI -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/jquery-ui-1.8.21.custom.min.js"></script>
@@ -125,6 +145,8 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                 <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-alert.js"></script>
                 <!-- modal / dialog library -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-modal.js"></script>
+                <!-- custom dropdown library -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-dropdown.js"></script>
                 <!-- scrolspy library -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-scrollspy.js"></script>
                 <!-- library for creating tabs -->
@@ -135,6 +157,8 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                 <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-popover.js"></script>
                 <!-- button enhancer library -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-button.js"></script>
+                <!-- accordion library (optional, not used in demo) -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-collapse.js"></script>
                 <!-- carousel slideshow library (optional, not used in demo) -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/bootstrap-carousel.js"></script>
                 <!-- autocomplete library -->
@@ -146,7 +170,7 @@ define('ADMIN_THEME_IMAGES', BASE_URL . '/img');
                 <!-- calander plugin -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/fullcalendar.min.js"></script>
                 <!-- data table plugin -->
-                <!-- <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.dataTables.min.js"></script> -->
+                <script src="<?php echo ADMIN_THEME_JS; ?>/jquery.dataTables.min.js"></script>
 
                 <!-- chart libraries start -->
                 <script src="<?php echo ADMIN_THEME_JS; ?>/excanvas.js"></script>
